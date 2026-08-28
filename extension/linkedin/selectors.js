@@ -7,7 +7,8 @@ const LINKEDIN_SELECTORS = {
   // Post container parent selectors (ranked by specificity & semantic stability)
   postContainers: [
     'div.feed-shared-update-v2',
-    'article[data-urn]',
+    'article',
+    'div[data-urn]',
     'div[data-urn*="activity"]',
     'div[data-urn*="ugcPost"]',
     'div.occluded-update',
@@ -15,7 +16,8 @@ const LINKEDIN_SELECTORS = {
     'div[data-id*="urn:li:activity"]',
     'div.search-results-container article',
     'li.search-results__list-item',
-    'div.update-components-text'
+    'div.reusable-search__result-container',
+    'div.entity-result'
   ],
 
   // Comment composer container selectors (including Search results & feed updates)
@@ -49,7 +51,9 @@ const LINKEDIN_SELECTORS = {
     '.actor-name',
     'span[data-anonymize="person-name"]',
     '.update-components-actor__title span span[aria-hidden="true"]',
-    '.update-components-actor__meta .update-components-actor__title'
+    '.update-components-actor__title',
+    '.update-components-actor__meta .update-components-actor__title',
+    '.entity-result__title-text'
   ],
 
   authorHeadline: [
@@ -57,15 +61,21 @@ const LINKEDIN_SELECTORS = {
     '.feed-shared-actor__sub-description',
     '.actor-description',
     '.update-components-actor__headline',
-    '.update-components-actor__sub-description span[aria-hidden="true"]'
+    '.update-components-actor__sub-description span[aria-hidden="true"]',
+    '.entity-result__summary'
   ],
 
   // Main post text content selectors
   postText: [
     '.update-components-text',
+    '.feed-shared-inline-show-more-text',
     '.feed-shared-update-v2__commentary',
+    '.feed-shared-text-view',
     '.feed-shared-text',
     'span.break-words',
+    '.feed-shared-update-v2__description-wrapper',
+    'span.dir-ltr',
+    'span[dir="ltr"]',
     '.update-components-article__description',
     'div[data-test-id="main-feed-activity-card"] .update-components-text'
   ],
@@ -82,7 +92,7 @@ function querySelectorFallback(parent, selectorArray) {
   if (!parent) return null;
   for (const selector of selectorArray) {
     const element = parent.querySelector(selector);
-    if (element) return element;
+    if (element && element.innerText && element.innerText.trim().length > 0) return element;
   }
   return null;
 }

@@ -14,15 +14,18 @@ function findPostForCommentComposer(commentComposer) {
     }
   }
 
-  // 2. Fallback: Traverse parent elements up to 8 levels looking for data-urn or feed class
+  // 2. Fallback: Traverse parent elements up to 12 levels looking for article, urn, feed, or result container
   let current = commentComposer.parentElement;
   let depth = 0;
-  while (current && depth < 10) {
+  while (current && depth < 14) {
     if (
       current.tagName === 'ARTICLE' ||
       current.classList.contains('feed-shared-update-v2') ||
       current.hasAttribute('data-urn') ||
-      current.classList.contains('occluded-update')
+      current.classList.contains('occluded-update') ||
+      current.classList.contains('search-results__list-item') ||
+      current.classList.contains('reusable-search__result-container') ||
+      current.classList.contains('entity-result')
     ) {
       return current;
     }
@@ -30,7 +33,7 @@ function findPostForCommentComposer(commentComposer) {
     depth++;
   }
 
-  return null;
+  return commentComposer.parentElement ? commentComposer.parentElement.parentElement : null;
 }
 
 function extractPostContext(commentComposer) {
@@ -38,31 +41,41 @@ function extractPostContext(commentComposer) {
 
   if (!postElement) {
     console.warn('[AI Assistant] Could not isolate parent post element for composer.');
-    return {
-      authorName: '',
-      authorHeadline: '',
-      postText: '',
-      hashtags: []
-    };
+    return { authorName: '', authorHeadline: '', postText: '', hashtags: [] };
   }
 
   // Extract author name
   const nameEl = querySelectorFallback(postElement, LINKEDIN_SELECTORS.authorName);
-  const authorName = nameEl ? nameEl.innerText.trim().split('\n')[0] : '';
+  const authorName = nameEl ? nameEl.innerText.trim().split('\n')[0] : 'LinkedIn User';
 
   // Extract author headline / sub-description
   const headlineEl = querySelectorFallback(postElement, LINKEDIN_SELECTORS.authorHeadline);
   const authorHeadline = headlineEl ? headlineEl.innerText.trim().replace(/\s+/g, ' ') : '';
 
-  // Extract post commentary text
-  const textEl = querySelectorFallback(postElement, LINKEDIN_SELECTORS.postText);
+  // Extract post text using primary selectors
   let postText = '';
+  const textEl = querySelectorFallback(postElement, LINKEDIN_SELECTORS.postText);
+
   if (textEl) {
-    // Clone textEl to remove hidden aria spans or trailing "...see more" buttons if necessary
     const clone = textEl.cloneNode(true);
-    const seeMoreBtns = clone.querySelectorAll('.feed-shared-inline-show-more-text__button, button');
+    const seeMoreBtns = clone.querySelectorAll('.feed-shared-inline-show-more-text__button, button, .linkedin-ai-toolbar-container');
     seeMoreBtns.forEach(btn => btn.remove());
     postText = clone.innerText.trim().replace(/\n+/g, '\n');
+  }
+
+  // Fallback Text Extraction: If specific text container wasn't matched, inspect sibling nodes above comment box
+  if (!postText || postText.length < 5) {
+    const candidateNodes = postElement.querySelectorAll('span, div, p');
+    for (const node of candidateNodes) {
+      if (node.classList.contains('linkedin-ai-toolbar-container') || node.closest('.linkedin-ai-toolbar-container')) continue;
+      if (node.children.length === 0 || (node.children.length === 1 && node.querySelector('span'))) {
+        const text = node.innerText ? node.innerText.trim() : '';
+        if (text.length > 20 && !text.includes('Add a comment') && !text.includes('Most relevant') && !text.includes('AI Comment')) {
+          postText = text;
+          break;
+        }
+      }
+    }
   }
 
   // Extract hashtags
@@ -78,7 +91,7 @@ function extractPostContext(commentComposer) {
     hashtags: [...new Set(hashtags)]
   };
 
-  console.log(`[AI Assistant] Extracted Context for post by "${authorName}":`, result.postText.substring(0, 80) + '...');
+  console.log(`[AI Assistant] Extracted Context for post by "${authorName}":`, result.postText.substring(0, 100));
 
   return result;
 }
