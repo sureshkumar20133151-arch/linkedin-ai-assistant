@@ -21,6 +21,20 @@ function validateGenerateCommentRequest(req) {
   return { valid: true };
 }
 
+function validateGenerateAllCommentsRequest(req) {
+  const { post } = req.body;
+
+  if (!post || typeof post !== 'object') {
+    return { valid: false, message: 'Missing or invalid "post" object in request body.' };
+  }
+
+  if (!post.postText || typeof post.postText !== 'string' || !post.postText.trim()) {
+    return { valid: false, message: 'Post content ("postText") cannot be empty.' };
+  }
+
+  return { valid: true };
+}
+
 function validateBehaviorRequest(req) {
   const { instruction } = req.body;
 
@@ -38,6 +52,7 @@ function sanitizeText(text) {
 
 module.exports = {
   validateGenerateCommentRequest,
+  validateGenerateAllCommentsRequest,
   validateBehaviorRequest,
   sanitizeText
 };

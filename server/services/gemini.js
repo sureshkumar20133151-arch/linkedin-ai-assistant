@@ -2,7 +2,7 @@
  * Gemini API Service Provider
  */
 
-const { buildCommentPrompt } = require('../prompts/commentPrompt');
+const { buildCommentPrompt, buildAllStylesPrompt } = require('../prompts/commentPrompt');
 const { buildBehaviorPrompt } = require('../prompts/behaviorPrompt');
 
 async function callGeminiAPI(systemInstruction, userContent) {
@@ -67,6 +67,16 @@ async function generateComment(params) {
   return await callGeminiAPI(systemInstruction, userContent);
 }
 
+/**
+ * Generates all three styles (professional, insightful, short) in a single
+ * Gemini call, so the extension can show all three for the user to compare
+ * and pick one — instead of three separate round trips.
+ */
+async function generateAllComments(params) {
+  const { systemInstruction, userContent } = buildAllStylesPrompt(params);
+  return await callGeminiAPI(systemInstruction, userContent);
+}
+
 async function interpretBehaviorInstruction(instruction, currentBehavior) {
   const { systemInstruction, userContent } = buildBehaviorPrompt({ instruction, currentBehavior });
   return await callGeminiAPI(systemInstruction, userContent);
@@ -74,5 +84,6 @@ async function interpretBehaviorInstruction(instruction, currentBehavior) {
 
 module.exports = {
   generateComment,
+  generateAllComments,
   interpretBehaviorInstruction
 };

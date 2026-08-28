@@ -56,6 +56,45 @@ async function requestGenerateComment({ post, persona, behavior, style, oneTimeI
   }
 }
 
+async function requestGenerateAllComments({ post, persona, behavior, oneTimeInstruction }) {
+  const baseUrl = await getBackendUrl();
+  const endpoint = `${baseUrl.replace(/\/$/, '')}/api/generate-comment-all`;
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        post,
+        persona,
+        behavior,
+        oneTimeInstruction
+      }),
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `Backend server returned error ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (err) {
+    clearTimeout(timeoutId);
+    if (err.name === 'AbortError') {
+      throw new Error('Request timed out while connecting to AI backend.');
+    }
+    throw new Error(err.message || 'Unable to connect to backend server. Make sure the server is running on http://localhost:3000');
+  }
+}
+
 async function checkBackendHealth() {
   const baseUrl = await getBackendUrl();
   const endpoint = `${baseUrl.replace(/\/$/, '')}/api/health`;
@@ -90,5 +129,5 @@ async function sendBehaviorInstruction(instruction) {
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { requestGenerateComment, checkBackendHealth, sendBehaviorInstruction };
+  module.exports = { requestGenerateComment, requestGenerateAllComments, checkBackendHealth, sendBehaviorInstruction };
 }

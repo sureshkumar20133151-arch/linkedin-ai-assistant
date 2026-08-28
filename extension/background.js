@@ -20,7 +20,8 @@ const DEFAULT_PERSONA = {
     "Businesses looking for websites",
     "People looking for developers"
   ],
-  tone: "Professional, Natural, Helpful, Confident, Not overly promotional"
+  tone: "Professional, Natural, Helpful, Confident, Not overly promotional",
+  detailedProfile: ""
 };
 
 const DEFAULT_BEHAVIOR = {

@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const inputSkills = document.getElementById('skills');
   const inputServices = document.getElementById('services');
   const inputTargetAudience = document.getElementById('targetAudience');
+  const inputDetailedProfile = document.getElementById('detailedProfile');
   const inputBackendUrl = document.getElementById('backendUrl');
 
   // Action Buttons
@@ -64,6 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           inputSkills.value = Array.isArray(result.persona.skills) ? result.persona.skills.join(', ') : result.persona.skills || '';
           inputServices.value = Array.isArray(result.persona.services) ? result.persona.services.join(', ') : result.persona.services || '';
           inputTargetAudience.value = Array.isArray(result.persona.targetAudience) ? result.persona.targetAudience.join(', ') : result.persona.targetAudience || '';
+          inputDetailedProfile.value = result.persona.detailedProfile || '';
         }
         if (result.backendUrl) {
           inputBackendUrl.value = result.backendUrl;
@@ -144,7 +146,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       tone: inputTone.value.trim(),
       skills: inputSkills.value.split(',').map(s => s.trim()).filter(Boolean),
       services: inputServices.value.split(',').map(s => s.trim()).filter(Boolean),
-      targetAudience: inputTargetAudience.value.split(',').map(s => s.trim()).filter(Boolean)
+      targetAudience: inputTargetAudience.value.split(',').map(s => s.trim()).filter(Boolean),
+      detailedProfile: inputDetailedProfile.value.trim()
     };
 
     if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
