@@ -1,6 +1,7 @@
 /**
  * LinkedIn Post Context Extractor
  * Strictly isolates and extracts post context relative to the active comment composer.
+ * Handles truncated posts by expanding "...more" before extraction.
  */
 
 function findPostForCommentComposer(commentComposer) {
@@ -47,7 +48,59 @@ function findPostForCommentComposer(commentComposer) {
   return commentComposer.closest('article, li, div') || commentComposer.parentElement;
 }
 
-function extractPostContext(commentComposer) {
+/**
+ * Click "...more" / "see more" button inside a post to expand truncated text.
+ * LinkedIn hides full post text behind this button on search results and feed.
+ */
+function expandPostText(postElement) {
+  if (!postElement) return;
+
+  // All known selectors for the "...more" / "see more" button
+  const seeMoreSelectors = [
+    'button.feed-shared-inline-show-more-text__button',
+    'button[aria-label*="see more"]',
+    'button[aria-label*="more"]',
+    'a.feed-shared-inline-show-more-text__see-more-less-toggle',
+    '.feed-shared-inline-show-more-text button',
+    'button.see-more',
+    'span.feed-shared-inline-show-more-text__see-more-less-toggle',
+    // Search results page variant
+    '.update-components-text button',
+    '.update-components-text__see-more',
+    'button.update-components-text__see-more'
+  ];
+
+  for (const selector of seeMoreSelectors) {
+    const btn = postElement.querySelector(selector);
+    if (btn) {
+      const btnText = (btn.innerText || btn.textContent || '').toLowerCase().trim();
+      // Only click if it says "more" or "see more" (not "less")
+      if (btnText.includes('more') && !btnText.includes('less')) {
+        console.log('[AI Assistant] Expanding truncated post via "...more" button');
+        btn.click();
+        return true;
+      }
+    }
+  }
+
+  // Fallback: look for any button/link inside the post text area that contains "more"
+  const textContainer = querySelectorFallback(postElement, LINKEDIN_SELECTORS.postText);
+  if (textContainer) {
+    const btns = textContainer.querySelectorAll('button, a');
+    for (const btn of btns) {
+      const btnText = (btn.innerText || btn.textContent || '').toLowerCase().trim();
+      if (btnText.includes('more') && !btnText.includes('less') && btnText.length < 20) {
+        console.log('[AI Assistant] Expanding truncated post via fallback "more" element');
+        btn.click();
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+async function extractPostContext(commentComposer) {
   const postElement = findPostForCommentComposer(commentComposer);
 
   if (!postElement) {
@@ -58,6 +111,13 @@ function extractPostContext(commentComposer) {
       postText: 'LinkedIn post content',
       hashtags: []
     };
+  }
+
+  // STEP 1: Expand "...more" before extraction
+  const wasExpanded = expandPostText(postElement);
+  if (wasExpanded) {
+    // Wait for LinkedIn to render the full text
+    await new Promise(r => setTimeout(r, 300));
   }
 
   // Extract author name
@@ -75,35 +135,42 @@ function extractPostContext(commentComposer) {
 
   if (textEl) {
     const clone = textEl.cloneNode(true);
-    const removeEls = clone.querySelectorAll('.feed-shared-inline-show-more-text__button, button, .linkedin-ai-toolbar-container');
+    // Remove the "see more/less" buttons from cloned text
+    const removeEls = clone.querySelectorAll(
+      '.feed-shared-inline-show-more-text__button, button, .linkedin-ai-toolbar-container, ' +
+      '.feed-shared-inline-show-more-text__see-more-less-toggle'
+    );
     removeEls.forEach(el => el.remove());
     postText = clone.innerText.trim().replace(/\n+/g, '\n');
   }
 
   // Fallback 1: Sibling / Subtree Inspection if primary selector didn't catch text
-  if (!postText || postText.length < 10) {
+  if (!postText || postText.length < 30) {
     const candidateNodes = postElement.querySelectorAll('span, div, p');
+    let longestText = postText || '';
     for (const node of candidateNodes) {
       if (node.classList.contains('linkedin-ai-toolbar-container') || node.closest('.linkedin-ai-toolbar-container')) continue;
-      if (node.children.length === 0 || (node.children.length === 1 && node.querySelector('span'))) {
-        const text = node.innerText ? node.innerText.trim() : '';
-        if (
-          text.length > 25 &&
-          !text.includes('Add a comment') &&
-          !text.includes('Most relevant') &&
-          !text.includes('AI Comment') &&
-          !text.includes('Professional') &&
-          !text.includes('Insightful')
-        ) {
-          postText = text;
-          break;
-        }
+      if (node.closest('.comments-comment-box') || node.closest('.comments-comment-texteditor')) continue;
+      const text = node.innerText ? node.innerText.trim() : '';
+      if (
+        text.length > longestText.length &&
+        text.length > 25 &&
+        !text.includes('Add a comment') &&
+        !text.includes('Most relevant') &&
+        !text.includes('AI Comment') &&
+        !text.includes('Professional') &&
+        !text.includes('Insightful')
+      ) {
+        longestText = text;
       }
+    }
+    if (longestText.length > postText.length) {
+      postText = longestText;
     }
   }
 
   // Fallback 2: Clean full innerText of postElement excluding toolbar & comments
-  if (!postText || postText.length < 10) {
+  if (!postText || postText.length < 30) {
     const fullText = postElement.innerText || '';
     const lines = fullText.split('\n')
       .map(l => l.trim())
@@ -122,15 +189,15 @@ function extractPostContext(commentComposer) {
   const result = {
     authorName,
     authorHeadline,
-    postText: postText || 'Post requirement on LinkedIn',
+    postText: postText || 'Unable to extract post text — please copy the post content into the instruction field above.',
     hashtags: [...new Set(hashtags)]
   };
 
-  console.log(`[AI Assistant] Extracted Context for post by "${authorName}":`, result.postText.substring(0, 100));
+  console.log(`[AI Assistant] Extracted Context for post by "${authorName}" (${postText.length} chars):`, result.postText.substring(0, 150));
 
   return result;
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { findPostForCommentComposer, extractPostContext };
+  module.exports = { findPostForCommentComposer, extractPostContext, expandPostText };
 }

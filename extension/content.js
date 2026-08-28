@@ -86,8 +86,8 @@
         noticeContainer.innerHTML = '';
 
         try {
-          // 1. Isolate and extract relative post context
-          const postContext = extractPostContext(composer);
+          // 1. Isolate and extract relative post context (async - expands "...more" if needed)
+          const postContext = await extractPostContext(composer);
           if (!postContext || !postContext.postText) {
             throw new Error('Could not read post text. Please ensure the post text is visible.');
           }
