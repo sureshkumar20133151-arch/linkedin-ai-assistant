@@ -14,6 +14,7 @@ const LINKEDIN_SELECTORS = {
     'div.feed-shared-update-v2__control-menu-container',
     'div[data-id*="urn:li:activity"]',
     'div.search-results-container article',
+    'li.search-results__list-item',
     'div.update-components-text'
   ],
 
@@ -26,12 +27,15 @@ const LINKEDIN_SELECTORS = {
     '.comments-comment-box--cr',
     '.comments-comment-box__editor-container',
     '.comments-comment-box__form-container',
-    '.feed-shared-update-v2__comments-container'
+    '.feed-shared-update-v2__comments-container',
+    'div[contenteditable="true"]',
+    'div[role="textbox"]'
   ],
 
   // Text editor inside comment composer
   commentEditors: [
     'div[contenteditable="true"]',
+    'div[role="textbox"]',
     '.ql-editor',
     '.comments-comment-box-comment__text-editor [contenteditable="true"]',
     'div.editor-content [contenteditable="true"]',
@@ -70,15 +74,6 @@ const LINKEDIN_SELECTORS = {
   hashtags: [
     'a[href*="/hashtag/"]',
     'a.aria-text-hashtag'
-  ],
-
-  // Native comment action bar / button area where AI toolbar will be injected
-  commentBoxActionBar: [
-    '.comments-comment-box__form-container',
-    '.comments-comment-box__editor-container',
-    '.comments-comment-box',
-    '.display-flex.flex-grow-1',
-    '.comments-comment-box__form'
   ]
 };
 

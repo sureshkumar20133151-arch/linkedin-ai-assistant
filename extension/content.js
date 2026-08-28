@@ -3,7 +3,7 @@
  */
 
 (function () {
-  console.log('[AI Assistant] LinkedIn Content Script Loaded.');
+  console.log('[AI Assistant] LinkedIn Content Script Initialized.');
 
   // Default Fallback Persona
   const DEFAULT_PERSONA = {
@@ -32,8 +32,15 @@
 
   // Create & inject AI Toolbar into a detected comment composer
   function injectAIToolbar(composer) {
-    if (composer.getAttribute('data-ai-assistant-toolbar')) return;
+    if (!composer || composer.getAttribute('data-ai-assistant-toolbar')) return;
+
+    // Mark composer container
     composer.setAttribute('data-ai-assistant-toolbar', 'true');
+
+    // Check if toolbar already exists nearby to prevent duplicates
+    if (composer.parentElement && composer.parentElement.querySelector('.linkedin-ai-toolbar-container')) {
+      return;
+    }
 
     const toolbar = document.createElement('div');
     toolbar.className = 'linkedin-ai-toolbar-container';
@@ -54,12 +61,11 @@
       <div class="linkedin-ai-notice-container"></div>
     `;
 
-    // Target insertion point: top of composer or form container
-    const formContainer = querySelectorFallback(composer, LINKEDIN_SELECTORS.commentBoxActionBar) || composer;
-    if (formContainer.firstChild) {
-      formContainer.insertBefore(toolbar, formContainer.firstChild);
+    // Insertion Strategy: Insert toolbar directly before the composer element in the DOM
+    if (composer.parentNode) {
+      composer.parentNode.insertBefore(toolbar, composer);
     } else {
-      formContainer.appendChild(toolbar);
+      composer.appendChild(toolbar);
     }
 
     // Attach button event handlers
@@ -83,7 +89,7 @@
           // 1. Isolate and extract relative post context
           const postContext = extractPostContext(composer);
           if (!postContext || !postContext.postText) {
-            throw new Error('Could not read post text. Please ensure the post is visible.');
+            throw new Error('Could not read post text. Please ensure the post text is visible.');
           }
 
           // 2. Load stored persona & behavior memory
@@ -169,7 +175,6 @@
 
     container.appendChild(notice);
 
-    // Auto-remove success notices after 6 seconds
     if (type === 'info') {
       setTimeout(() => {
         if (notice.parentElement) notice.remove();
@@ -177,9 +182,34 @@
     }
   }
 
-  // Start MutationObserver for LinkedIn dynamic DOM
+  // Scan and inject toolbars
+  function scanAndInject() {
+    const composers = findUnprocessedCommentComposers();
+    composers.forEach(composer => injectAIToolbar(composer));
+  }
+
+  // Initial Scan & MutationObserver setup
+  scanAndInject();
   observeLinkedInComposers(composer => {
     injectAIToolbar(composer);
   });
+
+  // Also trigger scan on click or focus inside LinkedIn feed / comment areas
+  document.addEventListener('click', (e) => {
+    const target = e.target;
+    if (
+      target.closest && (
+        target.closest('.comments-comment-box') ||
+        target.closest('.feed-shared-comment-box') ||
+        target.closest('.comments-comment-texteditor') ||
+        target.closest('div[contenteditable="true"]') ||
+        target.closest('button.comment-button') ||
+        target.closest('.artdeco-button')
+      )
+    ) {
+      setTimeout(scanAndInject, 100);
+      setTimeout(scanAndInject, 500);
+    }
+  }, true);
 
 })();
