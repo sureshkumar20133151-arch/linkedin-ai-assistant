@@ -11,31 +11,40 @@ function findCommentEditor(commentComposer) {
   if (editor) return editor;
 
   // 2. Look in parent post container or parent element
-  const postElement = commentComposer.closest ? commentComposer.closest('div.feed-shared-update-v2, article, li, div[data-urn]') : null;
+  const postElement = commentComposer.closest ? commentComposer.closest('div.feed-shared-update-v2, article, li, div[data-urn], div.search-results-container') : null;
   if (postElement) {
     editor = querySelectorFallback(postElement, LINKEDIN_SELECTORS.commentEditors);
     if (editor) return editor;
   }
 
-  // 3. Fallback: Search in parentElement
+  // 3. Fallback: Search in parentElement or global active editor
   if (commentComposer.parentElement) {
     editor = commentComposer.parentElement.querySelector('div[contenteditable="true"], div[role="textbox"]');
     if (editor) return editor;
   }
 
-  return document.querySelector('div.comments-comment-box div[contenteditable="true"], div[contenteditable="true"]');
+  return document.querySelector('.comments-comment-box div[contenteditable="true"], div[contenteditable="true"], div[role="textbox"]');
 }
 
-function insertCommentIntoEditor(commentComposer, text) {
+async function insertCommentIntoEditor(commentComposer, text) {
   let editor = findCommentEditor(commentComposer);
 
+  // If real Draft.js editor isn't mounted yet, click placeholder to trigger React rendering
+  if (!editor && commentComposer) {
+    const trigger = commentComposer.querySelector('button, .comments-comment-box__form-container, .comments-comment-texteditor, [role="button"]') || commentComposer;
+    if (trigger && typeof trigger.click === 'function') {
+      trigger.click();
+      await new Promise(r => setTimeout(r, 200));
+      editor = findCommentEditor(commentComposer);
+    }
+  }
+
   if (!editor) {
-    console.error('[AI Assistant] Could not find contenteditable comment editor.');
-    return { success: false, reason: 'Comment editor not found in DOM.' };
+    console.warn('[AI Assistant] Contenteditable comment editor not mounted yet.');
+    return { success: false, reason: 'Comment editor not activated yet.' };
   }
 
   try {
-    // If editor is hidden or not focused, trigger click to open LinkedIn's rich text editor
     editor.click();
     editor.focus();
 
@@ -48,7 +57,7 @@ function insertCommentIntoEditor(commentComposer, text) {
 
     let inserted = document.execCommand('insertText', false, text);
 
-    // Strategy 2: If execCommand didn't insert, use Range + InputEvent dispatching
+    // Strategy 2: Range & InputEvent dispatching
     if (!inserted || !editor.innerText || !editor.innerText.includes(text.substring(0, 15))) {
       editor.innerHTML = `<p>${text.replace(/\n/g, '<br>')}</p>`;
 

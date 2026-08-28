@@ -111,9 +111,9 @@
             return;
           }
 
-          // Handle Generated Comment Insertion
+          // Handle Generated Comment Insertion (Async)
           if (response.success && response.comment) {
-            const insertResult = insertCommentIntoEditor(composer, response.comment);
+            const insertResult = await insertCommentIntoEditor(composer, response.comment);
 
             if (insertResult.success) {
               showNotice(noticeContainer, 'info', 'Comment inserted! Review and click Post when ready.');
@@ -208,7 +208,7 @@
       )
     ) {
       setTimeout(scanAndInject, 100);
-      setTimeout(scanAndInject, 500);
+      setTimeout(scanAndInject, 400);
     }
   }, true);
 
