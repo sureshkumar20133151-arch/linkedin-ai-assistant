@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinkedIn AI Assistant</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <div class="header">
+      <div class="title">
+        <span class="sparkle">✨</span> My LinkedIn Assistant
+      </div>
+      <div id="statusBadge" class="status-badge checking">
+        <span class="status-dot"></span> <span id="statusText">Checking...</span>
+      </div>
+    </div>
+
+    <div class="profile-card">
+      <div class="card-label">Active Persona</div>
+      <div id="userRole" class="role-text">Website Developer</div>
+      <div id="userTone" class="tone-text">Professional & Natural</div>
+    </div>
+
+    <div class="actions">
+      <button id="btnOpenSettings" class="btn btn-primary">Open Settings Page</button>
+      <button id="btnTestConnection" class="btn btn-secondary">Test AI Connection</button>
+    </div>
+
+    <div id="feedbackBox" class="feedback-box hidden"></div>
+  </div>
+  <script src="../ai/api.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

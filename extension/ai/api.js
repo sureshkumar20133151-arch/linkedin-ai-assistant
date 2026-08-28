@@ -1,0 +1,94 @@
+/**
+ * Backend API Client for Extension
+ */
+
+const DEFAULT_BACKEND_URL = 'http://localhost:3000';
+
+async function getBackendUrl() {
+  return new Promise(resolve => {
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+      chrome.storage.local.get(['backendUrl'], result => {
+        resolve(result.backendUrl || DEFAULT_BACKEND_URL);
+      });
+    } else {
+      resolve(DEFAULT_BACKEND_URL);
+    }
+  });
+}
+
+async function requestGenerateComment({ post, persona, behavior, style, oneTimeInstruction }) {
+  const baseUrl = await getBackendUrl();
+  const endpoint = `${baseUrl.replace(/\/$/, '')}/api/generate-comment`;
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 20000);
+
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        post,
+        persona,
+        behavior,
+        style,
+        oneTimeInstruction
+      }),
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `Backend server returned error ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (err) {
+    clearTimeout(timeoutId);
+    if (err.name === 'AbortError') {
+      throw new Error('Request timed out while connecting to AI backend.');
+    }
+    throw new Error(err.message || 'Unable to connect to backend server. Make sure the server is running on http://localhost:3000');
+  }
+}
+
+async function checkBackendHealth() {
+  const baseUrl = await getBackendUrl();
+  const endpoint = `${baseUrl.replace(/\/$/, '')}/api/health`;
+
+  try {
+    const response = await fetch(endpoint, { method: 'GET' });
+    if (response.ok) {
+      return await response.json();
+    }
+    return { status: 'offline', error: `HTTP ${response.status}` };
+  } catch (err) {
+    return { status: 'offline', error: err.message };
+  }
+}
+
+async function sendBehaviorInstruction(instruction) {
+  const baseUrl = await getBackendUrl();
+  const endpoint = `${baseUrl.replace(/\/$/, '')}/api/assistant/behavior`;
+
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ instruction })
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || 'Failed to update assistant behavior.');
+  }
+
+  return await response.json();
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { requestGenerateComment, checkBackendHealth, sendBehaviorInstruction };
+}

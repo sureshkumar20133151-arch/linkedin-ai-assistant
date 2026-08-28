@@ -1,0 +1,21 @@
+# Environment & secret key files (CRITICAL: NEVER COMMIT KEYS)
+.env
+.env.local
+server/.env
+
+# Dependency directories
+node_modules/
+server/node_modules/
+.pnpm-store/
+
+# Logs & temp scratch files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+scratch/
+.system_generated/
+
+# OS metadata
+.DS_Store
+Thumbs.db

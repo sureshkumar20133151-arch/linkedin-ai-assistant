@@ -1,0 +1,184 @@
+/* Personal LinkedIn AI Assistant - Integrated UI Styles */
+
+.linkedin-ai-toolbar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 8px 0;
+  padding: 10px 14px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+  color: #191919;
+  z-index: 999;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Dark mode compatibility for LinkedIn dark theme */
+@media (prefers-color-scheme: dark), html.dark-theme .linkedin-ai-toolbar-container {
+  background: #1d2226;
+  border-color: #38434f;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.linkedin-ai-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.linkedin-ai-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.2px;
+  color: #0a66c2;
+  text-transform: uppercase;
+}
+
+.linkedin-ai-sparkle {
+  display: inline-block;
+  font-size: 14px;
+  animation: linkedin-ai-pulse 2s infinite ease-in-out;
+}
+
+@keyframes linkedin-ai-pulse {
+  0% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.9; }
+}
+
+.linkedin-ai-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.linkedin-ai-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 18px;
+  border: 1px solid #0a66c2;
+  background: #ffffff;
+  color: #0a66c2;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+  outline: none;
+}
+
+.linkedin-ai-btn:hover:not(:disabled) {
+  background: #0a66c2;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(10, 102, 194, 0.25);
+  transform: translateY(-1px);
+}
+
+.linkedin-ai-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.linkedin-ai-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  border-color: #ccc;
+  color: #888;
+  background: #f3f3f3;
+}
+
+/* Spinner indicator */
+.linkedin-ai-spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: linkedin-ai-spin 0.75s linear infinite;
+}
+
+@keyframes linkedin-ai-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* One-time custom prompt input container */
+.linkedin-ai-prompt-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.linkedin-ai-input {
+  flex: 1;
+  padding: 6px 10px;
+  font-size: 12px;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  outline: none;
+  background: #fafafa;
+  color: #333;
+  transition: border-color 0.2s;
+}
+
+.linkedin-ai-input:focus {
+  border-color: #0a66c2;
+  background: #ffffff;
+}
+
+/* Feedback / Status Notice Banner */
+.linkedin-ai-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
+.linkedin-ai-notice.info {
+  background: #e8f4fd;
+  color: #0a66c2;
+  border: 1px solid #b3d7ff;
+}
+
+.linkedin-ai-notice.warning {
+  background: #fff8e6;
+  color: #8a6d3b;
+  border: 1px solid #faebcc;
+}
+
+.linkedin-ai-notice.error {
+  background: #fde8e8;
+  color: #c0392b;
+  border: 1px solid #f5c6cb;
+}
+
+.linkedin-ai-copy-btn {
+  margin-left: 8px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 4px;
+  border: 1px solid currentColor;
+  background: transparent;
+  cursor: pointer;
+}
+
+.linkedin-ai-copy-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}

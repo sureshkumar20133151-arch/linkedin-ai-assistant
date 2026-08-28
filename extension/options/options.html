@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal LinkedIn AI Assistant - Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="sparkle">✨</span>
+        <div>
+          <h2>Personal AI Assistant</h2>
+          <p>LinkedIn Productivity Studio</p>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="#profile" class="nav-item active" data-tab="profile">
+          <span class="icon">👤</span> My Profile
+        </a>
+        <a href="#behavior" class="nav-item" data-tab="behavior">
+          <span class="icon">🧠</span> Assistant Behavior
+        </a>
+        <a href="#memory" class="nav-item" data-tab="memory">
+          <span class="icon">📋</span> Saved Rules
+        </a>
+        <a href="#backend" class="nav-item" data-tab="backend">
+          <span class="icon">⚙️</span> Backend Config
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="content">
+      <header class="topbar">
+        <h1 id="tabTitle">My Profile & Persona</h1>
+        <div id="statusIndicator" class="status-indicator">
+          <span class="dot"></span> <span id="statusLabel">Backend Connected</span>
+        </div>
+      </header>
+
+      <div class="scroll-container">
+        
+        <!-- SECTION 1: MY PROFILE -->
+        <section id="section-profile" class="tab-section active">
+          <div class="card">
+            <h3>Personal Developer Profile</h3>
+            <p class="card-desc">Configure your identity, skills, and target audience. Your assistant uses this persona to generate accurate, non-promotional comments.</p>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="role">Role / Job Title</label>
+                <input type="text" id="role" value="Website Developer" placeholder="e.g. Website Developer">
+              </div>
+
+              <div class="form-group">
+                <label for="tone">Preferred Communication Tone</label>
+                <input type="text" id="tone" value="Professional, Natural, Helpful, Confident, Not overly promotional">
+              </div>
+
+              <div class="form-group full-width">
+                <label for="skills">Skills (comma-separated)</label>
+                <input type="text" id="skills" value="HTML, CSS, JavaScript, React, Node.js, APIs, Automation, Web Applications">
+              </div>
+
+              <div class="form-group full-width">
+                <label for="services">Services Offered (comma-separated)</label>
+                <input type="text" id="services" value="Business Website Development, Web Application Development, Ecommerce Website Development, API Integration, Automation, Custom Web Solutions">
+              </div>
+
+              <div class="form-group full-width">
+                <label for="targetAudience">Target Audience (comma-separated)</label>
+                <input type="text" id="targetAudience" value="Small business owners, Entrepreneurs, Startups, Businesses looking for websites, People looking for developers">
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <button id="btnSaveProfile" class="btn btn-primary">Save Profile</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 2: ASSISTANT BEHAVIOR CHAT -->
+        <section id="section-behavior" class="tab-section">
+          <div class="card">
+            <h3>🧠 Assistant Behavior Instructions</h3>
+            <p class="card-desc">Talk to your assistant in natural language. Tell it your preferences (e.g. "Don't use emojis", "Don't start comments with Great post", "Keep comments natural").</p>
+
+            <div class="chat-container">
+              <div id="chatMessages" class="chat-messages">
+                <div class="chat-bubble assistant">
+                  <strong>Assistant:</strong> Hello! Tell me how you want your comments written. I will remember your permanent instructions and adapt future responses accordingly.
+                </div>
+              </div>
+
+              <div class="chat-input-area">
+                <input type="text" id="chatInput" placeholder="Tell your assistant (e.g. 'Don't use emojis', 'Keep comments short')...">
+                <button id="btnSendChat" class="btn btn-primary">Send</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 3: SAVED BEHAVIOR MEMORY -->
+        <section id="section-memory" class="tab-section">
+          <div class="card">
+            <h3>Current Saved Behavior Rules</h3>
+            <p class="card-desc">Active instructions remembered by your assistant. Enable, disable, or delete rules anytime.</p>
+
+            <div id="behaviorRulesList" class="rules-list">
+              <!-- Dynamically populated -->
+            </div>
+
+            <div class="card-footer space-between">
+              <button id="btnAddRule" class="btn btn-secondary">+ Add Custom Rule</button>
+              <button id="btnResetBehavior" class="btn btn-danger">Reset Behavior to Defaults</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 4: BACKEND CONFIGURATION -->
+        <section id="section-backend" class="tab-section">
+          <div class="card">
+            <h3>Backend API Configuration</h3>
+            <p class="card-desc">Configure the connection to your local Express + Gemini backend server.</p>
+
+            <div class="form-group">
+              <label for="backendUrl">Backend API Server URL</label>
+              <input type="text" id="backendUrl" value="http://localhost:3000">
+            </div>
+
+            <div class="card-footer space-between">
+              <button id="btnTestBackend" class="btn btn-secondary">Test Connection</button>
+              <button id="btnResetAll" class="btn btn-danger">Reset All Extension Settings</button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="../ai/api.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>
