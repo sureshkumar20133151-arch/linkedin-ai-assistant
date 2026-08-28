@@ -88,8 +88,9 @@
         try {
           // 1. Isolate and extract relative post context (async - expands "...more" if needed)
           const postContext = await extractPostContext(composer);
-          if (!postContext || !postContext.postText) {
-            throw new Error('Could not read post text. Please ensure the post text is visible.');
+          console.log('[AI Assistant] Full extracted context:', JSON.stringify(postContext, null, 2));
+          if (!postContext || !postContext.postText || postContext.postText.length < 10) {
+            throw new Error(`Could not extract post text (got ${postContext?.postText?.length || 0} chars). Try scrolling to make the full post visible, then click again.`);
           }
 
           // 2. Load stored persona & behavior memory
