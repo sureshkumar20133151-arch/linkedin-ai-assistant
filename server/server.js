@@ -9,6 +9,7 @@ const cors = require('cors');
 
 const commentRoutes = require('./routes/comment');
 const assistantRoutes = require('./routes/assistant');
+const messageRoutes = require('./routes/message');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -51,6 +52,7 @@ app.get('/', (req, res) => {
 // API Routes
 app.use('/api', commentRoutes);
 app.use('/api', assistantRoutes);
+app.use('/api', messageRoutes);
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {

@@ -192,111 +192,21 @@
     });
   }
 
-  // Toggle button loading states
+  // Toggle button loading states (thin wrapper over the shared helper,
+  // kept for readability at call sites within this file)
   function setLoadingState(buttons, activeBtn, isLoading, loadingLabel = 'Generating...') {
-    buttons.forEach(b => {
-      b.disabled = isLoading;
-    });
-
-    if (isLoading) {
-      activeBtn.setAttribute('data-original-text', activeBtn.innerText);
-      activeBtn.innerHTML = `<span class="linkedin-ai-spinner"></span> ${loadingLabel}`;
-    } else {
-      buttons.forEach(b => {
-        const orig = b.getAttribute('data-original-text');
-        if (orig) b.innerText = orig;
-      });
-    }
+    return setToolbarLoadingState(buttons, activeBtn, isLoading, loadingLabel);
   }
 
   // Render the 3 generated comment variants (Professional / Insightful / Short)
   // side-by-side so the user can pick exactly one to insert into LinkedIn's editor.
   function renderMultiResults(container, comments, composer, noticeContainer) {
-    container.innerHTML = '';
-
-    const labels = { professional: 'Professional', insightful: 'Insightful', short: 'Short' };
-    const order = ['professional', 'insightful', 'short'];
-
-    order.forEach(key => {
-      const text = (comments[key] || '').trim();
-      if (!text) return;
-
-      const card = document.createElement('div');
-      card.className = 'linkedin-ai-result-card';
-      card.innerHTML = `
-        <div class="linkedin-ai-result-label">${labels[key]}</div>
-        <div class="linkedin-ai-result-text"></div>
-        <div class="linkedin-ai-result-actions">
-          <button type="button" class="linkedin-ai-result-insert-btn">Use this</button>
-          <button type="button" class="linkedin-ai-result-copy-btn">Copy</button>
-        </div>
-      `;
-      // Set text via textContent to avoid any HTML injection from AI output
-      card.querySelector('.linkedin-ai-result-text').textContent = text;
-
-      const insertBtn = card.querySelector('.linkedin-ai-result-insert-btn');
-      const copyBtn = card.querySelector('.linkedin-ai-result-copy-btn');
-
-      insertBtn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        insertBtn.disabled = true;
-        insertBtn.textContent = 'Inserting...';
-
-        const insertResult = await insertCommentIntoEditor(composer, text);
-
-        if (insertResult.success) {
-          showNotice(noticeContainer, 'info', `${labels[key]} comment inserted! Review and click Post when ready.`);
-          container.innerHTML = '';
-        } else {
-          showNotice(noticeContainer, 'warning', `Couldn't insert automatically.`, text);
-          insertBtn.disabled = false;
-          insertBtn.textContent = 'Use this';
-        }
-      });
-
-      copyBtn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        const copied = await copyCommentToClipboard(text);
-        copyBtn.textContent = copied ? 'Copied! ✓' : 'Copy Failed';
-        setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
-      });
-
-      container.appendChild(card);
-    });
-
-    if (!container.children.length) {
-      showNotice(noticeContainer, 'error', 'The assistant did not return any usable comments. Try again.');
-    }
+    return renderToolbarResultCards(container, comments, (text) => insertCommentIntoEditor(composer, text), noticeContainer);
   }
 
   // Display status notice banner
   function showNotice(container, type, message, copyText = null) {
-    container.innerHTML = '';
-    const notice = document.createElement('div');
-    notice.className = `linkedin-ai-notice ${type}`;
-    
-    let content = `<span>${message}</span>`;
-    if (copyText) {
-      content += `<button type="button" class="linkedin-ai-copy-btn">Copy Comment</button>`;
-    }
-    notice.innerHTML = content;
-
-    if (copyText) {
-      const copyBtn = notice.querySelector('.linkedin-ai-copy-btn');
-      copyBtn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        const copied = await copyCommentToClipboard(copyText);
-        copyBtn.innerText = copied ? 'Copied! ✓' : 'Copy Failed';
-      });
-    }
-
-    container.appendChild(notice);
-
-    if (type === 'info') {
-      setTimeout(() => {
-        if (notice.parentElement) notice.remove();
-      }, 6000);
-    }
+    return showToolbarNotice(container, type, message, copyText);
   }
 
   // Scan and inject toolbars

@@ -35,6 +35,19 @@ function validateGenerateAllCommentsRequest(req) {
   return { valid: true };
 }
 
+function validateGenerateMessageRequest(req) {
+  const { recipient, conversation } = req.body;
+
+  const hasRecipientName = recipient && typeof recipient === 'object' && recipient.name && recipient.name.trim();
+  const hasConversationHistory = conversation && Array.isArray(conversation.messages) && conversation.messages.length > 0;
+
+  if (!hasRecipientName && !hasConversationHistory) {
+    return { valid: false, message: 'Missing recipient info — need at least a recipient name or existing conversation history.' };
+  }
+
+  return { valid: true };
+}
+
 function validateBehaviorRequest(req) {
   const { instruction } = req.body;
 
@@ -53,6 +66,7 @@ function sanitizeText(text) {
 module.exports = {
   validateGenerateCommentRequest,
   validateGenerateAllCommentsRequest,
+  validateGenerateMessageRequest,
   validateBehaviorRequest,
   sanitizeText
 };

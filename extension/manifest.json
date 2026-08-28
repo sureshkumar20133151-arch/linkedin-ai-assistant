@@ -27,8 +27,13 @@
         "linkedin/postExtractor.js",
         "linkedin/commentInserter.js",
         "linkedin/detector.js",
+        "linkedin/messageSelectors.js",
+        "linkedin/messageExtractor.js",
+        "linkedin/messageDetector.js",
+        "ui/toolbarHelpers.js",
         "ai/api.js",
-        "content.js"
+        "content.js",
+        "messaging.js"
       ],
       "run_at": "document_idle"
     }

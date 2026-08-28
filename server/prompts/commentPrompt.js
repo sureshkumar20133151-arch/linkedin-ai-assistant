@@ -236,4 +236,4 @@ If irrelevant, set "relevant": false, "comments": { "professional": "", "insight
   return { systemInstruction, userContent };
 }
 
-module.exports = { buildCommentPrompt, buildAllStylesPrompt };
+module.exports = { buildCommentPrompt, buildAllStylesPrompt, buildSystemInstruction, buildBehaviorSection };

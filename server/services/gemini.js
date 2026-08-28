@@ -3,6 +3,7 @@
  */
 
 const { buildCommentPrompt, buildAllStylesPrompt } = require('../prompts/commentPrompt');
+const { buildMessagePrompt, buildAllStylesMessagePrompt } = require('../prompts/messagePrompt');
 const { buildBehaviorPrompt } = require('../prompts/behaviorPrompt');
 
 async function callGeminiAPI(systemInstruction, userContent) {
@@ -82,8 +83,26 @@ async function interpretBehaviorInstruction(instruction, currentBehavior) {
   return await callGeminiAPI(systemInstruction, userContent);
 }
 
+/**
+ * LinkedIn DM (Messaging) generation — cold outreach or reply, single style.
+ */
+async function generateMessage(params) {
+  const { systemInstruction, userContent } = buildMessagePrompt(params);
+  return await callGeminiAPI(systemInstruction, userContent);
+}
+
+/**
+ * LinkedIn DM (Messaging) generation — all three styles in one call.
+ */
+async function generateAllMessages(params) {
+  const { systemInstruction, userContent } = buildAllStylesMessagePrompt(params);
+  return await callGeminiAPI(systemInstruction, userContent);
+}
+
 module.exports = {
   generateComment,
   generateAllComments,
-  interpretBehaviorInstruction
+  interpretBehaviorInstruction,
+  generateMessage,
+  generateAllMessages
 };
