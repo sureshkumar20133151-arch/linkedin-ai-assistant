@@ -12,16 +12,21 @@ const LINKEDIN_SELECTORS = {
     'div[data-urn*="ugcPost"]',
     'div.occluded-update',
     'div.feed-shared-update-v2__control-menu-container',
-    'div[data-id*="urn:li:activity"]'
+    'div[data-id*="urn:li:activity"]',
+    'div.search-results-container article',
+    'div.update-components-text'
   ],
 
-  // Comment composer container selectors
+  // Comment composer container selectors (including Search results & feed updates)
   commentComposers: [
     '.comments-comment-box',
     '.comments-comment-box__form',
     '.feed-shared-comment-box',
     '.comments-comment-texteditor',
-    'div.comments-comment-box--cr'
+    '.comments-comment-box--cr',
+    '.comments-comment-box__editor-container',
+    '.comments-comment-box__form-container',
+    '.feed-shared-update-v2__comments-container'
   ],
 
   // Text editor inside comment composer
@@ -29,7 +34,8 @@ const LINKEDIN_SELECTORS = {
     'div[contenteditable="true"]',
     '.ql-editor',
     '.comments-comment-box-comment__text-editor [contenteditable="true"]',
-    'div.editor-content [contenteditable="true"]'
+    'div.editor-content [contenteditable="true"]',
+    '.comments-comment-texteditor [contenteditable="true"]'
   ],
 
   // Author details selectors within post container
@@ -71,7 +77,8 @@ const LINKEDIN_SELECTORS = {
     '.comments-comment-box__form-container',
     '.comments-comment-box__editor-container',
     '.comments-comment-box',
-    '.display-flex.flex-grow-1'
+    '.display-flex.flex-grow-1',
+    '.comments-comment-box__form'
   ]
 };
 
@@ -80,9 +87,6 @@ function querySelectorFallback(parent, selectorArray) {
   if (!parent) return null;
   for (const selector of selectorArray) {
     const element = parent.querySelector(selector);
-    if (element && element.offsetParent !== null) { // ensure visible element
-      return element;
-    }
     if (element) return element;
   }
   return null;

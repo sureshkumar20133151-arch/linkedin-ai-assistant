@@ -4,8 +4,22 @@
  */
 
 function findUnprocessedCommentComposers() {
-  const composers = querySelectorAllFallback(document.body, LINKEDIN_SELECTORS.commentComposers);
-  return composers.filter(composer => {
+  const foundComposers = new Set();
+
+  // 1. Query using known composer class selectors
+  const composerElements = querySelectorAllFallback(document.body, LINKEDIN_SELECTORS.commentComposers);
+  composerElements.forEach(el => foundComposers.add(el));
+
+  // 2. Query contenteditable editors directly to catch newly rendered forms
+  const editableEditors = document.querySelectorAll('div[contenteditable="true"]');
+  editableEditors.forEach(editor => {
+    const parentContainer = editor.closest('.comments-comment-box, .feed-shared-comment-box, form.comments-comment-box__form, .comments-comment-texteditor, .comments-comment-box__editor-container') || editor.parentElement;
+    if (parentContainer) {
+      foundComposers.add(parentContainer);
+    }
+  });
+
+  return Array.from(foundComposers).filter(composer => {
     return !composer.getAttribute('data-ai-assistant-toolbar');
   });
 }
@@ -31,7 +45,7 @@ function observeLinkedInComposers(onComposerDetected) {
       debounceTimer = setTimeout(() => {
         const newComposers = findUnprocessedCommentComposers();
         newComposers.forEach(composer => onComposerDetected(composer));
-      }, 250);
+      }, 200);
     }
   });
 
