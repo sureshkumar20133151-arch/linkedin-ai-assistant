@@ -232,6 +232,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Test Backend Button Handler
   btnTestBackend.addEventListener('click', async () => {
+    // Save the entered URL to storage first so the test uses the new value
+    const newUrl = inputBackendUrl.value.trim();
+    if (typeof chrome !== 'undefined' && chrome.storage) {
+      await new Promise(r => chrome.storage.local.set({ backendUrl: newUrl }, r));
+    }
+
     statusIndicator.style.background = '#f1f5f9';
     statusIndicator.style.color = '#64748b';
     statusLabel.textContent = 'Testing...';
