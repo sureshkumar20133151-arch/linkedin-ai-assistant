@@ -563,3 +563,28 @@
   box-shadow: 0 2px 8px rgba(10, 102, 194, 0.25) !important;
 }
 
+@media (prefers-color-scheme: dark), html.dark-theme .linkedin-ai-dm-pitch-card {
+  background: linear-gradient(135deg, #1b2733 0%, #16222c 100%) !important;
+  border-color: #2f7bc9 !important;
+}
+
+@media (prefers-color-scheme: dark), html.dark-theme .linkedin-ai-dm-header {
+  color: #6cb4f5 !important;
+}
+
+@media (prefers-color-scheme: dark), html.dark-theme .linkedin-ai-dm-text {
+  background: #1d2226 !important;
+  border-color: #38434f !important;
+  color: #e8f4fd !important;
+}
+
+@media (prefers-color-scheme: dark), html.dark-theme .linkedin-ai-copy-dm-btn {
+  background: #1d2226 !important;
+  color: #6cb4f5 !important;
+  border-color: #2f7bc9 !important;
+}
+
+@media (prefers-color-scheme: dark), html.dark-theme .linkedin-ai-copy-dm-btn:hover {
+  background: #23282e !important;
+}
+

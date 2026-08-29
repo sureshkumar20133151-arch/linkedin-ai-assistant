@@ -116,6 +116,34 @@ function renderToolbarResultCards(container, variants, insertFn, noticeContainer
   }
 }
 
+// Resolves the safest "Message" button and author profile link for a post,
+// scoped as narrowly as possible to avoid two real risks:
+//   1. Matching the wrong control — LinkedIn reuses generic classes like
+//      ".entry-point" across Like/Repost/Send buttons, so we only match by
+//      an aria-label that actually STARTS WITH "Message" (word boundary),
+//      never a loose class-name guess.
+//   2. Matching the wrong person — a post container also contains the
+//      comments section below it, which has its own commenter profile
+//      links. We prefer a narrow "header/actor" scope first, and always
+//      exclude anything nested inside a comments area.
+function resolvePostAuthorTargets(postContainer) {
+  if (!postContainer) return { messageBtn: null, authorLink: null };
+
+  const headerScope =
+    postContainer.querySelector('.update-components-actor, [data-view-name="feed-actor"], .feed-shared-actor') ||
+    postContainer;
+
+  const isInsideComments = (el) => !!el.closest('[class*="comment"]');
+
+  const messageBtn = Array.from(headerScope.querySelectorAll('button[aria-label]'))
+    .find(b => /^message\b/i.test((b.getAttribute('aria-label') || '').trim()) && !isInsideComments(b)) || null;
+
+  const authorLink = Array.from(headerScope.querySelectorAll('a[href*="/in/"]'))
+    .find(a => !isInsideComments(a)) || null;
+
+  return { messageBtn, authorLink };
+}
+
 // Renders a specialized DM Pitch card for hiring/lead posts, allowing 1-click
 // copying of a tailored 1:1 message and auto-opening the author's DM/profile.
 function renderDMPitchCard(container, dmPitch, authorName, composer) {
@@ -147,34 +175,38 @@ function renderDMPitchCard(container, dmPitch, authorName, composer) {
     setTimeout(() => { copyBtn.textContent = '📋 Copy DM Pitch'; }, 2000);
   });
 
-  openBtn.addEventListener('click', async (e) => {
+  openBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    await copyCommentToClipboard(dmPitch.trim());
     openBtn.textContent = 'Opening DM...';
 
+    // IMPORTANT: resolve targets and open the window/click the button
+    // SYNCHRONOUSLY, still inside this trusted click handler — before any
+    // `await`. Calling window.open() after an awaited clipboard write can
+    // silently get blocked by Chrome's popup blocker since the browser's
+    // "user activation" window can expire during the await.
+    const postContainer = composer
+      ? (composer.closest('div.feed-shared-update-v2, article, li.reusable-search__result-container, div.entity-result, div[data-urn]') || composer.parentElement)
+      : null;
+    const { messageBtn, authorLink } = resolvePostAuthorTargets(postContainer);
+
     let opened = false;
-    if (composer) {
-      const postContainer = composer.closest('div.feed-shared-update-v2, article, li.reusable-search__result-container, div.entity-result, div[data-urn]') || composer.parentElement;
-      if (postContainer) {
-        const messageBtn = postContainer.querySelector('button[aria-label*="Message"], button[aria-label*="message"], button.entry-point');
-        const authorLink = postContainer.querySelector('a.app-aware-link[href*="/in/"], a.update-components-actor__meta-link, a[href*="/in/"]');
-
-        if (messageBtn) {
-          messageBtn.click();
-          opened = true;
-        } else if (authorLink && authorLink.href) {
-          window.open(authorLink.href, '_blank');
-          opened = true;
-        }
-      }
+    if (messageBtn) {
+      messageBtn.click();
+      opened = true;
+    } else if (authorLink && authorLink.href) {
+      window.open(authorLink.href, '_blank');
+      opened = true;
     }
-
     if (!opened) {
       window.open('https://www.linkedin.com/messaging/', '_blank');
     }
 
-    openBtn.textContent = 'Pitch Copied & DM Opened! ✓';
-    setTimeout(() => { openBtn.textContent = '🚀 Open DM Window'; }, 2500);
+    // Clipboard write can safely happen after — it doesn't rely on the
+    // same user-activation window that window.open() needs.
+    copyCommentToClipboard(dmPitch.trim()).then(() => {
+      openBtn.textContent = 'Pitch Copied & DM Opened! ✓';
+      setTimeout(() => { openBtn.textContent = '🚀 Open DM Window'; }, 2500);
+    });
   });
 
   container.appendChild(card);
@@ -185,6 +217,6 @@ function escapeHtml(str) {
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { setToolbarLoadingState, showToolbarNotice, renderToolbarResultCards, renderDMPitchCard };
+  module.exports = { setToolbarLoadingState, showToolbarNotice, renderToolbarResultCards, renderDMPitchCard, resolvePostAuthorTargets };
 }
 
