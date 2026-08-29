@@ -35,6 +35,13 @@ function validateGenerateAllCommentsRequest(req) {
   return { valid: true };
 }
 
+// Same shape as validateGenerateAllCommentsRequest — only needs a post with
+// text; kept as a separate named function so the tone-recommendation route
+// can evolve its own requirements independently later.
+function validateRecommendToneRequest(req) {
+  return validateGenerateAllCommentsRequest(req);
+}
+
 function validateGenerateMessageRequest(req) {
   const { recipient, conversation } = req.body;
 
@@ -66,6 +73,7 @@ function sanitizeText(text) {
 module.exports = {
   validateGenerateCommentRequest,
   validateGenerateAllCommentsRequest,
+  validateRecommendToneRequest,
   validateGenerateMessageRequest,
   validateBehaviorRequest,
   sanitizeText

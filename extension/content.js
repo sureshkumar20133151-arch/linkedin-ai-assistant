@@ -30,6 +30,8 @@
     { value: 'humorous', label: 'Humorous' }
   ];
 
+  const TONE_LABEL_MAP = Object.fromEntries(TONE_OPTIONS.map(t => [t.value, t.label]));
+
   // Closes every open tone dropdown on the page (in case multiple comment
   // composers/toolbars are open at once) — called before opening a new one.
   function closeAllToneMenus() {
@@ -73,6 +75,7 @@
           <span class="linkedin-ai-sparkle">✨</span> AI Comment
         </div>
       </div>
+      <div class="linkedin-ai-recommend-banner" hidden></div>
       <div class="linkedin-ai-tone-select-wrapper">
         <button type="button" class="linkedin-ai-tone-toggle">
           <span class="linkedin-ai-tone-toggle-label">Choose Tone</span>
@@ -82,13 +85,9 @@
           ${TONE_OPTIONS.map(t => `<button type="button" class="linkedin-ai-tone-menu-item" data-style="${t.value}">${t.label}</button>`).join('')}
         </div>
       </div>
-      <div class="linkedin-ai-actions-secondary">
-        <button type="button" class="linkedin-ai-btn-all" data-style="all">✨ Generate All 3</button>
-      </div>
       <div class="linkedin-ai-prompt-box">
         <input type="text" class="linkedin-ai-input" placeholder="One-time instruction for this comment (optional)..." />
       </div>
-      <div class="linkedin-ai-multi-results"></div>
       <div class="linkedin-ai-notice-container"></div>
     `;
 
@@ -100,19 +99,17 @@
     }
 
     // Attach button event handlers
+    const recommendBanner = toolbar.querySelector('.linkedin-ai-recommend-banner');
     const toneToggle = toolbar.querySelector('.linkedin-ai-tone-toggle');
     const toneToggleLabel = toolbar.querySelector('.linkedin-ai-tone-toggle-label');
     const toneMenu = toolbar.querySelector('.linkedin-ai-tone-menu');
     const buttons = toolbar.querySelectorAll('.linkedin-ai-tone-menu-item');
-    const allBtn = toolbar.querySelector('.linkedin-ai-btn-all');
     const inputEl = toolbar.querySelector('.linkedin-ai-input');
     const noticeContainer = toolbar.querySelector('.linkedin-ai-notice-container');
-    const multiResultsContainer = toolbar.querySelector('.linkedin-ai-multi-results');
 
-    // All interactive controls (tone dropdown toggle + every tone option +
-    // the "Generate All" button), used together so clicking one disables the
-    // rest while a request is in flight.
-    const allInteractiveButtons = [toneToggle, ...buttons, allBtn];
+    // All interactive controls (tone dropdown toggle + every tone option),
+    // used together so clicking one disables the rest while a request is in flight.
+    const allInteractiveButtons = [toneToggle, ...buttons];
 
     // Open/close the tone dropdown
     toneToggle.addEventListener('click', (e) => {
@@ -134,49 +131,9 @@
       }
     });
 
-    allBtn.addEventListener('click', async (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      const oneTimeInstruction = inputEl.value.trim();
-
-      setLoadingState(allInteractiveButtons, allBtn, true, 'Generating all 3...');
-      noticeContainer.innerHTML = '';
-      multiResultsContainer.innerHTML = '';
-
-      try {
-        const postContext = await extractPostContext(composer);
-        console.log('[AI Assistant] Full extracted context:', JSON.stringify(postContext, null, 2));
-        if (!postContext || !postContext.postText || postContext.postText.length < 10) {
-          throw new Error(`Could not extract post text (got ${postContext?.postText?.length || 0} chars). Try scrolling to make the full post visible, then click again.`);
-        }
-
-        const { persona, behavior } = await getStoredSettings();
-
-        const response = await requestGenerateAllComments({
-          post: postContext,
-          persona,
-          behavior,
-          oneTimeInstruction: oneTimeInstruction || null
-        });
-
-        if (response.skip) {
-          showNotice(noticeContainer, 'warning', response.reason || "This post doesn't appear relevant to your profile.");
-          return;
-        }
-
-        if (response.success && response.comments) {
-          renderMultiResults(multiResultsContainer, response.comments, composer, noticeContainer);
-        } else {
-          throw new Error(response.error || 'Failed to generate comments.');
-        }
-      } catch (err) {
-        console.error('[AI Assistant Error]', err);
-        showNotice(noticeContainer, 'error', err.message || 'Unable to generate comments. Please try again.');
-      } finally {
-        setLoadingState(allInteractiveButtons, allBtn, false);
-      }
-    });
+    // Fire-and-forget: analyze the post and recommend a tone as soon as the
+    // toolbar appears, so the user has guidance before opening the dropdown.
+    loadToneRecommendation({ toolbar, composer, recommendBanner });
 
     buttons.forEach(btn => {
       btn.addEventListener('click', async (e) => {
@@ -189,12 +146,11 @@
         // Close the dropdown and reflect the chosen tone on the toggle button
         toneMenu.setAttribute('hidden', '');
         toneToggle.classList.remove('open');
-        toneToggleLabel.textContent = btn.textContent;
+        toneToggleLabel.textContent = btn.textContent.replace(/^⭐\s*/, '');
 
         // UI Loading State
         setLoadingState(allInteractiveButtons, btn, true);
         noticeContainer.innerHTML = '';
-        multiResultsContainer.innerHTML = '';
 
         try {
           // 1. Isolate and extract relative post context (async - expands "...more" if needed)
@@ -253,10 +209,44 @@
     return setToolbarLoadingState(buttons, activeBtn, isLoading, loadingLabel);
   }
 
-  // Render the 3 generated comment variants (Professional / Insightful / Short)
-  // side-by-side so the user can pick exactly one to insert into LinkedIn's editor.
-  function renderMultiResults(container, comments, composer, noticeContainer) {
-    return renderToolbarResultCards(container, comments, (text) => insertCommentIntoEditor(composer, text), noticeContainer);
+  // Analyzes the post (once per composer) and shows a "⭐ Recommended: X"
+  // banner + highlights the matching tone in the dropdown, so the user has
+  // guidance on which tone fits this specific post before picking one.
+  async function loadToneRecommendation({ toolbar, composer, recommendBanner }) {
+    try {
+      recommendBanner.hidden = false;
+      recommendBanner.className = 'linkedin-ai-recommend-banner loading';
+      recommendBanner.textContent = 'Analyzing post to recommend a tone...';
+
+      const postContext = await extractPostContext(composer);
+      if (!postContext || !postContext.postText || postContext.postText.length < 10) {
+        recommendBanner.hidden = true;
+        return;
+      }
+
+      const { persona, behavior } = await getStoredSettings();
+      const result = await requestRecommendTone({ post: postContext, persona, behavior });
+
+      if (!result || !result.success || !result.recommendedTone) {
+        recommendBanner.hidden = true;
+        return;
+      }
+
+      const label = TONE_LABEL_MAP[result.recommendedTone] || result.recommendedTone;
+      recommendBanner.className = 'linkedin-ai-recommend-banner';
+      recommendBanner.innerHTML = `⭐ <strong>Recommended: ${label}</strong>${result.reason ? ` — ${result.reason}` : ''}`;
+
+      const matchBtn = toolbar.querySelector(`.linkedin-ai-tone-menu-item[data-style="${result.recommendedTone}"]`);
+      if (matchBtn && !matchBtn.textContent.startsWith('⭐')) {
+        matchBtn.classList.add('recommended');
+        matchBtn.textContent = `⭐ ${matchBtn.textContent}`;
+      }
+    } catch (err) {
+      // Recommendation is a nice-to-have — never block or error out the
+      // actual comment-generation flow if this fails.
+      console.warn('[AI Assistant] Tone recommendation failed:', err.message);
+      recommendBanner.hidden = true;
+    }
   }
 
   // Display status notice banner

@@ -214,6 +214,66 @@ const STYLE_LABELS = {
   humorous: 'Humorous'
 };
 
+// Short one-line descriptions used only for the tone-recommendation prompt
+// (helps Gemini pick the single best-fitting tone for a given post).
+const TONE_DESCRIPTIONS = {
+  professional: 'Expresses professional interest and matches skills to the post — best for hiring/client-requirement posts.',
+  insightful: 'Adds a genuine expert insight or practical tip to the discussion.',
+  short: 'Very concise, 1-3 sentences, direct — good when little needs to be said.',
+  friendly: 'Warm, casual, conversational tone — good for lighter/personal posts.',
+  congratulatory: 'Celebrates a specific achievement, milestone, launch, or promotion mentioned in the post.',
+  question: 'Asks a genuine, specific follow-up question to drive engagement/discussion.',
+  storytelling: 'Relates the post to a brief personal/professional experience angle.',
+  contrarian: 'Offers a respectful alternative perspective or gentle pushback to spark healthy discussion.',
+  humorous: 'A light, witty, relevant remark — only for posts where humor clearly fits, never for sensitive topics.'
+};
+
+/**
+ * Builds a prompt asking Gemini to look at the post and recommend the SINGLE
+ * best-fitting tone from the available options, with a short reason. Used to
+ * show a "⭐ Recommended: X" hint in the extension before the user picks a
+ * tone from the dropdown.
+ */
+function buildRecommendTonePrompt({ post, persona, behavior }) {
+  const systemInstruction = buildSystemInstruction(persona);
+  const behaviorSection = buildBehaviorSection(behavior);
+
+  const toneList = Object.entries(TONE_DESCRIPTIONS)
+    .map(([key, desc]) => `- "${key}" (${STYLE_LABELS[key]}): ${desc}`)
+    .join('\n');
+
+  const userContent = `
+${behaviorSection}
+
+=== TASK: RECOMMEND THE BEST COMMENT TONE FOR THIS POST ===
+Look at the post below and pick the SINGLE best-fitting tone from this list
+for the user to comment with. Base your choice on what the post is actually
+about (an achievement to congratulate? a question-worthy discussion? a
+hiring post needing a professional pitch? something naturally light/funny?
+something worth a differing viewpoint?).
+
+Available tones:
+${toneList}
+
+${buildPostSection(post)}
+
+4. Which ONE tone best fits this specific post, and why (one short sentence)?
+
+=== REQUIRED JSON OUTPUT ===
+{
+  "relevant": true,
+  "recommendedTone": "one of: ${Object.keys(TONE_DESCRIPTIONS).join(', ')}",
+  "reason": "One short sentence explaining why this tone fits this specific post",
+  "relevanceScore": 0.95
+}
+
+If the post is irrelevant to the user's expertise/interests, set "relevant": false,
+still pick the least-bad "recommendedTone" (e.g. "short"), and explain why in "reason".
+`;
+
+  return { systemInstruction, userContent };
+}
+
 function buildPostSection(post) {
   return `
 === TARGET LINKEDIN POST ===
@@ -310,4 +370,4 @@ If irrelevant, set "relevant": false, "comments": { "professional": "", "insight
   return { systemInstruction, userContent };
 }
 
-module.exports = { buildCommentPrompt, buildAllStylesPrompt, buildSystemInstruction, buildBehaviorSection, STYLE_LABELS };
+module.exports = { buildCommentPrompt, buildAllStylesPrompt, buildRecommendTonePrompt, buildSystemInstruction, buildBehaviorSection, STYLE_LABELS, TONE_DESCRIPTIONS };
