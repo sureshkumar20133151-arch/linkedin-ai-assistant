@@ -137,7 +137,81 @@ INSTRUCTIONS:
 - For hiring posts: express interest and availability briefly.
 - For discussion posts: make one sharp, relevant observation.
 - No filler words, no long explanations.
+`,
+  friendly: `
+=== STYLE: FRIENDLY / CASUAL ===
+GOAL: Warm, informal, approachable — like talking to a peer, not a client.
+
+INSTRUCTIONS:
+- Use a relaxed, conversational tone (contractions are fine, e.g. "I've", "that's").
+- A light, natural emoji is fine if it fits (max 1), but never forced.
+- Still relevant and on-topic — casual tone, not a casual/irrelevant comment.
+- For hiring posts: express interest warmly, still mention matching skills.
+- Avoid sounding stiff or corporate.
+`,
+  congratulatory: `
+=== STYLE: CONGRATULATORY ===
+GOAL: Specifically celebrate the achievement, milestone, launch, or announcement in the post.
+
+INSTRUCTIONS:
+- Only use this naturally if the post is about an achievement/milestone/launch/promotion/announcement.
+  If the post has no such news to celebrate, congratulate genuinely on the effort/initiative shown instead of forcing it.
+- Name the SPECIFIC achievement from the post (not generic "congrats!").
+- Keep it warm and genuine — no generic filler like "Great job!" alone.
+- Where relevant, briefly connect it to the user's own expertise/interest, without turning it into a pitch.
+`,
+  question: `
+=== STYLE: QUESTION / CURIOUS ===
+GOAL: Drive engagement by asking a genuine, specific follow-up question about the post.
+
+INSTRUCTIONS:
+- Ask ONE specific, thoughtful question directly tied to a detail in the post (not generic "What do you think?").
+- The question should show you actually read and understood the post.
+- You may add one short sentence of context/reaction before the question, but the question is the focus.
+- For hiring/requirement posts: the question can double as a qualifying question (e.g. about stack, timeline, budget) while showing interest.
+`,
+  storytelling: `
+=== STYLE: STORYTELLING / PERSONAL EXPERIENCE ===
+GOAL: Relate the post to a brief, plausible personal/professional experience angle.
+
+INSTRUCTIONS:
+- Reference a short, realistic experience angle connected to the user's actual role/skills/detailed background — do NOT invent specific fake clients, numbers, or projects not present in the user's profile/detailed background.
+- Keep the "story" part brief (1-2 sentences) — this is a comment, not a blog post.
+- Tie the experience back to the post's specific topic.
+- If the user has no detailed background to draw from, keep the personal angle general (e.g. "I've run into this exact issue building X kind of sites") rather than fabricating specifics.
+`,
+  contrarian: `
+=== STYLE: CONTRARIAN / THOUGHT-PROVOKING ===
+GOAL: Respectfully offer a different angle or gentle pushback on the post's main point, to spark discussion.
+
+INSTRUCTIONS:
+- Stay respectful and professional — this is a differing perspective, NOT an argument or an attack.
+- Clearly acknowledge the post's point first, then offer the alternative angle.
+- The disagreement must be genuine and specific to the post's content, not contrarian for its own sake.
+- Never be dismissive, sarcastic, or condescending.
+`,
+  humorous: `
+=== STYLE: HUMOROUS / WITTY ===
+GOAL: A light, clever line relevant to the post — humor that lands naturally, not forced.
+
+INSTRUCTIONS:
+- Keep the humor gentle, professional-appropriate, and directly tied to the post's specific content.
+- Do NOT use humor on sensitive topics (layoffs, personal hardship, tragedy, serious business risk) — for those, fall back to a genuine, non-joking observation instead.
+- One witty line is enough — do not overdo it.
+- Never punch down at the post's author or anyone mentioned in it.
 `
+};
+
+const STYLE_LABELS = {
+  professional: 'Professional',
+  insightful: 'Insightful',
+  short: 'Short',
+  friendly: 'Friendly',
+  congratulatory: 'Congratulatory',
+  question: 'Question',
+  storytelling: 'Storytelling',
+  contrarian: 'Contrarian',
+  humorous: 'Humorous'
 };
 
 function buildPostSection(post) {
@@ -236,4 +310,4 @@ If irrelevant, set "relevant": false, "comments": { "professional": "", "insight
   return { systemInstruction, userContent };
 }
 
-module.exports = { buildCommentPrompt, buildAllStylesPrompt, buildSystemInstruction, buildBehaviorSection };
+module.exports = { buildCommentPrompt, buildAllStylesPrompt, buildSystemInstruction, buildBehaviorSection, STYLE_LABELS };

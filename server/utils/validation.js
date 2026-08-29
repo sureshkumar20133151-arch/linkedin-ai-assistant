@@ -13,7 +13,7 @@ function validateGenerateCommentRequest(req) {
     return { valid: false, message: 'Post content ("postText") cannot be empty.' };
   }
 
-  const validStyles = ['professional', 'insightful', 'short'];
+  const validStyles = ['professional', 'insightful', 'short', 'friendly', 'congratulatory', 'question', 'storytelling', 'contrarian', 'humorous'];
   if (!style || !validStyles.includes(style.toLowerCase())) {
     return { valid: false, message: `Invalid comment style "${style}". Must be one of: ${validStyles.join(', ')}` };
   }

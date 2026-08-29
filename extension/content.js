@@ -15,6 +15,28 @@
     detailedProfile: ""
   };
 
+  // All tone options shown in the "Choose Tone" dropdown when a comment
+  // composer is opened. Keys must match STYLE_LABELS in
+  // server/prompts/commentPrompt.js and validStyles in server/utils/validation.js.
+  const TONE_OPTIONS = [
+    { value: 'professional', label: 'Professional' },
+    { value: 'insightful', label: 'Insightful' },
+    { value: 'short', label: 'Short' },
+    { value: 'friendly', label: 'Friendly' },
+    { value: 'congratulatory', label: 'Congratulatory' },
+    { value: 'question', label: 'Question' },
+    { value: 'storytelling', label: 'Storytelling' },
+    { value: 'contrarian', label: 'Contrarian' },
+    { value: 'humorous', label: 'Humorous' }
+  ];
+
+  // Closes every open tone dropdown on the page (in case multiple comment
+  // composers/toolbars are open at once) — called before opening a new one.
+  function closeAllToneMenus() {
+    document.querySelectorAll('.linkedin-ai-tone-menu').forEach(menu => menu.setAttribute('hidden', ''));
+    document.querySelectorAll('.linkedin-ai-tone-toggle').forEach(t => t.classList.remove('open'));
+  }
+
   // Helper: Get stored persona & behavior
   async function getStoredSettings() {
     return new Promise(resolve => {
@@ -51,10 +73,14 @@
           <span class="linkedin-ai-sparkle">✨</span> AI Comment
         </div>
       </div>
-      <div class="linkedin-ai-actions">
-        <button type="button" class="linkedin-ai-btn" data-style="professional">Professional</button>
-        <button type="button" class="linkedin-ai-btn" data-style="insightful">Insightful</button>
-        <button type="button" class="linkedin-ai-btn" data-style="short">Short</button>
+      <div class="linkedin-ai-tone-select-wrapper">
+        <button type="button" class="linkedin-ai-tone-toggle">
+          <span class="linkedin-ai-tone-toggle-label">Choose Tone</span>
+          <span class="linkedin-ai-tone-toggle-caret">▾</span>
+        </button>
+        <div class="linkedin-ai-tone-menu" hidden>
+          ${TONE_OPTIONS.map(t => `<button type="button" class="linkedin-ai-tone-menu-item" data-style="${t.value}">${t.label}</button>`).join('')}
+        </div>
       </div>
       <div class="linkedin-ai-actions-secondary">
         <button type="button" class="linkedin-ai-btn-all" data-style="all">✨ Generate All 3</button>
@@ -74,15 +100,39 @@
     }
 
     // Attach button event handlers
-    const buttons = toolbar.querySelectorAll('.linkedin-ai-btn');
+    const toneToggle = toolbar.querySelector('.linkedin-ai-tone-toggle');
+    const toneToggleLabel = toolbar.querySelector('.linkedin-ai-tone-toggle-label');
+    const toneMenu = toolbar.querySelector('.linkedin-ai-tone-menu');
+    const buttons = toolbar.querySelectorAll('.linkedin-ai-tone-menu-item');
     const allBtn = toolbar.querySelector('.linkedin-ai-btn-all');
     const inputEl = toolbar.querySelector('.linkedin-ai-input');
     const noticeContainer = toolbar.querySelector('.linkedin-ai-notice-container');
     const multiResultsContainer = toolbar.querySelector('.linkedin-ai-multi-results');
 
-    // All interactive buttons (3 style buttons + the "Generate All" button),
-    // used together so clicking one disables the rest while a request is in flight.
-    const allInteractiveButtons = [...buttons, allBtn];
+    // All interactive controls (tone dropdown toggle + every tone option +
+    // the "Generate All" button), used together so clicking one disables the
+    // rest while a request is in flight.
+    const allInteractiveButtons = [toneToggle, ...buttons, allBtn];
+
+    // Open/close the tone dropdown
+    toneToggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const isHidden = toneMenu.hasAttribute('hidden');
+      closeAllToneMenus();
+      if (isHidden) {
+        toneMenu.removeAttribute('hidden');
+        toneToggle.classList.add('open');
+      }
+    });
+
+    // Close this dropdown if the user clicks anywhere outside it
+    document.addEventListener('click', (e) => {
+      if (!toolbar.contains(e.target)) {
+        toneMenu.setAttribute('hidden', '');
+        toneToggle.classList.remove('open');
+      }
+    });
 
     allBtn.addEventListener('click', async (e) => {
       e.preventDefault();
@@ -135,6 +185,11 @@
 
         const style = btn.getAttribute('data-style');
         const oneTimeInstruction = inputEl.value.trim();
+
+        // Close the dropdown and reflect the chosen tone on the toggle button
+        toneMenu.setAttribute('hidden', '');
+        toneToggle.classList.remove('open');
+        toneToggleLabel.textContent = btn.textContent;
 
         // UI Loading State
         setLoadingState(allInteractiveButtons, btn, true);
