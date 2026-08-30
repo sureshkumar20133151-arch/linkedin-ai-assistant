@@ -135,8 +135,13 @@ function extractTextFromPost(postElement) {
   ];
 
   for (const selector of textSelectors) {
-    const textEl = postElement.querySelector(selector);
-    if (textEl) {
+    const elements = postElement.querySelectorAll(selector);
+    for (const textEl of elements) {
+      // Exclude text inside comments section or comment replies!
+      if (textEl.closest('.comments-comments-list, .comments-comment-item, .comments-comment-box, .comments-reply-item')) {
+        continue;
+      }
+
       const clone = textEl.cloneNode(true);
       // Remove buttons, toolbars, "see more" links from clone
       clone.querySelectorAll('button, .linkedin-ai-toolbar-container, .feed-shared-inline-show-more-text__see-more-less-toggle, .linkedin-ai-recommend-banner').forEach(el => el.remove());
@@ -225,40 +230,49 @@ async function extractPostContext(commentComposer) {
     await new Promise(r => setTimeout(r, 500));
   }
 
-  // Extract author name
+  // Extract author name (ignore commenters in comments section)
   const nameSelectors = [
     '.update-components-actor__name span span[aria-hidden="true"]',
     '.update-components-actor__name',
     '.feed-shared-actor__name',
-    'span[data-anonymize="person-name"]',
+    '.entity-result__title-text',
     '.update-components-actor__title',
-    '.entity-result__title-text'
+    'span[data-anonymize="person-name"]'
   ];
   let authorName = '';
   for (const sel of nameSelectors) {
-    const el = postElement.querySelector(sel);
-    if (el && el.innerText.trim()) {
-      authorName = el.innerText.trim().split('\n')[0];
-      break;
+    const elements = postElement.querySelectorAll(sel);
+    for (const el of elements) {
+      if (el.closest('.comments-comments-list, .comments-comment-item, .comments-comment-box')) continue;
+      const text = el.innerText.trim();
+      if (text) {
+        authorName = text.split('\n')[0];
+        break;
+      }
     }
+    if (authorName) break;
   }
   if (!authorName || authorName.length > 50) authorName = 'LinkedIn User';
 
-  // Extract author headline
+  // Extract author headline (ignore commenters and post summary)
   const headlineSelectors = [
     '.update-components-actor__description span[aria-hidden="true"]',
     '.update-components-actor__description',
     '.feed-shared-actor__sub-description',
-    '.update-components-actor__sub-description span[aria-hidden="true"]',
-    '.entity-result__summary'
+    '.update-components-actor__sub-description span[aria-hidden="true"]'
   ];
   let authorHeadline = '';
   for (const sel of headlineSelectors) {
-    const el = postElement.querySelector(sel);
-    if (el && el.innerText.trim()) {
-      authorHeadline = el.innerText.trim().replace(/\s+/g, ' ');
-      break;
+    const elements = postElement.querySelectorAll(sel);
+    for (const el of elements) {
+      if (el.closest('.comments-comments-list, .comments-comment-item, .comments-comment-box')) continue;
+      const text = el.innerText.trim();
+      if (text) {
+        authorHeadline = text.replace(/\s+/g, ' ');
+        break;
+      }
     }
+    if (authorHeadline) break;
   }
 
   // STEP 2: Extract the actual post text
