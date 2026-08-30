@@ -170,14 +170,20 @@ INSTRUCTIONS:
 - Where relevant, briefly connect it to the user's own expertise/interest, without turning it into a pitch.
 `,
   question: `
-=== STYLE: QUESTION / CURIOUS ===
-GOAL: Drive engagement by asking a genuine, specific follow-up question about the post.
+=== STYLE: QUESTION / ATTENTION-GRABBING ===
+GOAL: Ask a smart, specific clarifying question to grab the client's attention and start a direct conversation!
 
-INSTRUCTIONS:
-- Ask ONE specific, thoughtful question directly tied to a detail in the post (not generic "What do you think?").
-- The question should show you actually read and understood the post.
-- You may add one short sentence of context/reaction before the question, but the question is the focus.
-- For hiring/requirement posts: the question can double as a qualifying question (e.g. about stack, timeline, budget) while showing interest.
+INSTRUCTIONS FOR HIRING / CLIENT REQUIREMENT POSTS:
+- Greet the author by first name if available (e.g., "Hi Abhay,").
+- Briefly state interest and matching skills.
+- Ask ONE smart, highly relevant technical or project clarifying question (e.g., about payment gateway preferences, API scope, design wireframes, or timeline) that demonstrates expert understanding and encourages the client to reply!
+- Mention that you've sent a DM with your portfolio.
+
+EXAMPLE FOR HIRING POST:
+"Hi [Name], I'm interested in this opportunity — I build responsive web applications with React/Node.js and custom API integrations. Are you looking for a specific payment gateway like Razorpay/Stripe, or custom backend workflows? I've sent you a DM with my portfolio as well!"
+
+INSTRUCTIONS FOR GENERAL DISCUSSION POSTS:
+- Ask ONE specific, thoughtful question directly tied to a detail in the post to spark discussion.
 `,
   storytelling: `
 === STYLE: STORYTELLING / PERSONAL EXPERIENCE ===
@@ -261,8 +267,7 @@ for the user to comment with.
 
 CRITICAL RULE FOR HIRING / FREELANCE OPPORTUNITY POSTS:
 - If the post is HIRING or LOOKING FOR A DEVELOPER/FREELANCER (words like "Required", "Hiring", "Looking for", "Project-based", "Budget", "DM portfolio"):
-  --> You MUST ALWAYS recommend "professional" (or "short").
-  --> Reason MUST explain: "This is a hiring opportunity — use Professional tone to pitch your matching skills and state that you sent a DM."
+  --> You MUST recommend "professional", "short", or "question" (to ask a smart clarifying project question that grabs client attention).
   --> NEVER recommend "insightful", "friendly", "storytelling", or "humorous" for a hiring post!
 
 Available tones:
