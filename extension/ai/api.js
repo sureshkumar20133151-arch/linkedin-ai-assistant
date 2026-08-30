@@ -2,7 +2,7 @@
  * Backend API Client for Extension
  */
 
-const DEFAULT_BACKEND_URL = 'http://localhost:3000';
+const DEFAULT_BACKEND_URL = 'https://linkedin-ai-assistant-dun.vercel.app';
 
 async function getBackendUrl() {
   return new Promise(resolve => {

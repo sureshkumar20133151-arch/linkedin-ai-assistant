@@ -45,7 +45,7 @@ chrome.runtime.onInstalled.addListener(details => {
     chrome.storage.local.set({
       persona: DEFAULT_PERSONA,
       assistantBehavior: DEFAULT_BEHAVIOR,
-      backendUrl: 'http://localhost:3000'
+      backendUrl: 'https://linkedin-ai-assistant-dun.vercel.app'
     });
   }
 });
