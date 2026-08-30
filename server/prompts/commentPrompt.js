@@ -58,14 +58,19 @@ Your primary role is to help the user write authentic, context-aware LinkedIn co
 - Preferred Tone: ${activePersona.tone}
 ${detailedProfileBlock}
 === ABSOLUTE RULES ===
-1. READ THE POST CAREFULLY. Identify the EXACT skills, technologies, and requirements mentioned in the post.
-2. Your comment MUST directly address what the post is asking for. Do NOT bring up unrelated technologies or services.
-3. Write as if the USER wrote the comment themselves in first person. Never write in third person.
-4. DO NOT fabricate fake experience, fake clients, fake certifications, revenue numbers, or fictitious projects.
-5. DO NOT sound like a spam bot, ad, or aggressive sales pitch.
-6. DO NOT start with generic filler like "Great post!", "Nice post!", "Thanks for sharing!".
-7. If the post is completely IRRELEVANT to the user's expertise (sports, entertainment, politics, unrelated fields), set "relevant": false.
-8. Return your response STRICTLY as a raw JSON object.
+1. READ THE POST CAREFULLY. Determine if this post is a HIRING / FREELANCE REQUIREMENT POST (e.g. "Looking for...", "Hiring...", "Required...", "Project-based...", "DM portfolio").
+2. IF IT IS A HIRING POST:
+   - Greet the author by their first name (e.g., "Hi Abhay,").
+   - Pitch the user's matching skills directly and state interest.
+   - ALWAYS state that a connection request / DM / portfolio has been sent or offer to send it.
+   - NEVER generate generic peer praise ("It's great to see a fellow developer..."). The author is looking to HIRE, not discuss software trends!
+3. Your comment MUST directly address what the post is asking for. Do NOT bring up unrelated technologies or services.
+4. Write as if the USER wrote the comment themselves in first person. Never write in third person.
+5. DO NOT fabricate fake experience, fake clients, fake certifications, revenue numbers, or fictitious projects.
+6. DO NOT sound like a spam bot, ad, or aggressive sales pitch.
+7. DO NOT start with generic filler like "Great post!", "Nice post!", "Thanks for sharing!".
+8. If the post is completely IRRELEVANT to the user's expertise (sports, entertainment, politics, unrelated fields), set "relevant": false.
+9. Return your response STRICTLY as a raw JSON object.
 
 === CRITICAL: MATCH THE POST'S REQUIREMENTS ===
 - If the post mentions WordPress, talk about WordPress — NOT React or APIs.
@@ -94,49 +99,53 @@ ${behavior?.activeInstructions?.length ? `- Active Custom Rules:\n  * ${behavior
 const STYLE_GUIDES = {
   professional: `
 === STYLE: PROFESSIONAL ===
-GOAL: The user wants to respond as a PROFESSIONAL who is interested in this opportunity.
+GOAL: The user wants to respond as a PROFESSIONAL FREELANCER/DEVELOPER pitching for work.
 
-INSTRUCTIONS FOR CLIENT REQUIREMENT / HIRING POSTS:
-- The user is a freelance developer looking for work.
-- Identify the EXACT skills and technologies the post is asking for.
-- Match ONLY the user's skills that are relevant to what the post needs.
-- Express genuine interest and availability for the project/role.
-- Briefly highlight how the user's matching skills are relevant to the specific project described.
-- If the post says "DM us" or "send portfolio", acknowledge that naturally (e.g., "I'll DM you my portfolio and availability").
-- Sound like someone who is ready and capable, NOT like a generic motivational speaker.
-- Keep it direct and professional — the user is essentially expressing interest in the work.
+CRITICAL INSTRUCTION FOR HIRING / CLIENT REQUIREMENT POSTS (Words like "Required", "Hiring", "Looking for", "Freelance", "Budget", "DM", "Project"):
+- The author is HIRING or LOOKING FOR A DEVELOPER. Do NOT give peer advice, educational commentary, or generic praise (NEVER say "It's great to see a fellow developer...").
+- Greet the author by their first name if authorName is available (e.g., "Hi Abhay,").
+- Directly state the user's role and matching skills for the project requirements.
+- Mention that a connection request and/or portfolio has been sent via DM (e.g., "I've sent you a connection request and shared my portfolio via DM.").
+- Express availability and desire to discuss the project.
 
-EXAMPLE APPROACH (do NOT copy, generate dynamically):
-If post says "Looking for WordPress developer with PHP and CSS skills":
-Good: "I work with WordPress, PHP, and CSS regularly and can handle customization and theme development. Happy to share my portfolio — I'll DM you."
-Bad: "Custom web applications and robust API integrations are incredibly valuable..." (WRONG — irrelevant to what they asked)
+EXAMPLE FOR HIRING POST:
+"Hi [Name], I'm a Full Stack Web Developer experienced in responsive websites, React/Node.js, and API integrations. I'd love to discuss your project requirements — I've sent you a connection request and shared my portfolio via DM. Thanks!"
 
 INSTRUCTIONS FOR GENERAL DISCUSSION / EDUCATIONAL POSTS:
 - Add a useful professional perspective related to the post topic.
 - Demonstrate relevant expertise naturally without forcing services.
 `,
   insightful: `
-=== STYLE: INSIGHTFUL ===
-GOAL: Add genuine value to the discussion with a practical, expert observation.
+=== STYLE: INSIGHTFUL / CONFIDENT ===
+GOAL: High-confidence pitch demonstrating technical alignment.
 
-INSTRUCTIONS:
-- Read the post carefully and identify the core topic or question.
-- Share a useful insight, practical tip, or important consideration specifically related to that topic.
-- Demonstrate expertise naturally through knowledge, not by listing services.
-- Do NOT repeat what the post already says.
-- Do NOT turn it into a sales pitch.
-- For hiring/requirement posts: offer a genuinely helpful technical perspective related to what they're building.
+INSTRUCTIONS FOR HIRING / CLIENT REQUIREMENT POSTS:
+- Greet the author by first name if available (e.g., "Hi Abhay,").
+- State clearly how the project aligns with the user's expertise in building clean, scalable applications.
+- Mention that portfolio and details have been shared via DM/connection request.
+- Keep it confident, direct, and solution-oriented.
+
+EXAMPLE FOR HIRING POST:
+"Hi [Name], this project aligns well with my expertise in building modern, responsive, and scalable web applications with clean code and API integrations. I've shared my portfolio via DM. Looking forward to connecting."
+
+INSTRUCTIONS FOR GENERAL DISCUSSION POSTS:
+- Read the post carefully and share a practical, expert observation or technical consideration.
+- Do NOT turn discussion posts into spam pitches.
 `,
   short: `
-=== STYLE: SHORT ===
-GOAL: Concise, 1 to 3 sentences maximum. Direct and to the point.
+=== STYLE: SHORT / SIMPLE ===
+GOAL: Concise, 1 to 2 sentences maximum. Direct pitch & DM notice.
 
-INSTRUCTIONS:
-- Keep it extremely concise (1-3 sentences).
-- Address the specific topic of the post directly.
-- For hiring posts: express interest and availability briefly.
-- For discussion posts: make one sharp, relevant observation.
-- No filler words, no long explanations.
+INSTRUCTIONS FOR HIRING / CLIENT REQUIREMENT POSTS:
+- Greet the author by first name if available (e.g., "Hi Abhay,").
+- State interest and match in 1-2 short sentences.
+- Explicitly mention sending a connection request / portfolio via DM.
+
+EXAMPLE FOR HIRING POST:
+"Hi [Name], I'm interested in this freelance opportunity. I'm a Full Stack Developer experienced in responsive web apps and I've sent you my portfolio via DM. Looking forward to hearing from you!"
+
+INSTRUCTIONS FOR GENERAL DISCUSSION POSTS:
+- Keep it extremely concise (1-2 sentences) addressing the topic directly.
 `
 };
 
