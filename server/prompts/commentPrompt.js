@@ -257,10 +257,13 @@ ${behaviorSection}
 
 === TASK: RECOMMEND THE BEST COMMENT TONE FOR THIS POST ===
 Look at the post below and pick the SINGLE best-fitting tone from this list
-for the user to comment with. Base your choice on what the post is actually
-about (an achievement to congratulate? a question-worthy discussion? a
-hiring post needing a professional pitch? something naturally light/funny?
-something worth a differing viewpoint?).
+for the user to comment with.
+
+CRITICAL RULE FOR HIRING / FREELANCE OPPORTUNITY POSTS:
+- If the post is HIRING or LOOKING FOR A DEVELOPER/FREELANCER (words like "Required", "Hiring", "Looking for", "Project-based", "Budget", "DM portfolio"):
+  --> You MUST ALWAYS recommend "professional" (or "short").
+  --> Reason MUST explain: "This is a hiring opportunity — use Professional tone to pitch your matching skills and state that you sent a DM."
+  --> NEVER recommend "insightful", "friendly", "storytelling", or "humorous" for a hiring post!
 
 Available tones:
 ${toneList}
