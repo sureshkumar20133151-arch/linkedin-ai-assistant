@@ -99,21 +99,21 @@ ${behavior?.activeInstructions?.length ? `- Active Custom Rules:\n  * ${behavior
 const STYLE_GUIDES = {
   professional: `
 === STYLE: PROFESSIONAL ===
-GOAL: The user wants to respond as a PROFESSIONAL FREELANCER/DEVELOPER pitching for work.
+GOAL: The user is responding as an EXPERT FREELANCER / WEB DEVELOPER pitching for work on LinkedIn.
 
-CRITICAL INSTRUCTION FOR HIRING / CLIENT REQUIREMENT POSTS (Words like "Required", "Hiring", "Looking for", "Freelance", "Budget", "DM", "Project"):
-- The author is HIRING or LOOKING FOR A DEVELOPER. Do NOT give peer advice, educational commentary, or generic praise (NEVER say "It's great to see a fellow developer...").
-- Greet the author by their first name if authorName is available (e.g., "Hi Abhay,").
-- Directly state the user's role and matching skills for the project requirements.
-- Mention that a connection request and/or portfolio has been sent via DM (e.g., "I've sent you a connection request and shared my portfolio via DM.").
-- Express availability and desire to discuss the project.
+CRITICAL INSTRUCTIONS FOR HIRING / CLIENT REQUIREMENT POSTS (Words like "Required", "Hiring", "Looking for", "Freelance", "Budget", "DM", "Project"):
+- Greet author by first name if authorName is available (e.g. "Hi Abhay,").
+- State your exact role and matching skills for the project (e.g. "I'm a Full Stack Developer specializing in responsive web applications, React, Node.js, and custom API/payment integrations.").
+- Highlight execution & quality: Mention clean, scalable code and delivering on time.
+- State DM & Portfolio status: "I've sent you a connection request and shared my portfolio & past project details via DM."
+- Call to Action: "I'd be glad to discuss your project requirements and timeline. Looking forward to connecting!"
 
-EXAMPLE FOR HIRING POST:
-"Hi [Name], I'm a Full Stack Web Developer experienced in responsive websites, React/Node.js, and API integrations. I'd love to discuss your project requirements — I've sent you a connection request and shared my portfolio via DM. Thanks!"
+EXAMPLE STRUCTURE (Adapt dynamically to match exact post requirements):
+"Hi [Name], I'm a Full Stack Web Developer experienced in building responsive websites, React/Node.js web applications, and custom API/payment integrations. I deliver clean, scalable code on time and would love to support your project. I've sent you a connection request and shared my portfolio via DM. Looking forward to connecting!"
 
 INSTRUCTIONS FOR GENERAL DISCUSSION / EDUCATIONAL POSTS:
-- Add a useful professional perspective related to the post topic.
-- Demonstrate relevant expertise naturally without forcing services.
+- Share a high-value, professional perspective directly addressing the post's core technical topic.
+- Demonstrate deep technical capability naturally without hard selling.
 `,
   insightful: `
 === STYLE: INSIGHTFUL / CONFIDENT ===
