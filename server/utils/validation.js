@@ -13,7 +13,7 @@ function validateGenerateCommentRequest(req) {
     return { valid: false, message: 'Post content ("postText") cannot be empty.' };
   }
 
-  const validStyles = ['professional', 'insightful', 'short'];
+  const validStyles = ['professional', 'insightful', 'short', 'friendly', 'congratulatory', 'question', 'storytelling', 'contrarian', 'humorous'];
   if (!style || !validStyles.includes(style.toLowerCase())) {
     return { valid: false, message: `Invalid comment style "${style}". Must be one of: ${validStyles.join(', ')}` };
   }
@@ -33,6 +33,13 @@ function validateGenerateAllCommentsRequest(req) {
   }
 
   return { valid: true };
+}
+
+// Same shape as validateGenerateAllCommentsRequest — only needs a post with
+// text; kept as a separate named function so the tone-recommendation route
+// can evolve its own requirements independently later.
+function validateRecommendToneRequest(req) {
+  return validateGenerateAllCommentsRequest(req);
 }
 
 function validateGenerateMessageRequest(req) {
@@ -66,6 +73,7 @@ function sanitizeText(text) {
 module.exports = {
   validateGenerateCommentRequest,
   validateGenerateAllCommentsRequest,
+  validateRecommendToneRequest,
   validateGenerateMessageRequest,
   validateBehaviorRequest,
   sanitizeText

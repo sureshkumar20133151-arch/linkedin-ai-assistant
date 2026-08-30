@@ -119,6 +119,171 @@
   to { transform: rotate(360deg); }
 }
 
+/* Tone recommendation banner (shown once the post is analyzed) */
+.linkedin-ai-recommend-banner {
+  display: block !important;
+  padding: 6px 12px !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+  border-radius: 8px !important;
+  background: #fff9e6 !important;
+  border: 1px solid #f0d98c !important;
+  color: #7a5c00 !important;
+}
+
+.linkedin-ai-recommend-banner[hidden] {
+  display: none !important;
+}
+
+.linkedin-ai-recommend-banner.loading {
+  background: #f3f3f3 !important;
+  border-color: #dcdcdc !important;
+  color: #666 !important;
+  font-style: italic !important;
+}
+
+@media (prefers-color-scheme: dark), html.dark-theme .linkedin-ai-recommend-banner {
+  background: #3a3320 !important;
+  border-color: #5c4f1f !important;
+  color: #f0d98c !important;
+}
+
+@media (prefers-color-scheme: dark), html.dark-theme .linkedin-ai-recommend-banner.loading {
+  background: #23282e !important;
+  border-color: #38434f !important;
+  color: #aab3ba !important;
+}
+
+.linkedin-ai-tone-menu-item.recommended {
+  font-weight: 700 !important;
+  color: #7a5c00 !important;
+  background: #fff9e6 !important;
+}
+
+@media (prefers-color-scheme: dark), html.dark-theme .linkedin-ai-tone-menu-item.recommended {
+  color: #f0d98c !important;
+  background: #3a3320 !important;
+}
+
+/* Choose Tone dropdown (replaces the old fixed 3-button row) */
+.linkedin-ai-tone-select-wrapper {
+  position: relative !important;
+  display: flex !important;
+  width: fit-content !important;
+}
+
+.linkedin-ai-tone-toggle {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  min-width: 160px !important;
+  padding: 6px 14px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  border-radius: 18px !important;
+  border: 1px solid #0a66c2 !important;
+  background: #ffffff !important;
+  color: #0a66c2 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  user-select: none !important;
+  outline: none !important;
+}
+
+.linkedin-ai-tone-toggle:hover:not(:disabled) {
+  background: #f0f7ff !important;
+}
+
+.linkedin-ai-tone-toggle.open {
+  border-radius: 12px 12px 0 0 !important;
+  background: #f0f7ff !important;
+}
+
+.linkedin-ai-tone-toggle:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  border-color: #ccc !important;
+  color: #888 !important;
+  background: #f3f3f3 !important;
+}
+
+.linkedin-ai-tone-toggle-caret {
+  font-size: 10px !important;
+  transition: transform 0.15s ease !important;
+}
+
+.linkedin-ai-tone-toggle.open .linkedin-ai-tone-toggle-caret {
+  transform: rotate(180deg) !important;
+}
+
+.linkedin-ai-tone-menu {
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  z-index: 100000 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 160px !important;
+  max-height: 260px !important;
+  overflow-y: auto !important;
+  background: #ffffff !important;
+  border: 1px solid #0a66c2 !important;
+  border-top: none !important;
+  border-radius: 0 0 12px 12px !important;
+  box-shadow: 0 6px 16px rgba(10, 102, 194, 0.18) !important;
+}
+
+.linkedin-ai-tone-menu[hidden] {
+  display: none !important;
+}
+
+.linkedin-ai-tone-menu-item {
+  display: block !important;
+  width: 100% !important;
+  padding: 8px 14px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  text-align: left !important;
+  border: none !important;
+  background: transparent !important;
+  color: #191919 !important;
+  cursor: pointer !important;
+  outline: none !important;
+}
+
+.linkedin-ai-tone-menu-item:hover:not(:disabled) {
+  background: #f0f7ff !important;
+  color: #0a66c2 !important;
+}
+
+.linkedin-ai-tone-menu-item:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+@media (prefers-color-scheme: dark), html.dark-theme .linkedin-ai-tone-toggle {
+  background: #1d2226 !important;
+  color: #e8f4fd !important;
+}
+
+@media (prefers-color-scheme: dark), html.dark-theme .linkedin-ai-tone-toggle.open {
+  background: #23282e !important;
+}
+
+@media (prefers-color-scheme: dark), html.dark-theme .linkedin-ai-tone-menu {
+  background: #1d2226 !important;
+  border-color: #38434f !important;
+}
+
+@media (prefers-color-scheme: dark), html.dark-theme .linkedin-ai-tone-menu-item {
+  color: #e8f4fd !important;
+}
+
+@media (prefers-color-scheme: dark), html.dark-theme .linkedin-ai-tone-menu-item:hover:not(:disabled) {
+  background: #23282e !important;
+}
+
 /* Secondary actions row (Generate All button) */
 .linkedin-ai-actions-secondary {
   display: flex !important;

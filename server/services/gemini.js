@@ -2,7 +2,7 @@
  * Gemini API Service Provider
  */
 
-const { buildCommentPrompt, buildAllStylesPrompt } = require('../prompts/commentPrompt');
+const { buildCommentPrompt, buildAllStylesPrompt, buildRecommendTonePrompt } = require('../prompts/commentPrompt');
 const { buildMessagePrompt, buildAllStylesMessagePrompt } = require('../prompts/messagePrompt');
 const { buildBehaviorPrompt } = require('../prompts/behaviorPrompt');
 
@@ -78,6 +78,15 @@ async function generateAllComments(params) {
   return await callGeminiAPI(systemInstruction, userContent);
 }
 
+/**
+ * Asks Gemini to recommend the single best-fitting comment tone for a post,
+ * so the extension can show a "⭐ Recommended: X" hint before the user picks.
+ */
+async function generateToneRecommendation(params) {
+  const { systemInstruction, userContent } = buildRecommendTonePrompt(params);
+  return await callGeminiAPI(systemInstruction, userContent);
+}
+
 async function interpretBehaviorInstruction(instruction, currentBehavior) {
   const { systemInstruction, userContent } = buildBehaviorPrompt({ instruction, currentBehavior });
   return await callGeminiAPI(systemInstruction, userContent);
@@ -102,6 +111,7 @@ async function generateAllMessages(params) {
 module.exports = {
   generateComment,
   generateAllComments,
+  generateToneRecommendation,
   interpretBehaviorInstruction,
   generateMessage,
   generateAllMessages

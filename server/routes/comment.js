@@ -4,9 +4,9 @@
 
 const express = require('express');
 const router = express.Router();
-const { generateComment, generateAllComments } = require('../services/gemini');
+const { generateComment, generateAllComments, generateToneRecommendation } = require('../services/gemini');
 const { getBehaviorMemory } = require('../services/behavior');
-const { validateGenerateCommentRequest, validateGenerateAllCommentsRequest } = require('../utils/validation');
+const { validateGenerateCommentRequest, validateGenerateAllCommentsRequest, validateRecommendToneRequest } = require('../utils/validation');
 
 router.post('/generate-comment', async (req, res) => {
   try {
@@ -106,6 +106,48 @@ router.post('/generate-comment-all', async (req, res) => {
     return res.status(500).json({
       success: false,
       error: err.message || 'Internal server error while generating comments.'
+    });
+  }
+});
+
+// Recommends the single best-fitting comment tone for a post, so the
+// extension can show a "⭐ Recommended: X" hint before the user picks a
+// tone from the dropdown.
+router.post('/recommend-comment-tone', async (req, res) => {
+  try {
+    const validation = validateRecommendToneRequest(req);
+    if (!validation.valid) {
+      return res.status(400).json({ success: false, error: validation.message });
+    }
+
+    const { post, persona, behavior } = req.body;
+
+    const activeBehavior = {
+      ...getBehaviorMemory(),
+      ...(behavior || {})
+    };
+
+    console.log(`[AI Assistant API] Recommending tone for post by "${post.authorName || 'Unknown'}"`);
+
+    const result = await generateToneRecommendation({
+      post,
+      persona: persona || {},
+      behavior: activeBehavior
+    });
+
+    return res.json({
+      success: true,
+      recommendedTone: result.recommendedTone || 'professional',
+      reason: result.reason || '',
+      relevant: result.relevant !== false,
+      relevance: typeof result.relevanceScore === 'number' ? result.relevanceScore : 0.9
+    });
+
+  } catch (err) {
+    console.error('[AI Assistant API Error - recommend-comment-tone]', err.message);
+    return res.status(500).json({
+      success: false,
+      error: err.message || 'Internal server error while recommending tone.'
     });
   }
 });
