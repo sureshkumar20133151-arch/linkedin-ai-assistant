@@ -111,6 +111,25 @@
     // used together so clicking one disables the rest while a request is in flight.
     const allInteractiveButtons = [toneToggle, ...buttons];
 
+    // Cache the post context after the FIRST successful extraction (whether
+    // from the automatic tone recommendation or a manual tone click) and
+    // reuse it for every subsequent tone click on this same toolbar. Without
+    // this, every click re-extracts from the live DOM, and on LinkedIn's
+    // search-results page a scroll/re-render in between clicks can make the
+    // composer reference stale, causing "0 chars" extraction failures that
+    // make it look like tones can't be switched at all.
+    let cachedPostContext = null;
+    async function getPostContext() {
+      if (cachedPostContext && cachedPostContext.postText && cachedPostContext.postText.length >= 20) {
+        return cachedPostContext;
+      }
+      const ctx = await extractPostContext(composer);
+      if (ctx && ctx.postText && ctx.postText.length >= 20) {
+        cachedPostContext = ctx;
+      }
+      return ctx;
+    }
+
     // Open/close the tone dropdown
     toneToggle.addEventListener('click', (e) => {
       e.preventDefault();
@@ -133,7 +152,7 @@
 
     // Fire-and-forget: analyze the post and recommend a tone as soon as the
     // toolbar appears, so the user has guidance before opening the dropdown.
-    loadToneRecommendation({ toolbar, composer, recommendBanner });
+    loadToneRecommendation({ toolbar, composer, recommendBanner, getPostContext });
 
     buttons.forEach(btn => {
       btn.addEventListener('click', async (e) => {
@@ -153,8 +172,9 @@
         noticeContainer.innerHTML = '';
 
         try {
-          // 1. Isolate and extract relative post context (async - expands "...more" if needed)
-          const postContext = await extractPostContext(composer);
+          // 1. Get post context (reuses the cached extraction if we already
+          // have one from a previous tone click or the auto-recommendation)
+          const postContext = await getPostContext();
           console.log('[AI Assistant] Full extracted context:', JSON.stringify(postContext, null, 2));
           if (!postContext || !postContext.postText || postContext.postText.length < 10) {
             throw new Error(`Could not extract post text (got ${postContext?.postText?.length || 0} chars). Try scrolling to make the full post visible, then click again.`);
@@ -216,13 +236,13 @@
   // Analyzes the post (once per composer) and shows a "⭐ Recommended: X"
   // banner + highlights the matching tone in the dropdown, so the user has
   // guidance on which tone fits this specific post before picking one.
-  async function loadToneRecommendation({ toolbar, composer, recommendBanner }) {
+  async function loadToneRecommendation({ toolbar, composer, recommendBanner, getPostContext }) {
     try {
       recommendBanner.hidden = false;
       recommendBanner.className = 'linkedin-ai-recommend-banner loading';
       recommendBanner.textContent = 'Analyzing post to recommend a tone...';
 
-      const postContext = await extractPostContext(composer);
+      const postContext = await getPostContext();
       if (!postContext || !postContext.postText || postContext.postText.length < 10) {
         recommendBanner.hidden = true;
         return;
