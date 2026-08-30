@@ -119,16 +119,19 @@ function expandPostText(postElement) {
 function extractTextFromPost(postElement) {
   if (!postElement) return '';
 
-  // Strategy 1: Use known post text selectors
+  // Strategy 1: Use known post text selectors (including Search Result page selectors)
   const textSelectors = [
     '.update-components-text',
     '.feed-shared-inline-show-more-text',
     '.feed-shared-update-v2__commentary',
     '.feed-shared-text-view',
     '.feed-shared-text',
+    '.entity-result__summary',
+    '.entity-result__content',
     'span.break-words',
     '.feed-shared-update-v2__description-wrapper',
-    'span[dir="ltr"]'
+    'span[dir="ltr"]',
+    'p[dir="ltr"]'
   ];
 
   for (const selector of textSelectors) {
@@ -136,7 +139,7 @@ function extractTextFromPost(postElement) {
     if (textEl) {
       const clone = textEl.cloneNode(true);
       // Remove buttons, toolbars, "see more" links from clone
-      clone.querySelectorAll('button, .linkedin-ai-toolbar-container, .feed-shared-inline-show-more-text__see-more-less-toggle').forEach(el => el.remove());
+      clone.querySelectorAll('button, .linkedin-ai-toolbar-container, .feed-shared-inline-show-more-text__see-more-less-toggle, .linkedin-ai-recommend-banner').forEach(el => el.remove());
       const text = clone.innerText.trim().replace(/\n{3,}/g, '\n\n');
       if (text.length > 20) {
         console.log(`[AI Assistant] Text extracted via selector '${selector}' (${text.length} chars)`);
@@ -161,7 +164,9 @@ function extractTextFromPost(postElement) {
       text.length > longestText.length &&
       text.length > 30 &&
       !text.includes('AI Comment') &&
-      !text.includes('Professional') &&
+      !text.includes('Choose Tone') &&
+      !text.includes('Recommended') &&
+      !text.includes('One-time instruction') &&
       !text.includes('Add a comment')
     ) {
       longestText = text;
