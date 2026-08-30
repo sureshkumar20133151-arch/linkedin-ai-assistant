@@ -189,6 +189,10 @@
               // Copy Fallback
               showNotice(noticeContainer, 'warning', `Couldn't insert automatically.`, response.comment);
             }
+
+            if (response.dmPitch) {
+              renderDMPitchCard(noticeContainer, response.dmPitch, postContext.authorName, composer);
+            }
           } else {
             throw new Error(response.error || 'Failed to generate comment.');
           }

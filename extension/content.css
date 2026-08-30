@@ -474,3 +474,92 @@
 .linkedin-ai-copy-btn:hover {
   background: rgba(0, 0, 0, 0.05) !important;
 }
+
+/* Ready DM Pitch Card (for Hiring / Lead Posts) */
+.linkedin-ai-dm-pitch-card {
+  margin-top: 10px !important;
+  padding: 12px 14px !important;
+  background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%) !important;
+  border: 1px solid #0a66c2 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 14px rgba(10, 102, 194, 0.12) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.linkedin-ai-dm-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #0a66c2 !important;
+}
+
+.linkedin-ai-dm-badge {
+  background: #0a66c2 !important;
+  color: #ffffff !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  padding: 2px 8px !important;
+  border-radius: 12px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+.linkedin-ai-dm-text {
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+  color: #191919 !important;
+  background: #ffffff !important;
+  padding: 10px 12px !important;
+  border-radius: 8px !important;
+  border: 1px solid #dcdcdc !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  max-height: 160px !important;
+  overflow-y: auto !important;
+}
+
+.linkedin-ai-dm-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.linkedin-ai-copy-dm-btn,
+.linkedin-ai-open-dm-btn {
+  flex: 1 !important;
+  padding: 7px 12px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  text-align: center !important;
+  border: none !important;
+}
+
+.linkedin-ai-copy-dm-btn {
+  background: #ffffff !important;
+  color: #0a66c2 !important;
+  border: 1px solid #0a66c2 !important;
+}
+
+.linkedin-ai-copy-dm-btn:hover {
+  background: #f0f7ff !important;
+}
+
+.linkedin-ai-open-dm-btn {
+  background: #0a66c2 !important;
+  color: #ffffff !important;
+}
+
+.linkedin-ai-open-dm-btn:hover {
+  background: #084e96 !important;
+  box-shadow: 0 2px 8px rgba(10, 102, 194, 0.25) !important;
+}
+

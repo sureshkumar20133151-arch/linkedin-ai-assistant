@@ -116,6 +116,75 @@ function renderToolbarResultCards(container, variants, insertFn, noticeContainer
   }
 }
 
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { setToolbarLoadingState, showToolbarNotice, renderToolbarResultCards };
+// Renders a specialized DM Pitch card for hiring/lead posts, allowing 1-click
+// copying of a tailored 1:1 message and auto-opening the author's DM/profile.
+function renderDMPitchCard(container, dmPitch, authorName, composer) {
+  if (!dmPitch || !dmPitch.trim()) return;
+
+  const card = document.createElement('div');
+  card.className = 'linkedin-ai-dm-pitch-card';
+  card.innerHTML = `
+    <div class="linkedin-ai-dm-header">
+      <span class="linkedin-ai-dm-badge">📩 READY DM PITCH</span>
+      <span>For <strong>${escapeHtml(authorName || 'Author')}</strong></span>
+    </div>
+    <div class="linkedin-ai-dm-text"></div>
+    <div class="linkedin-ai-dm-actions">
+      <button type="button" class="linkedin-ai-copy-dm-btn">📋 Copy DM Pitch</button>
+      <button type="button" class="linkedin-ai-open-dm-btn">🚀 Open DM Window</button>
+    </div>
+  `;
+
+  card.querySelector('.linkedin-ai-dm-text').textContent = dmPitch.trim();
+
+  const copyBtn = card.querySelector('.linkedin-ai-copy-dm-btn');
+  const openBtn = card.querySelector('.linkedin-ai-open-dm-btn');
+
+  copyBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const copied = await copyCommentToClipboard(dmPitch.trim());
+    copyBtn.textContent = copied ? 'Copied Pitch! ✓' : 'Copy Failed';
+    setTimeout(() => { copyBtn.textContent = '📋 Copy DM Pitch'; }, 2000);
+  });
+
+  openBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    await copyCommentToClipboard(dmPitch.trim());
+    openBtn.textContent = 'Opening DM...';
+
+    let opened = false;
+    if (composer) {
+      const postContainer = composer.closest('div.feed-shared-update-v2, article, li.reusable-search__result-container, div.entity-result, div[data-urn]') || composer.parentElement;
+      if (postContainer) {
+        const messageBtn = postContainer.querySelector('button[aria-label*="Message"], button[aria-label*="message"], button.entry-point');
+        const authorLink = postContainer.querySelector('a.app-aware-link[href*="/in/"], a.update-components-actor__meta-link, a[href*="/in/"]');
+
+        if (messageBtn) {
+          messageBtn.click();
+          opened = true;
+        } else if (authorLink && authorLink.href) {
+          window.open(authorLink.href, '_blank');
+          opened = true;
+        }
+      }
+    }
+
+    if (!opened) {
+      window.open('https://www.linkedin.com/messaging/', '_blank');
+    }
+
+    openBtn.textContent = 'Pitch Copied & DM Opened! ✓';
+    setTimeout(() => { openBtn.textContent = '🚀 Open DM Window'; }, 2500);
+  });
+
+  container.appendChild(card);
 }
+
+function escapeHtml(str) {
+  return (str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { setToolbarLoadingState, showToolbarNotice, renderToolbarResultCards, renderDMPitchCard };
+}
+

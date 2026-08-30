@@ -323,10 +323,11 @@ ${buildPostSection(post)}
   "intent": "client_requirement" | "general_discussion" | "networking" | "hiring" | "educational" | "personal" | "irrelevant",
   "relevanceScore": 0.95,
   "comment": "The generated comment — must directly address the post's specific requirements",
+  "dmPitch": "A tailored, ready-to-send 1:1 DM pitch message to the author (e.g. 'Hi Abhay, Thanks for connecting... I saw your post regarding... Here is my portfolio...'), or empty string if post is not a hiring/lead post",
   "reason": "Brief explanation of why this comment was structured this way"
 }
 
-If irrelevant, set "relevant": false, "comment": "", and explain in "reason".
+If irrelevant, set "relevant": false, "comment": "", "dmPitch": "", and explain in "reason".
 `;
 
   return { systemInstruction, userContent };
@@ -349,7 +350,7 @@ ${behaviorSection}
 Generate THREE separate comments for the SAME post below — one for each style.
 Each style must feel distinct (not just the same sentence trimmed), but all three
 must equally respect the ABSOLUTE RULES, the behavior memory above, and must
-equally match the post's specific requirements.
+equally match the post's specific requirements. Also generate a tailored DM pitch message.
 
 ${STYLE_GUIDES.professional}
 ${STYLE_GUIDES.insightful}
@@ -359,7 +360,7 @@ ${oneTimeInstruction ? `=== ONE-TIME USER INSTRUCTION FOR THIS COMMENT (applies 
 
 ${buildPostSection(post)}
 
-4. Write three distinct comments, one per style, all matching the post's real requirements.
+4. Write three distinct comments, one per style, all matching the post's real requirements, and generate a 1:1 DM pitch message.
 
 === REQUIRED JSON OUTPUT ===
 {
@@ -371,10 +372,11 @@ ${buildPostSection(post)}
     "insightful": "...",
     "short": "..."
   },
+  "dmPitch": "A tailored, ready-to-send 1:1 DM pitch message to the author (e.g. 'Hi Abhay, Thanks for connecting... I saw your post regarding... Here is my portfolio...'), or empty string if not a hiring/lead post",
   "reason": "Brief explanation of why these comments were structured this way"
 }
 
-If irrelevant, set "relevant": false, "comments": { "professional": "", "insightful": "", "short": "" }, and explain in "reason".
+If irrelevant, set "relevant": false, "comments": { "professional": "", "insightful": "", "short": "" }, "dmPitch": "", and explain in "reason".
 `;
 
   return { systemInstruction, userContent };

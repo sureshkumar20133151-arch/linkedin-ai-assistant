@@ -45,6 +45,7 @@ router.post('/generate-comment', async (req, res) => {
     return res.json({
       success: true,
       comment: result.comment,
+      dmPitch: result.dmPitch || '',
       relevance: typeof result.relevanceScore === 'number' ? result.relevanceScore : 0.9,
       intent: result.intent || 'general_discussion',
       reason: result.reason || 'Comment generated successfully.'
@@ -96,6 +97,7 @@ router.post('/generate-comment-all', async (req, res) => {
     return res.json({
       success: true,
       comments: result.comments || {},
+      dmPitch: result.dmPitch || '',
       relevance: typeof result.relevanceScore === 'number' ? result.relevanceScore : 0.9,
       intent: result.intent || 'general_discussion',
       reason: result.reason || 'Comments generated successfully.'
