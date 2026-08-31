@@ -5,15 +5,7 @@
 (function () {
   console.log('[AI Assistant] LinkedIn Content Script Initialized.');
 
-  // Default Fallback Persona
-  const DEFAULT_PERSONA = {
-    role: "Full Stack Web Developer",
-    skills: ["HTML", "CSS", "JavaScript", "React", "Node.js", "APIs", "Automation", "Web Applications"],
-    services: ["Business Website Development", "Web Application Development", "Ecommerce Website Development", "API Integration", "Automation", "Custom Web Solutions"],
-    targetAudience: ["Small business owners", "Entrepreneurs", "Startups", "Businesses looking for websites", "People looking for developers"],
-    tone: "Professional, Natural, Helpful, Confident, Not overly promotional",
-    detailedProfile: "## Developer Profile\n- Location: Madurai, Tamil Nadu, India\n- Development Workflow: Leverages modern AI-assisted development tools and workflows to build clean, responsive web applications faster without compromising code quality.\n- Portfolio Positioning: Ambitious full-stack web developer actively expanding a freelance client portfolio with live interactive demo projects ready to show. Focused on delivering high-impact work with fast turnaround times and competitive rates."
-  };
+  // DEFAULT_PERSONA is defined in shared/config.js (loaded first via manifest.json)
 
   // All tone options shown in the "Choose Tone" dropdown when a comment
   // composer is opened. Keys must match STYLE_LABELS in
@@ -115,14 +107,12 @@
     // used together so clicking one disables the rest while a request is in flight.
     const allInteractiveButtons = [toneToggle, analyzeBtn, ...buttons];
 
-    // Cache the post context after the FIRST successful extraction (whether
-    // from the automatic tone recommendation or a manual tone click) and
-    // reuse it for every subsequent tone click on this same toolbar. Without
-    // this, every click re-extracts from the live DOM, and on LinkedIn's
-    // search-results page a scroll/re-render in between clicks can make the
-    // composer reference stale, causing "0 chars" extraction failures that
-    // make it look like tones can't be switched at all.
+    // Cache post context after first extraction — prevents stale DOM re-reads
+    // on search-results pages where a scroll can make the composer reference stale.
     let cachedPostContext = null;
+    // FIX 5: gate so tone recommendation only fires on first dropdown open
+    let toneRecommendationTriggered = false;
+
     async function getPostContext() {
       if (cachedPostContext && cachedPostContext.postText && cachedPostContext.postText.length >= 20) {
         return cachedPostContext;
@@ -134,7 +124,14 @@
       return ctx;
     }
 
-    // Open/close the tone dropdown
+    // Lazily fire tone recommendation — only on the first time the dropdown opens
+    function ensureToneRecommendation() {
+      if (toneRecommendationTriggered) return;
+      toneRecommendationTriggered = true;
+      loadToneRecommendation({ toolbar, composer, recommendBanner, getPostContext });
+    }
+
+    // Open/close the tone dropdown — FIX 5: trigger recommendation lazily on first open
     toneToggle.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -143,6 +140,7 @@
       if (isHidden) {
         toneMenu.removeAttribute('hidden');
         toneToggle.classList.add('open');
+        ensureToneRecommendation(); // only fires once per toolbar
       }
     });
 
@@ -151,6 +149,19 @@
       if (!toolbar.contains(e.target)) {
         toneMenu.setAttribute('hidden', '');
         toneToggle.classList.remove('open');
+      }
+    });
+
+    // FIX 3: Press Enter in the instruction input → open tone dropdown
+    inputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (toneMenu.hasAttribute('hidden')) {
+          closeAllToneMenus();
+          toneMenu.removeAttribute('hidden');
+          toneToggle.classList.add('open');
+          ensureToneRecommendation();
+        }
       }
     });
 
@@ -183,6 +194,11 @@
           postContext.authorProfile = response.profileData;
           cachedPostContext = postContext; // Update cache with profile data
           analyzeBtn.textContent = 'Profile Analyzed! ✓';
+          // FIX 4: auto-reset after 3s so user can re-analyze if needed
+          setTimeout(() => {
+            analyzeBtn.disabled = false;
+            analyzeBtn.textContent = '🔍 Analyze Profile';
+          }, 3000);
           showNotice(noticeContainer, 'info', `Analyzed ${postContext.authorName}'s profile! AI will now tailor the pitch to their role type.`);
         } else {
           throw new Error(response?.error || 'Could not extract profile details.');
@@ -195,9 +211,9 @@
       }
     });
 
-    // Fire-and-forget: analyze the post and recommend a tone as soon as the
-    // toolbar appears, so the user has guidance before opening the dropdown.
-    loadToneRecommendation({ toolbar, composer, recommendBanner, getPostContext });
+    // Tone recommendation is now LAZY — triggered by ensureToneRecommendation()
+    // on the first time the user opens the dropdown. This avoids wasting
+    // an API call for posts the user scrolls past without interacting with.
 
     buttons.forEach(btn => {
       btn.addEventListener('click', async (e) => {
@@ -303,7 +319,17 @@
 
       const label = TONE_LABEL_MAP[result.recommendedTone] || result.recommendedTone;
       recommendBanner.className = 'linkedin-ai-recommend-banner';
-      recommendBanner.innerHTML = `⭐ <strong>Recommended: ${label}</strong>${result.reason ? ` — ${result.reason}` : ''}`;
+
+      // FIX 2: Build banner via DOM API — result.reason comes from AI so must
+      // not be injected via innerHTML (XSS risk if Gemini returns HTML chars).
+      recommendBanner.innerHTML = '';
+      recommendBanner.appendChild(document.createTextNode('⭐ '));
+      const strong = document.createElement('strong');
+      strong.textContent = `Recommended: ${label}`;
+      recommendBanner.appendChild(strong);
+      if (result.reason) {
+        recommendBanner.appendChild(document.createTextNode(` — ${result.reason}`));
+      }
 
       const matchBtn = toolbar.querySelector(`.linkedin-ai-tone-menu-item[data-style="${result.recommendedTone}"]`);
       if (matchBtn && !matchBtn.textContent.startsWith('⭐')) {

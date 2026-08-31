@@ -11,14 +11,7 @@
 (function () {
   console.log('[AI Assistant] LinkedIn Messaging Content Script Initialized.');
 
-  const DEFAULT_PERSONA = {
-    role: "Website Developer",
-    skills: ["HTML", "CSS", "JavaScript", "React", "Node.js", "APIs", "Automation", "Web Applications"],
-    services: ["Business Website Development", "Web Application Development", "Ecommerce Website Development", "API Integration", "Automation", "Custom Web Solutions"],
-    targetAudience: ["Small business owners", "Entrepreneurs", "Startups", "Businesses looking for websites", "People looking for developers"],
-    tone: "Professional, Natural, Helpful, Confident, Not overly promotional",
-    detailedProfile: ""
-  };
+  // DEFAULT_PERSONA is defined in shared/config.js (loaded first via manifest.json)
 
   async function getStoredSettings() {
     return new Promise(resolve => {

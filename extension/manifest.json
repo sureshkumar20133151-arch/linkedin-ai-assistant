@@ -25,6 +25,7 @@
         "content.css"
       ],
       "js": [
+        "shared/config.js",
         "linkedin/selectors.js",
         "linkedin/postExtractor.js",
         "linkedin/profileExtractor.js",
