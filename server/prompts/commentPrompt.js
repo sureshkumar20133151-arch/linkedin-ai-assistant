@@ -82,6 +82,14 @@ ${detailedProfileBlock}
 7. DO NOT start with generic filler like "Great post!", "Nice post!", "Thanks for sharing!", or "I appreciate your...".
 8. If the post is completely IRRELEVANT to the user's expertise (sports, entertainment, politics, unrelated fields), set "relevant": false.
 9. Return your response STRICTLY as a raw JSON object.
+10. LANGUAGE & TONE BALANCE — NO COMPLEX JARGON, NO CHEAP SLANG:
+    - BANNED COMPLEX / UNFAMILIAR JARGON WORDS: "iterate", "leverage", "robust", "scalable", "synergy", "spearhead", "endeavors", "utilize", "comprehensive".
+    - BANNED CHEAP / SLANG WORDS: "gonna", "wanna", "cheap", "basic dev", "freelancer for hire".
+    - MANDATORY TONE: Clean, direct, confident, professional developer English that any client can read easily in 10 seconds.
+    - APPROVED EXAMPLE PHRASES:
+      * "I work with modern AI-assisted development tools to build fast and deliver high-quality code without cutting corners."
+      * "I specialize in building clean, fast-loading, responsive websites with WordPress and React.js."
+      * "I take on select projects with full dedication, fair pricing, and a strong commitment to quality."
 
 === CRITICAL: MATCH THE POST'S REQUIREMENTS ===
 - If the post mentions WordPress, talk about WordPress — NOT React or APIs alone.
@@ -395,17 +403,17 @@ When generating the "dmPitch" for a hiring/client requirement post, include ALL 
 
 4. SKILLS MATCH: State 2-3 skills that directly match what the post asked for.
 
-5. MODERN WORKFLOW (MANDATORY — include in EVERY DM): Frame AI-assisted development as an efficiency advantage.
-   APPROVED PHRASE: "I leverage modern AI-assisted development tools to build and iterate fast without compromising code quality."
-   NEVER SAY: "I am a vibe coder", "I use AI to write code", or anything that implies low skill.
+5. MODERN WORKFLOW (MANDATORY — include in EVERY DM): Frame AI-assisted development as a speed and quality advantage using SIMPLE ENGLISH.
+   APPROVED PHRASE: "I work with modern AI-assisted development tools to build fast and deliver high-quality work without cutting corners."
+   NEVER USE UNFAMILIAR OR JARGON WORDS LIKE: "iterate", "leverage", "robust", "scalable", "synergy", "utilize", "spearhead".
+   NEVER SAY: "I am a vibe coder", "I use AI to write code for me", or anything that implies low skill.
 
-6. PORTFOLIO INTENT (MANDATORY — include in EVERY DM): Frame early-career status as an opportunity for the client.
+6. PORTFOLIO INTENT (MANDATORY — include in EVERY DM): Frame early-career status as an opportunity for the client using SIMPLE, CLEAR WORDS.
    APPROVED PHRASES (pick the one that fits best):
-   - "I'm currently focused on building my freelance portfolio with real-world projects and would love to take on yours — I offer competitive rates and fast delivery."
-   - "As I'm in the early stages of growing my freelance client base, I take on select projects with full dedication, competitive pricing, and a genuine commitment to quality."
-   - "I'm actively looking to take on new projects to grow my client portfolio — this means you get a developer who is highly motivated, responsive, and priced competitively."
+   - "I'm currently focused on building my freelance portfolio with real projects and would love to take on yours — I offer competitive rates and fast delivery."
+   - "As I'm growing my freelance client base, I take on select projects with full dedication, fair pricing, and a strong commitment to quality."
+   - "I'm actively looking to take on new projects to grow my portfolio — that means you get a developer who is highly motivated, responsive, and priced competitively."
    NEVER SAY: "I am a fresher", "I have no experience", "I am a beginner", or "I am new to freelancing".
-   The framing must make it sound like an ADVANTAGE for the client, not a weakness.
 
 7. REAL LINKS (MANDATORY — always include both):
    Portfolio: ${activePersona.portfolioUrl || 'https://solodeveloper.pro/'}
