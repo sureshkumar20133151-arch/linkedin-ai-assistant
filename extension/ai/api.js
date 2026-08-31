@@ -50,9 +50,9 @@ async function requestGenerateComment({ post, persona, behavior, style, oneTimeI
   } catch (err) {
     clearTimeout(timeoutId);
     if (err.name === 'AbortError') {
-      throw new Error('Request timed out while connecting to AI backend.');
+      throw new Error('Request timed out. The AI backend may be cold-starting — please try again in a few seconds.');
     }
-    throw new Error(err.message || 'Unable to connect to backend server. Make sure the server is running on http://localhost:3000');
+    throw new Error(err.message || 'Unable to connect to AI backend. Please check your internet connection.');
   }
 }
 
@@ -89,9 +89,9 @@ async function requestGenerateAllComments({ post, persona, behavior, oneTimeInst
   } catch (err) {
     clearTimeout(timeoutId);
     if (err.name === 'AbortError') {
-      throw new Error('Request timed out while connecting to AI backend.');
+      throw new Error('Request timed out. The AI backend may be cold-starting — please try again in a few seconds.');
     }
-    throw new Error(err.message || 'Unable to connect to backend server. Make sure the server is running on http://localhost:3000');
+    throw new Error(err.message || 'Unable to connect to AI backend. Please check your internet connection.');
   }
 }
 
@@ -130,9 +130,9 @@ async function requestGenerateMessage({ recipient, conversation, persona, behavi
   } catch (err) {
     clearTimeout(timeoutId);
     if (err.name === 'AbortError') {
-      throw new Error('Request timed out while connecting to AI backend.');
+      throw new Error('Request timed out. The AI backend may be cold-starting — please try again in a few seconds.');
     }
-    throw new Error(err.message || 'Unable to connect to backend server. Make sure the server is running on http://localhost:3000');
+    throw new Error(err.message || 'Unable to connect to AI backend. Please check your internet connection.');
   }
 }
 
@@ -170,9 +170,9 @@ async function requestGenerateAllMessages({ recipient, conversation, persona, be
   } catch (err) {
     clearTimeout(timeoutId);
     if (err.name === 'AbortError') {
-      throw new Error('Request timed out while connecting to AI backend.');
+      throw new Error('Request timed out. The AI backend may be cold-starting — please try again in a few seconds.');
     }
-    throw new Error(err.message || 'Unable to connect to backend server. Make sure the server is running on http://localhost:3000');
+    throw new Error(err.message || 'Unable to connect to AI backend. Please check your internet connection.');
   }
 }
 

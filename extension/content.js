@@ -155,47 +155,45 @@
     });
 
     // Manual 'Analyze Profile' click handler
-    if (analyzeBtn) {
-      analyzeBtn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        analyzeBtn.disabled = true;
-        analyzeBtn.innerHTML = `<span class="linkedin-ai-spinner"></span> Analyzing...`;
+    analyzeBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      analyzeBtn.disabled = true;
+      analyzeBtn.innerHTML = `<span class="linkedin-ai-spinner"></span> Analyzing...`;
 
-        try {
-          const postContext = await getPostContext();
-          if (!postContext.authorProfileUrl) {
-            showNotice(noticeContainer, 'warning', 'Could not locate author profile URL on this post.');
-            analyzeBtn.disabled = false;
-            analyzeBtn.textContent = '🔍 Analyze Profile';
-            return;
-          }
-
-          showNotice(noticeContainer, 'info', `Analyzing ${postContext.authorName}'s full profile...`);
-
-          const response = await new Promise(res => {
-            chrome.runtime.sendMessage({
-              type: 'ANALYZE_PROFILE',
-              profileUrl: postContext.authorProfileUrl
-            }, res);
-          });
-
-          if (response && response.success && response.profileData) {
-            postContext.authorProfile = response.profileData;
-            cachedPostContext = postContext; // Update cache
-            analyzeBtn.textContent = 'Profile Analyzed! ✓';
-            showNotice(noticeContainer, 'info', `Analyzed ${postContext.authorName}'s profile! AI will now tailor the pitch to their role type.`);
-          } else {
-            throw new Error(response?.error || 'Could not extract profile details.');
-          }
-        } catch (err) {
-          console.warn('[AI Assistant] Analyze profile failed:', err);
-          showNotice(noticeContainer, 'warning', 'Profile analysis failed or timed out.');
+      try {
+        const postContext = await getPostContext();
+        if (!postContext || !postContext.authorProfileUrl) {
+          showNotice(noticeContainer, 'warning', 'Could not locate author profile URL on this post.');
           analyzeBtn.disabled = false;
           analyzeBtn.textContent = '🔍 Analyze Profile';
+          return;
         }
-      });
-    }
+
+        showNotice(noticeContainer, 'info', `Analyzing ${postContext.authorName}'s full profile...`);
+
+        const response = await new Promise(res => {
+          chrome.runtime.sendMessage({
+            type: 'ANALYZE_PROFILE',
+            profileUrl: postContext.authorProfileUrl
+          }, res);
+        });
+
+        if (response && response.success && response.profileData) {
+          postContext.authorProfile = response.profileData;
+          cachedPostContext = postContext; // Update cache with profile data
+          analyzeBtn.textContent = 'Profile Analyzed! ✓';
+          showNotice(noticeContainer, 'info', `Analyzed ${postContext.authorName}'s profile! AI will now tailor the pitch to their role type.`);
+        } else {
+          throw new Error(response?.error || 'Could not extract profile details.');
+        }
+      } catch (err) {
+        console.warn('[AI Assistant] Analyze profile failed:', err);
+        showNotice(noticeContainer, 'warning', 'Profile analysis failed or timed out. Try again.');
+        analyzeBtn.disabled = false;
+        analyzeBtn.textContent = '🔍 Analyze Profile';
+      }
+    });
 
     // Fire-and-forget: analyze the post and recommend a tone as soon as the
     // toolbar appears, so the user has guidance before opening the dropdown.
