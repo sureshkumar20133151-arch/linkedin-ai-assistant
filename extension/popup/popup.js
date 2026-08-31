@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       feedbackBox.textContent = `Backend Connected! Gemini Model: ${health.model || 'gemini-2.5-flash'}`;
     } else {
       feedbackBox.className = 'feedback-box error';
-      feedbackBox.textContent = `Connection Failed: ${health.error || 'Server not reachable on http://localhost:3000'}`;
+      feedbackBox.textContent = `Connection Failed: ${health.error || 'AI backend not reachable. Check your internet connection.'}`;
     }
   });
 });
