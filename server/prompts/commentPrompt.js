@@ -384,21 +384,33 @@ ${buildPostSection(post)}
 4. Based on the selected style, what should the comment focus on?
 
 === DM PITCH GUIDELINES FOR HIRING POSTS ===
-When generating the "dmPitch" for a hiring/client requirement post:
-1. Greet the author by first name (e.g. "Hi Vithya,").
-2. Reference their specific post/project requirement in one sentence.
-3. IF the post mentions a language/region preference (e.g. "Tamil preferred", "local preferred") AND the user's profile matches it — LEAD WITH THAT as the very first differentiator.
-4. State 2-3 matching skills directly relevant to what the post asked for.
-5. Frame AI-assisted development workflow indirectly as a STRENGTH:
-   - Use: "I leverage modern AI-assisted development tools to build and iterate fast without compromising code quality."
-   - NEVER say "I am a vibe coder" or "I use AI to write code for me".
-6. Frame early-career status professionally as portfolio building:
-   - Use: "I'm actively expanding my freelance client portfolio with high-quality demo projects, offering fast turnaround at competitive rates."
-   - NEVER say "I am a fresher" or "I have no experience".
-7. ALWAYS include the user's REAL portfolio URL and LinkedIn profile URL in the DM:
-   - Portfolio: ${activePersona.portfolioUrl || 'https://solodeveloper.pro/'}
-   - LinkedIn: ${activePersona.linkedInUrl || 'https://www.linkedin.com/in/suresh-kumar3151/'}
-8. End with a clear call to action: offer to discuss scope and timeline.
+When generating the "dmPitch" for a hiring/client requirement post, include ALL of these elements in order:
+
+1. GREETING: Greet the author by first name (e.g. "Hi Vithya,").
+
+2. HOOK (Reference their post): One sentence connecting to their specific requirement.
+
+3. LANGUAGE/REGION MATCH (if applicable): IF the post mentions a language or region preference AND the user's profile matches — state this as the FIRST differentiator before skills.
+
+4. SKILLS MATCH: State 2-3 skills that directly match what the post asked for.
+
+5. MODERN WORKFLOW (MANDATORY — include in EVERY DM): Frame AI-assisted development as an efficiency advantage.
+   APPROVED PHRASE: "I leverage modern AI-assisted development tools to build and iterate fast without compromising code quality."
+   NEVER SAY: "I am a vibe coder", "I use AI to write code", or anything that implies low skill.
+
+6. PORTFOLIO INTENT (MANDATORY — include in EVERY DM): Frame early-career status as an opportunity for the client.
+   APPROVED PHRASES (pick the one that fits best):
+   - "I'm currently focused on building my freelance portfolio with real-world projects and would love to take on yours — I offer competitive rates and fast delivery."
+   - "As I'm in the early stages of growing my freelance client base, I take on select projects with full dedication, competitive pricing, and a genuine commitment to quality."
+   - "I'm actively looking to take on new projects to grow my client portfolio — this means you get a developer who is highly motivated, responsive, and priced competitively."
+   NEVER SAY: "I am a fresher", "I have no experience", "I am a beginner", or "I am new to freelancing".
+   The framing must make it sound like an ADVANTAGE for the client, not a weakness.
+
+7. REAL LINKS (MANDATORY — always include both):
+   Portfolio: ${activePersona.portfolioUrl || 'https://solodeveloper.pro/'}
+   LinkedIn: ${activePersona.linkedInUrl || 'https://www.linkedin.com/in/suresh-kumar3151/'}
+
+8. CALL TO ACTION: End with an offer to discuss scope, timeline, or requirements.
 
 === REQUIRED JSON OUTPUT ===
 {
