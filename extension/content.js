@@ -215,8 +215,14 @@
           throw new Error(response?.error || 'Could not extract profile details.');
         }
       } catch (err) {
-        console.warn('[AI Assistant] Analyze profile failed:', err);
-        showNotice(noticeContainer, 'warning', 'Profile analysis failed or timed out. Try again.');
+        if (!err?.message?.includes('context invalidated')) {
+          console.warn('[AI Assistant] Analyze profile failed:', err);
+        }
+        let msg = 'Profile analysis failed or timed out. Try again.';
+        if (err?.message?.includes('context invalidated')) {
+          msg = '🔄 Extension was updated. Please refresh this page (F5) to continue.';
+        }
+        showNotice(noticeContainer, 'warning', msg);
         analyzeBtn.disabled = false;
         analyzeBtn.textContent = '🔍 Analyze Profile';
       }
@@ -290,7 +296,9 @@
           }
 
         } catch (err) {
-          console.error('[AI Assistant Error]', err);
+          if (!err?.message?.includes('context invalidated')) {
+            console.error('[AI Assistant Error]', err);
+          }
           let message = err.message || 'Unable to generate comment. Please try again.';
           if (message.includes('Extension context invalidated') || message.includes('context invalidated')) {
             message = '🔄 Extension was updated. Please refresh this page (F5) to continue using AI Assistant.';
