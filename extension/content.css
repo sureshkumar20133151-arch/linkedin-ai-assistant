@@ -21,6 +21,9 @@
   position: relative !important;
   clear: both !important;
   width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  flex-basis: 100% !important;
   box-sizing: border-box !important;
   visibility: visible !important;
   opacity: 1 !important;
@@ -558,8 +561,24 @@ html.dark-theme .linkedin-ai-result-card { background: linear-gradient(135deg, #
   border: 1px solid rgba(10, 102, 194, 0.15) !important;
   white-space: pre-wrap !important;
   word-break: break-word !important;
-  max-height: 160px !important;
+  max-height: 220px !important;
   overflow-y: auto !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #0a66c2 rgba(0,0,0,0.05) !important;
+}
+
+.linkedin-ai-dm-text::-webkit-scrollbar {
+  width: 5px !important;
+}
+
+.linkedin-ai-dm-text::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border-radius: 4px !important;
+}
+
+.linkedin-ai-dm-text::-webkit-scrollbar-thumb {
+  background: #0a66c2 !important;
+  border-radius: 4px !important;
 }
 
 .linkedin-ai-dm-actions {
