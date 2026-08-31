@@ -217,7 +217,6 @@ INSTRUCTIONS:
 - Do NOT use humor on sensitive topics (layoffs, personal hardship, tragedy, serious business risk) — for those, fall back to a genuine, non-joking observation instead.
 - One witty line is enough — do not overdo it.
 - Never punch down at the post's author or anyone mentioned in it.
->>>>>>> origin/feature/generate-all-and-detailed-profile
 `
 };
 
@@ -318,10 +317,37 @@ ROLE CLASSIFICATION & ADAPTATION INSTRUCTIONS:
 `;
   }
 
+  // Build competitive gap analysis section from existing comments
+  let gapBlock = '';
+  if (post.existingComments && post.existingComments.length > 0) {
+    const commentLines = post.existingComments
+      .map((c, i) => `  ${i + 1}. ${c.name}: "${c.text}"`)
+      .join('\n');
+    gapBlock = `
+=== EXISTING COMMENTS ON THIS POST (${post.existingComments.length} seen) ===
+${commentLines}
+
+=== COMPETITIVE GAP ANALYSIS — CRITICAL INSTRUCTIONS ===
+Before writing the comment, read ALL existing comments above and identify:
+1. WHAT ANGLE IS MISSING? — What has NOT been said yet that the post author specifically asked for or hinted at?
+2. WHAT IS THE USER'S UNIQUE EDGE? — Compare the user's profile against commenters above. What makes the user stand out?
+3. LEAD WITH THE GAP — Open the comment with the unique differentiator that others missed.
+
+EXAMPLE GAPS TO LOOK FOR:
+- Post says "Tamil speaker preferred" → most commenters are North Indian → LEAD WITH Tamil/South Indian connection.
+- Post emphasizes "speed of delivery" → nobody mentioned timeline → LEAD WITH fast turnaround.
+- Post says "WordPress + React" → everyone only mentioned WordPress → LEAD WITH full-stack dual capability.
+- Post says "SEO-optimized" → commenters ignored SEO → LEAD WITH SEO + performance expertise.
+- Post is from a specific city/region → nobody mentioned location proximity → LEAD WITH local availability.
+
+RULE: Do NOT copy or repeat what others already said. Your comment must occupy a UNIQUE position in this conversation.
+`;
+  }
+
   return `
 === TARGET LINKEDIN POST ===
 - Author: ${post.authorName || 'Unknown'} (${post.authorHeadline || 'LinkedIn User'})
-${profileBlock}- Post Text:
+${profileBlock}${gapBlock}- Post Text:
 """
 ${post.postText}
 """
@@ -331,6 +357,7 @@ ${post.hashtags?.length ? `- Hashtags: ${post.hashtags.join(', ')}` : ''}
 1. What is this post about? What is the author looking for or discussing?
 2. What SPECIFIC skills/technologies does the post mention?
 3. Which of the user's skills MATCH what the post is asking for?
+${post.existingComments?.length ? '4. What gap exists in existing comments that the user can uniquely fill?' : ''}
 `;
 }
 

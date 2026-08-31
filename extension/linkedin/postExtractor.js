@@ -309,6 +309,61 @@ async function extractPostContext(commentComposer) {
   return result;
 }
 
+
+/**
+ * Extract top existing comments from the post for competitive gap analysis.
+ * Returns an array of { name, text } objects (max 8 comments).
+ * Carefully scoped to ONLY the comments list — never bleeds into post text.
+ */
+function extractExistingComments(postElement) {
+  if (!postElement) return [];
+
+  const commentsList = postElement.querySelector(
+    '.comments-comments-list, .comments-list, [class*="comments-list"]'
+  );
+  if (!commentsList) return [];
+
+  const comments = [];
+  const commentItems = commentsList.querySelectorAll(
+    '.comments-comment-item, .comments-comment-entity, [class*="comment-item"]'
+  );
+
+  for (const item of commentItems) {
+    // Skip nested reply items
+    if (item.closest('.comments-comment-item .comments-comment-item')) continue;
+
+    // Commenter name
+    const nameEl = item.querySelector(
+      '.comments-post-meta__name-text span[aria-hidden="true"], ' +
+      '.comments-post-meta__name-text, ' +
+      '.comment-actor-name, ' +
+      'span[data-anonymize="person-name"]'
+    );
+    const name = nameEl ? (nameEl.innerText || nameEl.textContent || '').trim().split('\n')[0] : '';
+
+    // Comment text — expand "...more" if present
+    const seeMoreBtn = item.querySelector('button.comments-comment-item__inline-show-more-text');
+    if (seeMoreBtn && seeMoreBtn.offsetParent !== null) {
+      seeMoreBtn.click();
+    }
+
+    const textEl = item.querySelector(
+      '.comments-comment-item__main-content, ' +
+      '.update-components-text, ' +
+      'span[dir="ltr"]'
+    );
+    const text = textEl ? (textEl.innerText || textEl.textContent || '').trim() : '';
+
+    if (name && text && text.length > 10) {
+      comments.push({ name, text: text.substring(0, 400) });
+    }
+
+    if (comments.length >= 8) break;
+  }
+
+  return comments;
+}
+
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { findPostForCommentComposer, extractPostContext, expandPostText };
+  module.exports = { findPostForCommentComposer, extractPostContext, expandPostText, extractExistingComments };
 }

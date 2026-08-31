@@ -119,6 +119,9 @@
       }
       const ctx = await extractPostContext(composer);
       if (ctx && ctx.postText && ctx.postText.length >= 20) {
+        // Also extract existing comments for competitive gap analysis
+        const postEl = findPostForCommentComposer(composer);
+        ctx.existingComments = postEl ? extractExistingComments(postEl) : [];
         cachedPostContext = ctx;
       }
       return ctx;
