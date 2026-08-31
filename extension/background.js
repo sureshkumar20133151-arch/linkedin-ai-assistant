@@ -3,7 +3,7 @@
  */
 
 const DEFAULT_PERSONA = {
-  role: "Website Developer",
+  role: "Full Stack Web Developer",
   skills: ["HTML", "CSS", "JavaScript", "React", "Node.js", "APIs", "Automation", "Web Applications"],
   services: [
     "Business Website Development",
@@ -21,7 +21,10 @@ const DEFAULT_PERSONA = {
     "People looking for developers"
   ],
   tone: "Professional, Natural, Helpful, Confident, Not overly promotional",
-  detailedProfile: ""
+  detailedProfile: `## Developer Profile
+- Location: Madurai, Tamil Nadu, India
+- Development Workflow: Leverages modern AI-assisted development tools and workflows to build clean, responsive web applications faster without compromising code quality.
+- Portfolio Positioning: Ambitious full-stack web developer actively expanding a freelance client portfolio with live interactive demo projects ready to show. Focused on delivering high-impact work with fast turnaround times and competitive rates.`
 };
 
 const DEFAULT_BEHAVIOR = {

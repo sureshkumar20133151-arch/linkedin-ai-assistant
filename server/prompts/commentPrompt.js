@@ -3,7 +3,7 @@
  */
 
 const DEFAULT_PERSONA = {
-  role: "Website Developer",
+  role: "Full Stack Web Developer",
   skills: ["HTML", "CSS", "JavaScript", "React", "Node.js", "APIs", "Automation", "Web Applications"],
   services: [
     "Business Website Development",
@@ -21,7 +21,10 @@ const DEFAULT_PERSONA = {
     "People looking for developers"
   ],
   tone: "Professional, Natural, Helpful, Confident, Not overly promotional",
-  detailedProfile: ""
+  detailedProfile: `## Developer Profile
+- Location: Madurai, Tamil Nadu, India
+- Development Workflow: Leverages modern AI-assisted development tools and workflows to build clean, responsive web applications faster without compromising code quality.
+- Portfolio Positioning: Ambitious full-stack web developer actively expanding a freelance client portfolio with live interactive demo projects ready to show. Focused on delivering high-impact work with fast turnaround times and competitive rates.`
 };
 
 /**
@@ -347,13 +350,25 @@ ${buildPostSection(post)}
 
 4. Based on the selected style, what should the comment focus on?
 
+=== DM PITCH GUIDELINES FOR HIRING POSTS ===
+When generating the "dmPitch" for a hiring/client requirement post:
+1. Greet the author by first name (e.g. "Hi Abhay,").
+2. Reference their specific post/project requirement.
+3. Frame AI-assisted development workflow indirectly as a STRENGTH:
+   - Use phrasing like: "I leverage modern AI-assisted development tools and workflows to build and iterate fast without compromising code quality."
+   - NEVER say "I am a vibe coder" or "I just use AI to write code for me". Frame it as a modern, efficient, rapid-delivery advantage!
+4. Frame early-career / fresher status indirectly & professionally as portfolio building:
+   - Use phrasing like: "I am actively expanding my freelance client portfolio with high-quality demo projects ready to show, offering fast turnaround times and competitive rates."
+   - NEVER say "I am a fresher with no experience" or "I am a beginner". Position it as an ambitious developer actively building a client portfolio!
+5. Mention portfolio & call to action: Offer to share live project demos and discuss scope/timeline.
+
 === REQUIRED JSON OUTPUT ===
 {
   "relevant": true,
   "intent": "client_requirement" | "general_discussion" | "networking" | "hiring" | "educational" | "personal" | "irrelevant",
   "relevanceScore": 0.95,
   "comment": "The generated comment — must directly address the post's specific requirements",
-  "dmPitch": "A tailored, ready-to-send 1:1 DM pitch message to the author (e.g. 'Hi Abhay, Thanks for connecting... I saw your post regarding... Here is my portfolio...'), or empty string if post is not a hiring/lead post",
+  "dmPitch": "A tailored, ready-to-send 1:1 DM pitch message to the author following the DM Pitch Guidelines above",
   "reason": "Brief explanation of why this comment was structured this way"
 }
 

@@ -7,12 +7,12 @@
 
   // Default Fallback Persona
   const DEFAULT_PERSONA = {
-    role: "Website Developer",
+    role: "Full Stack Web Developer",
     skills: ["HTML", "CSS", "JavaScript", "React", "Node.js", "APIs", "Automation", "Web Applications"],
     services: ["Business Website Development", "Web Application Development", "Ecommerce Website Development", "API Integration", "Automation", "Custom Web Solutions"],
     targetAudience: ["Small business owners", "Entrepreneurs", "Startups", "Businesses looking for websites", "People looking for developers"],
     tone: "Professional, Natural, Helpful, Confident, Not overly promotional",
-    detailedProfile: ""
+    detailedProfile: "## Developer Profile\n- Location: Madurai, Tamil Nadu, India\n- Development Workflow: Leverages modern AI-assisted development tools and workflows to build clean, responsive web applications faster without compromising code quality.\n- Portfolio Positioning: Ambitious full-stack web developer actively expanding a freelance client portfolio with live interactive demo projects ready to show. Focused on delivering high-impact work with fast turnaround times and competitive rates."
   };
 
   // All tone options shown in the "Choose Tone" dropdown when a comment
