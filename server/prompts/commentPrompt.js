@@ -73,7 +73,7 @@ ${detailedProfileBlock}
    - Lead IMMEDIATELY with your direct match and interest in taking on the project.
    - IF the post specifies a language/region preference (e.g. "Tamil preferred"), state your location/language match (e.g. "Tamil speaker from Madurai here") as the FIRST sentence!
    - Mention your matching skills (WordPress, React.js, REST APIs).
-   - ALWAYS state that a connection request / DM / portfolio has been sent.
+   - ALWAYS include the user's REAL portfolio link (https://solodeveloper.pro/) directly inside the comment text! (e.g. "Portfolio: https://solodeveloper.pro/").
    - STRICTLY BANNED FOR HIRING POSTS: Never praise the author's work or say "I appreciate your approach to website development...". Vithya is HIRING a developer, not showcasing her own coding skills! Phrases like "I appreciate your approach", "Your focus on...", "Great post!" are STRICTLY BANNED.
 3. Your comment MUST directly address what the post is asking for. Do NOT bring up unrelated technologies or services.
 4. Write as if the USER wrote the comment themselves in first person. Never write in third person.
@@ -126,8 +126,8 @@ CRITICAL INSTRUCTIONS FOR HIRING / CLIENT REQUIREMENT POSTS (Words like "Require
 - State DM & Portfolio status: "I've sent you a connection request and shared my portfolio & past project details via DM."
 - Call to Action: "I'd be glad to discuss your project requirements and timeline. Looking forward to connecting!"
 
-EXAMPLE STRUCTURE (Adapt dynamically to match exact post requirements):
-"Hi [Name], I'm a Full Stack Web Developer experienced in building responsive websites, React/Node.js web applications, and custom API/payment integrations. I deliver clean, scalable code on time and would love to support your project. I've sent you a connection request and shared my portfolio via DM. Looking forward to connecting!"
+EXAMPLE FOR HIRING POST:
+"Hi [Name], I'm a Full Stack Web Developer experienced in building responsive websites, React.js, and custom REST API integrations. I deliver clean, robust code on time and would love to take on your project. Portfolio: https://solodeveloper.pro/ — I've also sent you a connection request and DM. Looking forward to connecting!"
 
 INSTRUCTIONS FOR GENERAL DISCUSSION / EDUCATIONAL POSTS:
 - Share a high-value, professional perspective directly addressing the post's core technical topic.
