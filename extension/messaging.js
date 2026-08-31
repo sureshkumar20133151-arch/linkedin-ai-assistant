@@ -15,14 +15,22 @@
 
   async function getStoredSettings() {
     return new Promise(resolve => {
-      if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-        chrome.storage.local.get(['persona', 'assistantBehavior'], result => {
-          resolve({
-            persona: result.persona || DEFAULT_PERSONA,
-            behavior: result.assistantBehavior || {}
+      try {
+        if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.id && chrome.storage && chrome.storage.local) {
+          chrome.storage.local.get(['persona', 'assistantBehavior'], result => {
+            if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.lastError) {
+              resolve({ persona: DEFAULT_PERSONA, behavior: {} });
+              return;
+            }
+            resolve({
+              persona: result?.persona || DEFAULT_PERSONA,
+              behavior: result?.assistantBehavior || {}
+            });
           });
-        });
-      } else {
+        } else {
+          resolve({ persona: DEFAULT_PERSONA, behavior: {} });
+        }
+      } catch (e) {
         resolve({ persona: DEFAULT_PERSONA, behavior: {} });
       }
     });

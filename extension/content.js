@@ -31,17 +31,25 @@
     document.querySelectorAll('.linkedin-ai-tone-toggle').forEach(t => t.classList.remove('open'));
   }
 
-  // Helper: Get stored persona & behavior
+  // Helper: Get stored persona & behavior (safely handles extension context invalidation)
   async function getStoredSettings() {
     return new Promise(resolve => {
-      if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-        chrome.storage.local.get(['persona', 'assistantBehavior'], result => {
-          resolve({
-            persona: result.persona || DEFAULT_PERSONA,
-            behavior: result.assistantBehavior || {}
+      try {
+        if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.id && chrome.storage && chrome.storage.local) {
+          chrome.storage.local.get(['persona', 'assistantBehavior'], result => {
+            if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.lastError) {
+              resolve({ persona: DEFAULT_PERSONA, behavior: {} });
+              return;
+            }
+            resolve({
+              persona: result?.persona || DEFAULT_PERSONA,
+              behavior: result?.assistantBehavior || {}
+            });
           });
-        });
-      } else {
+        } else {
+          resolve({ persona: DEFAULT_PERSONA, behavior: {} });
+        }
+      } catch (e) {
         resolve({ persona: DEFAULT_PERSONA, behavior: {} });
       }
     });
@@ -283,7 +291,11 @@
 
         } catch (err) {
           console.error('[AI Assistant Error]', err);
-          showNotice(noticeContainer, 'error', err.message || 'Unable to generate comment. Please try again.');
+          let message = err.message || 'Unable to generate comment. Please try again.';
+          if (message.includes('Extension context invalidated') || message.includes('context invalidated')) {
+            message = '🔄 Extension was updated. Please refresh this page (F5) to continue using AI Assistant.';
+          }
+          showNotice(noticeContainer, 'error', message);
         } finally {
           setLoadingState(allInteractiveButtons, btn, false);
         }
