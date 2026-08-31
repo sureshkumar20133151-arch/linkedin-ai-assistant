@@ -17,7 +17,7 @@ function findUnprocessedCommentComposers() {
     ) || target.parentElement;
 
     if (container) {
-      const outerBox = container.closest('.comments-comment-box, .feed-shared-comment-box, article') || container;
+      const outerBox = container.closest('.comments-comment-box, .feed-shared-comment-box, form.comments-comment-box__form') || container;
       // Strict duplicate check: make sure neither the box nor any child has a toolbar
       if (
         !outerBox.getAttribute('data-ai-assistant-toolbar') &&
