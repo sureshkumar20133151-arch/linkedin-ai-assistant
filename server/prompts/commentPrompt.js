@@ -368,6 +368,7 @@ ${post.existingComments?.length ? '4. What gap exists in existing comments that 
 }
 
 function buildCommentPrompt({ post, persona, behavior, style, oneTimeInstruction }) {
+  const activePersona = { ...DEFAULT_PERSONA, ...persona };
   const systemInstruction = buildSystemInstruction(persona);
   const behaviorSection = buildBehaviorSection(behavior);
   const selectedStyleGuide = STYLE_GUIDES[style.toLowerCase()] || STYLE_GUIDES.professional;
