@@ -53,11 +53,6 @@
   display: inline-block !important;
   font-size: 15px !important;
   animation: linkedin-ai-pulse 2s infinite ease-in-out !important;
-.linkedin-ai-header {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  width: 100% !important;
 }
 
 .linkedin-ai-analyze-profile-btn {
