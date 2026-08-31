@@ -74,6 +74,9 @@
         <div class="linkedin-ai-title">
           <span class="linkedin-ai-sparkle">✨</span> AI Comment
         </div>
+        <button type="button" class="linkedin-ai-analyze-profile-btn" title="Analyze author's full profile to classify role (Founder / Recruiter / HR)">
+          🔍 Analyze Profile
+        </button>
       </div>
       <div class="linkedin-ai-recommend-banner" hidden></div>
       <div class="linkedin-ai-tone-select-wrapper">
@@ -106,10 +109,11 @@
     const buttons = toolbar.querySelectorAll('.linkedin-ai-tone-menu-item');
     const inputEl = toolbar.querySelector('.linkedin-ai-input');
     const noticeContainer = toolbar.querySelector('.linkedin-ai-notice-container');
+    const analyzeBtn = toolbar.querySelector('.linkedin-ai-analyze-profile-btn');
 
-    // All interactive controls (tone dropdown toggle + every tone option),
+    // All interactive controls (tone dropdown toggle + analyze btn + every tone option),
     // used together so clicking one disables the rest while a request is in flight.
-    const allInteractiveButtons = [toneToggle, ...buttons];
+    const allInteractiveButtons = [toneToggle, analyzeBtn, ...buttons];
 
     // Cache the post context after the FIRST successful extraction (whether
     // from the automatic tone recommendation or a manual tone click) and
@@ -149,6 +153,49 @@
         toneToggle.classList.remove('open');
       }
     });
+
+    // Manual 'Analyze Profile' click handler
+    if (analyzeBtn) {
+      analyzeBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        analyzeBtn.disabled = true;
+        analyzeBtn.innerHTML = `<span class="linkedin-ai-spinner"></span> Analyzing...`;
+
+        try {
+          const postContext = await getPostContext();
+          if (!postContext.authorProfileUrl) {
+            showNotice(noticeContainer, 'warning', 'Could not locate author profile URL on this post.');
+            analyzeBtn.disabled = false;
+            analyzeBtn.textContent = '🔍 Analyze Profile';
+            return;
+          }
+
+          showNotice(noticeContainer, 'info', `Analyzing ${postContext.authorName}'s full profile...`);
+
+          const response = await new Promise(res => {
+            chrome.runtime.sendMessage({
+              type: 'ANALYZE_PROFILE',
+              profileUrl: postContext.authorProfileUrl
+            }, res);
+          });
+
+          if (response && response.success && response.profileData) {
+            postContext.authorProfile = response.profileData;
+            cachedPostContext = postContext; // Update cache
+            analyzeBtn.textContent = 'Profile Analyzed! ✓';
+            showNotice(noticeContainer, 'info', `Analyzed ${postContext.authorName}'s profile! AI will now tailor the pitch to their role type.`);
+          } else {
+            throw new Error(response?.error || 'Could not extract profile details.');
+          }
+        } catch (err) {
+          console.warn('[AI Assistant] Analyze profile failed:', err);
+          showNotice(noticeContainer, 'warning', 'Profile analysis failed or timed out.');
+          analyzeBtn.disabled = false;
+          analyzeBtn.textContent = '🔍 Analyze Profile';
+        }
+      });
+    }
 
     // Fire-and-forget: analyze the post and recommend a tone as soon as the
     // toolbar appears, so the user has guidance before opening the dropdown.

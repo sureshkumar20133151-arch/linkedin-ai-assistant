@@ -5,7 +5,9 @@
   "description": "AI-powered personal commenting assistant for LinkedIn, tailored to your professional profile and behavior preferences.",
   "permissions": [
     "storage",
-    "activeTab"
+    "activeTab",
+    "tabs",
+    "scripting"
   ],
   "host_permissions": [
     "https://*.linkedin.com/*",
@@ -26,6 +28,7 @@
       "js": [
         "linkedin/selectors.js",
         "linkedin/postExtractor.js",
+        "linkedin/profileExtractor.js",
         "linkedin/commentInserter.js",
         "linkedin/detector.js",
         "linkedin/messageSelectors.js",

@@ -293,10 +293,32 @@ still pick the least-bad "recommendedTone" (e.g. "short"), and explain why in "r
 }
 
 function buildPostSection(post) {
+  let profileBlock = '';
+  if (post.authorProfile) {
+    const p = post.authorProfile;
+    const entries = (p.experienceEntries || [])
+      .map(e => `  * ${e.title}${e.company ? ` at ${e.company}` : ''}`)
+      .join('\n');
+    profileBlock = `
+=== AUTHOR'S FULL PROFILE CONTEXT ===
+- Headline: ${p.headline || 'N/A'}
+- Location: ${p.location || 'N/A'}
+${p.aboutText ? `- About: ${p.aboutText}\n` : ''}${entries ? `- Key Experience:\n${entries}\n` : ''}
+ROLE CLASSIFICATION & ADAPTATION INSTRUCTIONS:
+1. Classify the author's role type based on headline & experience:
+   - FOUNDER / CEO / BUSINESS OWNER: Focus on business impact, speed, ownership, clean architecture, and project reliability.
+   - AGENCY RECRUITER / TALENT ACQUISITION: Focus on clear technical stack, quick availability, portfolio link, and seamless client delivery.
+   - CORPORATE HR / HIRING MANAGER: Focus on professional execution, communication, and technical domain match.
+2. ABSOLUTE RULE FOR PROFILE DATA:
+   - Use the role classification above ONLY to tailor your pitch tone and angle.
+   - Do NOT claim or imply any mutual group, shared connection, or common community (e.g. NEVER say "We are both in the same group").
+`;
+  }
+
   return `
 === TARGET LINKEDIN POST ===
 - Author: ${post.authorName || 'Unknown'} (${post.authorHeadline || 'LinkedIn User'})
-- Post Text:
+${profileBlock}- Post Text:
 """
 ${post.postText}
 """

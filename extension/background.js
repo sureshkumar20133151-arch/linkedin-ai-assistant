@@ -49,3 +49,52 @@ chrome.runtime.onInstalled.addListener(details => {
     });
   }
 });
+
+// Listens for manual 'Analyze Profile' requests from the content script,
+// opens the profile in a background tab, extracts details, closes the tab,
+// and returns the profile context.
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.type === 'ANALYZE_PROFILE' && request.profileUrl) {
+    analyzeProfileInBackground(request.profileUrl)
+      .then(profileData => sendResponse({ success: true, profileData }))
+      .catch(err => sendResponse({ success: false, error: err.message }));
+    return true; // Async response
+  }
+});
+
+async function analyzeProfileInBackground(profileUrl) {
+  const tab = await chrome.tabs.create({ url: profileUrl, active: false });
+
+  try {
+    await new Promise((resolve) => {
+      function listener(tabId, info) {
+        if (tabId === tab.id && info.status === 'complete') {
+          chrome.tabs.onUpdated.removeListener(listener);
+          resolve();
+        }
+      }
+      chrome.tabs.onUpdated.addListener(listener);
+    });
+
+    await new Promise(r => setTimeout(r, 1500));
+
+    const results = await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      files: ['linkedin/profileExtractor.js']
+    });
+
+    if (results && results[0]) {
+      const evalResult = await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: () => extractProfileContext(document)
+      });
+      return evalResult && evalResult[0] ? evalResult[0].result : null;
+    }
+    return null;
+  } finally {
+    if (tab && tab.id) {
+      chrome.tabs.remove(tab.id).catch(() => {});
+    }
+  }
+}
+
