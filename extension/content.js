@@ -57,15 +57,21 @@
 
   // Create & inject AI Toolbar into a detected comment composer
   function injectAIToolbar(composer) {
-    if (!composer || composer.getAttribute('data-ai-assistant-toolbar')) return;
+    if (!composer) return;
 
-    // Mark composer container
-    composer.setAttribute('data-ai-assistant-toolbar', 'true');
-
-    // Check if toolbar already exists nearby to prevent duplicates
-    if (composer.parentElement && composer.parentElement.querySelector('.linkedin-ai-toolbar-container')) {
+    // Strict duplicate check across ancestor and descendant tree
+    const outerBox = composer.closest('.comments-comment-box, .feed-shared-comment-box, form') || composer;
+    if (
+      outerBox.getAttribute('data-ai-assistant-toolbar') ||
+      outerBox.querySelector('.linkedin-ai-toolbar-container') ||
+      composer.querySelector('.linkedin-ai-toolbar-container')
+    ) {
       return;
     }
+
+    // Mark both outer container and composer element
+    outerBox.setAttribute('data-ai-assistant-toolbar', 'true');
+    composer.setAttribute('data-ai-assistant-toolbar', 'true');
 
     const toolbar = document.createElement('div');
     toolbar.className = 'linkedin-ai-toolbar-container';

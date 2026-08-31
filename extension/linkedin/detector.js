@@ -4,24 +4,31 @@
  */
 
 function findUnprocessedCommentComposers() {
-  const foundComposers = new Set();
+  const canonicalContainers = new Set();
 
-  // 1. Query using known composer class selectors
-  const composerElements = querySelectorAllFallback(document.body, LINKEDIN_SELECTORS.commentComposers);
-  composerElements.forEach(el => foundComposers.add(el));
+  const targets = document.querySelectorAll(
+    'div[contenteditable="true"], .comments-comment-box, .feed-shared-comment-box, form.comments-comment-box__form'
+  );
 
-  // 2. Query contenteditable editors directly to catch newly rendered forms
-  const editableEditors = document.querySelectorAll('div[contenteditable="true"]');
-  editableEditors.forEach(editor => {
-    const parentContainer = editor.closest('.comments-comment-box, .feed-shared-comment-box, form.comments-comment-box__form, .comments-comment-texteditor, .comments-comment-box__editor-container') || editor.parentElement;
-    if (parentContainer) {
-      foundComposers.add(parentContainer);
+  targets.forEach(target => {
+    // Find the outermost comment box container
+    const container = target.closest(
+      '.comments-comment-box, .feed-shared-comment-box, form.comments-comment-box__form, .comments-comment-box__editor-container'
+    ) || target.parentElement;
+
+    if (container) {
+      const outerBox = container.closest('.comments-comment-box, .feed-shared-comment-box, article') || container;
+      // Strict duplicate check: make sure neither the box nor any child has a toolbar
+      if (
+        !outerBox.getAttribute('data-ai-assistant-toolbar') &&
+        !outerBox.querySelector('.linkedin-ai-toolbar-container')
+      ) {
+        canonicalContainers.add(outerBox);
+      }
     }
   });
 
-  return Array.from(foundComposers).filter(composer => {
-    return !composer.getAttribute('data-ai-assistant-toolbar');
-  });
+  return Array.from(canonicalContainers);
 }
 
 function observeLinkedInComposers(onComposerDetected) {
