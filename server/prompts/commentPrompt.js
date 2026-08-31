@@ -21,8 +21,12 @@ const DEFAULT_PERSONA = {
     "People looking for developers"
   ],
   tone: "Professional, Natural, Helpful, Confident, Not overly promotional",
+  linkedInUrl: "https://www.linkedin.com/in/suresh-kumar3151/",
+  portfolioUrl: "https://solodeveloper.pro/",
   detailedProfile: `## Developer Profile
 - Location: Madurai, Tamil Nadu, India
+- LinkedIn: https://www.linkedin.com/in/suresh-kumar3151/
+- Portfolio: https://solodeveloper.pro/
 - Development Workflow: Leverages modern AI-assisted development tools and workflows to build clean, responsive web applications faster without compromising code quality.
 - Portfolio Positioning: Ambitious full-stack web developer actively expanding a freelance client portfolio with live interactive demo projects ready to show. Focused on delivering high-impact work with fast turnaround times and competitive rates.`
 };
@@ -59,6 +63,8 @@ Your primary role is to help the user write authentic, context-aware LinkedIn co
 - Services: ${Array.isArray(activePersona.services) ? activePersona.services.join(', ') : activePersona.services}
 - Target Audience: ${Array.isArray(activePersona.targetAudience) ? activePersona.targetAudience.join(', ') : activePersona.targetAudience}
 - Preferred Tone: ${activePersona.tone}
+${activePersona.linkedInUrl ? `- LinkedIn Profile: ${activePersona.linkedInUrl}` : ''}
+${activePersona.portfolioUrl ? `- Portfolio: ${activePersona.portfolioUrl}` : ''}
 ${detailedProfileBlock}
 === ABSOLUTE RULES ===
 1. READ THE POST CAREFULLY. Determine if this post is a HIRING / FREELANCE REQUIREMENT POST (e.g. "Looking for...", "Hiring...", "Required...", "Project-based...", "DM portfolio").
@@ -379,15 +385,20 @@ ${buildPostSection(post)}
 
 === DM PITCH GUIDELINES FOR HIRING POSTS ===
 When generating the "dmPitch" for a hiring/client requirement post:
-1. Greet the author by first name (e.g. "Hi Abhay,").
-2. Reference their specific post/project requirement.
-3. Frame AI-assisted development workflow indirectly as a STRENGTH:
-   - Use phrasing like: "I leverage modern AI-assisted development tools and workflows to build and iterate fast without compromising code quality."
-   - NEVER say "I am a vibe coder" or "I just use AI to write code for me". Frame it as a modern, efficient, rapid-delivery advantage!
-4. Frame early-career / fresher status indirectly & professionally as portfolio building:
-   - Use phrasing like: "I am actively expanding my freelance client portfolio with high-quality demo projects ready to show, offering fast turnaround times and competitive rates."
-   - NEVER say "I am a fresher with no experience" or "I am a beginner". Position it as an ambitious developer actively building a client portfolio!
-5. Mention portfolio & call to action: Offer to share live project demos and discuss scope/timeline.
+1. Greet the author by first name (e.g. "Hi Vithya,").
+2. Reference their specific post/project requirement in one sentence.
+3. IF the post mentions a language/region preference (e.g. "Tamil preferred", "local preferred") AND the user's profile matches it — LEAD WITH THAT as the very first differentiator.
+4. State 2-3 matching skills directly relevant to what the post asked for.
+5. Frame AI-assisted development workflow indirectly as a STRENGTH:
+   - Use: "I leverage modern AI-assisted development tools to build and iterate fast without compromising code quality."
+   - NEVER say "I am a vibe coder" or "I use AI to write code for me".
+6. Frame early-career status professionally as portfolio building:
+   - Use: "I'm actively expanding my freelance client portfolio with high-quality demo projects, offering fast turnaround at competitive rates."
+   - NEVER say "I am a fresher" or "I have no experience".
+7. ALWAYS include the user's REAL portfolio URL and LinkedIn profile URL in the DM:
+   - Portfolio: ${activePersona.portfolioUrl || 'https://solodeveloper.pro/'}
+   - LinkedIn: ${activePersona.linkedInUrl || 'https://www.linkedin.com/in/suresh-kumar3151/'}
+8. End with a clear call to action: offer to discuss scope and timeline.
 
 === REQUIRED JSON OUTPUT ===
 {

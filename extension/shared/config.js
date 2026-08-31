@@ -25,8 +25,12 @@ const DEFAULT_PERSONA = {
     "People looking for developers"
   ],
   tone: "Professional, Natural, Helpful, Confident, Not overly promotional",
+  linkedInUrl: "https://www.linkedin.com/in/suresh-kumar3151/",
+  portfolioUrl: "https://solodeveloper.pro/",
   detailedProfile: `## Developer Profile
 - Location: Madurai, Tamil Nadu, India
+- LinkedIn: https://www.linkedin.com/in/suresh-kumar3151/
+- Portfolio: https://solodeveloper.pro/
 - Development Workflow: Leverages modern AI-assisted development tools and workflows to build clean, responsive web applications faster without compromising code quality.
 - Portfolio Positioning: Ambitious full-stack web developer actively expanding a freelance client portfolio with live interactive demo projects ready to show. Focused on delivering high-impact work with fast turnaround times and competitive rates.`
 };
