@@ -204,6 +204,8 @@
             showNotice(noticeContainer, 'warning', `Generated! Couldn't auto-insert.`, response.comment);
           }
 
+          renderGeneratedCommentCard(noticeContainer, response.comment, insertResult.success);
+
           if (response.dmPitch) {
             renderDMPitchCard(noticeContainer, response.dmPitch, postContext.authorName, composer);
           }
@@ -401,6 +403,8 @@
               // Copy Fallback
               showNotice(noticeContainer, 'warning', `Couldn't insert automatically.`, response.comment);
             }
+
+            renderGeneratedCommentCard(noticeContainer, response.comment, insertResult.success);
 
             if (response.dmPitch) {
               renderDMPitchCard(noticeContainer, response.dmPitch, postContext.authorName, composer);

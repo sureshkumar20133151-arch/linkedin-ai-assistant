@@ -212,11 +212,46 @@ function renderDMPitchCard(container, dmPitch, authorName, composer) {
   container.appendChild(card);
 }
 
+// Renders a clear Generated Comment card inside the extension UI
+function renderGeneratedCommentCard(container, commentText, autoInserted = false) {
+  if (!commentText || !commentText.trim()) return;
+
+  const card = document.createElement('div');
+  card.className = 'linkedin-ai-dm-pitch-card linkedin-ai-comment-card';
+  card.style.background = 'linear-gradient(135deg, #f4fbf7 0%, #e6f7ef 100%)';
+  card.style.borderColor = '#057642';
+
+  card.innerHTML = `
+    <div class="linkedin-ai-dm-header">
+      <span class="linkedin-ai-dm-badge" style="background: #057642;">💬 GENERATED COMMENT</span>
+      <span style="font-size: 11px; color: #057642; font-weight: 600;">
+        ${autoInserted ? '✓ Inserted in Comment Box' : 'Ready to Copy'}
+      </span>
+    </div>
+    <div class="linkedin-ai-dm-text" style="border-color: rgba(5, 118, 66, 0.2);"></div>
+    <div class="linkedin-ai-dm-actions">
+      <button type="button" class="linkedin-ai-copy-dm-btn" style="color: #057642; border-color: #057642;">📋 Copy Comment</button>
+    </div>
+  `;
+
+  card.querySelector('.linkedin-ai-dm-text').textContent = commentText.trim();
+
+  const copyBtn = card.querySelector('.linkedin-ai-copy-dm-btn');
+  copyBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const copied = await copyCommentToClipboard(commentText.trim());
+    copyBtn.textContent = copied ? 'Comment Copied! ✓' : 'Copy Failed';
+    setTimeout(() => { copyBtn.textContent = '📋 Copy Comment'; }, 2000);
+  });
+
+  container.appendChild(card);
+}
+
 function escapeHtml(str) {
   return (str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { setToolbarLoadingState, showToolbarNotice, renderToolbarResultCards, renderDMPitchCard, resolvePostAuthorTargets };
+  module.exports = { setToolbarLoadingState, showToolbarNotice, renderToolbarResultCards, renderDMPitchCard, renderGeneratedCommentCard, resolvePostAuthorTargets };
 }
 
