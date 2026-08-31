@@ -135,20 +135,24 @@ const STYLE_GUIDES = {
   professional: `
 === STYLE: PROFESSIONAL ===
 GOAL: The user is responding as an EXPERT FREELANCER / WEB DEVELOPER pitching for work on LinkedIn.
+GOAL: Sound like a confident developer who saw something relevant and responded naturally — not a cover letter robot.
 
-CRITICAL INSTRUCTIONS FOR HIRING / CLIENT REQUIREMENT POSTS (Words like "Required", "Hiring", "Looking for", "Freelance", "Budget", "DM", "Project"):
-- Greet author by first name if authorName is available (e.g. "Hi Abhay,").
-- State your exact role and matching skills for the project (e.g. "I'm a Full Stack Developer specializing in responsive web applications, React, Node.js, and custom API/payment integrations.").
-- Highlight execution & quality: Mention clean, scalable code and delivering on time.
-- State DM & Portfolio status: "I've sent you a connection request and shared my portfolio & past project details via DM."
-- Call to Action: "I'd be glad to discuss your project requirements and timeline. Looking forward to connecting!"
+FOR HIRING / FREELANCE POSTS:
+Keep it tight. 3-4 sentences max. Greet by first name, state the specific match, mention the DM/portfolio, done.
+Do NOT list every skill. Pick the 1-2 most relevant to what they specifically asked for.
+Do NOT close with "Looking forward to connecting!" — use something real.
 
-EXAMPLE STRUCTURE (Adapt dynamically to match exact post requirements):
-"Hi [Name], I'm a Full Stack Web Developer experienced in building responsive websites, React/Node.js web applications, and custom API/payment integrations. I deliver clean, scalable code on time and would love to support your project. I've sent you a connection request and shared my portfolio via DM. Looking forward to connecting!"
+GOOD EXAMPLES (use these as voice references — adapt to the actual post):
+- "Hi Priya, WordPress + Elementor with REST API work is exactly what I do. I've handled this kind of stack for business sites and maintenance projects. Sent you a connection request — portfolio and details in the DM."
+- "Hi Kaushal, your requirement maps well to what I've been building — responsive React frontends with Node APIs and SEO work baked in. Shot you a DM with my portfolio. Happy to talk scope whenever."
+- "Hi Vithya — Tamil speaker from Madurai here, so communication won't be an issue. WordPress, React, REST APIs — all covered. Sent a connection request with my portfolio."
 
-INSTRUCTIONS FOR GENERAL DISCUSSION / EDUCATIONAL POSTS:
-- Share a high-value, professional perspective directly addressing the post's core technical topic.
-- Demonstrate deep technical capability naturally without hard selling.
+BAD EXAMPLES (never produce output like this):
+- "Hi [Name], I am a Full Stack Web Developer with expertise in building responsive web applications. I am passionate about delivering high-quality solutions. Looking forward to connecting!"
+- "I am highly interested in this opportunity and believe my skill set aligns perfectly with your requirements."
+
+FOR GENERAL / DISCUSSION POSTS:
+Share one real, specific observation about the topic. Sound like you've actually dealt with this problem, not just read about it.
 `,
   insightful: `
 === STYLE: INSIGHTFUL / CONFIDENT ===
