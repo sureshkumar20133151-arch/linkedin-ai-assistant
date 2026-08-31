@@ -77,7 +77,40 @@ html.dark-theme .linkedin-ai-title { color: #6cb4f5 !important; }
   to { transform: rotate(360deg); }
 }
 
-/* ── Analyze Profile Button ────────────────────────────────── */
+.linkedin-ai-header-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+/* ── ⚡ 1-Click Auto Generate Button ───────────────────────── */
+.linkedin-ai-auto-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #0a66c2 0%, #0855a3 100%) !important;
+  border: none !important;
+  border-radius: 20px !important;
+  padding: 4px 12px !important;
+  cursor: pointer !important;
+  transition: all 0.18s ease !important;
+  white-space: nowrap !important;
+  box-shadow: 0 2px 8px rgba(10, 102, 194, 0.28) !important;
+}
+
+.linkedin-ai-auto-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0855a3 0%, #064080 100%) !important;
+  box-shadow: 0 4px 12px rgba(10, 102, 194, 0.38) !important;
+  transform: translateY(-1px) !important;
+}
+
+.linkedin-ai-auto-btn:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
 .linkedin-ai-analyze-profile-btn {
   display: inline-flex !important;
   align-items: center !important;

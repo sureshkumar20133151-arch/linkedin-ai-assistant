@@ -80,9 +80,14 @@
         <div class="linkedin-ai-title">
           <span class="linkedin-ai-sparkle">✨</span> AI Comment
         </div>
-        <button type="button" class="linkedin-ai-analyze-profile-btn" title="Analyze author's full profile to classify role (Founder / Recruiter / HR)">
-          🔍 Analyze Profile
-        </button>
+        <div class="linkedin-ai-header-actions">
+          <button type="button" class="linkedin-ai-auto-btn" title="1-Click Auto: Analyzes profile & post, picks best tone, and generates (Ctrl+Shift+G)">
+            ⚡ Auto Generate
+          </button>
+          <button type="button" class="linkedin-ai-analyze-profile-btn" title="Analyze author's full profile">
+            🔍 Profile
+          </button>
+        </div>
       </div>
       <div class="linkedin-ai-recommend-banner" hidden></div>
       <div class="linkedin-ai-tone-select-wrapper">
@@ -95,7 +100,7 @@
         </div>
       </div>
       <div class="linkedin-ai-prompt-box">
-        <input type="text" class="linkedin-ai-input" placeholder="One-time instruction for this comment (optional)..." />
+        <input type="text" class="linkedin-ai-input" placeholder="Instruction (optional, press Enter or Ctrl+Shift+G)..." />
       </div>
       <div class="linkedin-ai-notice-container"></div>
     `;
@@ -116,16 +121,14 @@
     const inputEl = toolbar.querySelector('.linkedin-ai-input');
     const noticeContainer = toolbar.querySelector('.linkedin-ai-notice-container');
     const analyzeBtn = toolbar.querySelector('.linkedin-ai-analyze-profile-btn');
+    const autoBtn = toolbar.querySelector('.linkedin-ai-auto-btn');
 
-    // All interactive controls (tone dropdown toggle + analyze btn + every tone option),
-    // used together so clicking one disables the rest while a request is in flight.
-    const allInteractiveButtons = [toneToggle, analyzeBtn, ...buttons];
+    // All interactive controls used together for disabling while loading
+    const allInteractiveButtons = [autoBtn, toneToggle, analyzeBtn, ...buttons];
 
-    // Cache post context after first extraction — prevents stale DOM re-reads
-    // on search-results pages where a scroll can make the composer reference stale.
     let cachedPostContext = null;
-    // FIX 5: gate so tone recommendation only fires on first dropdown open
     let toneRecommendationTriggered = false;
+    let recommendedToneCache = null;
 
     async function getPostContext() {
       if (cachedPostContext && cachedPostContext.postText && cachedPostContext.postText.length >= 20) {
@@ -133,13 +136,118 @@
       }
       const ctx = await extractPostContext(composer);
       if (ctx && ctx.postText && ctx.postText.length >= 20) {
-        // Also extract existing comments for competitive gap analysis
         const postEl = findPostForCommentComposer(composer);
         ctx.existingComments = postEl ? extractExistingComments(postEl) : [];
         cachedPostContext = ctx;
       }
       return ctx;
     }
+
+    // ⚡ 1-Click Auto-Generate Pipeline Function
+    async function runAutoGeneratePipeline(customStyle = null) {
+      setLoadingState(allInteractiveButtons, autoBtn, true, 'Auto Generating...');
+      noticeContainer.innerHTML = '';
+
+      try {
+        const postContext = await getPostContext();
+        if (!postContext || !postContext.postText || postContext.postText.length < 10) {
+          throw new Error('Could not extract post text. Scroll to make the full post visible and try again.');
+        }
+
+        // Silent profile fetch if available and not fetched yet
+        if (postContext.authorProfileUrl && !postContext.authorProfile) {
+          try {
+            const profileRes = await new Promise(res => {
+              chrome.runtime.sendMessage({
+                type: 'ANALYZE_PROFILE',
+                profileUrl: postContext.authorProfileUrl
+              }, res);
+            });
+            if (profileRes && profileRes.success && profileRes.profileData) {
+              postContext.authorProfile = profileRes.profileData;
+              cachedPostContext = postContext;
+            }
+          } catch (e) {
+            // Non-blocking fallback
+          }
+        }
+
+        // Determine best tone
+        let style = customStyle;
+        if (!style) {
+          style = recommendedToneCache || 'professional';
+        }
+
+        toneToggleLabel.textContent = TONE_LABEL_MAP[style] || style;
+
+        const { persona, behavior } = await getStoredSettings();
+        const oneTimeInstruction = inputEl.value.trim();
+
+        const response = await requestGenerateComment({
+          post: postContext,
+          persona,
+          behavior,
+          style,
+          oneTimeInstruction: oneTimeInstruction || null
+        });
+
+        if (response.skip) {
+          showNotice(noticeContainer, 'warning', response.reason || "Post doesn't appear relevant.");
+          return;
+        }
+
+        if (response.success && response.comment) {
+          const insertResult = await insertCommentIntoEditor(composer, response.comment);
+          if (insertResult.success) {
+            showNotice(noticeContainer, 'info', 'Comment auto-generated & inserted! Click Post when ready.');
+          } else {
+            showNotice(noticeContainer, 'warning', `Generated! Couldn't auto-insert.`, response.comment);
+          }
+
+          if (response.dmPitch) {
+            renderDMPitchCard(noticeContainer, response.dmPitch, postContext.authorName, composer);
+          }
+        } else {
+          throw new Error(response.error || 'Failed to generate comment.');
+        }
+      } catch (err) {
+        if (!err?.message?.includes('context invalidated')) {
+          console.error('[AI Assistant Error]', err);
+        }
+        let message = err.message || 'Unable to generate comment. Please try again.';
+        if (message.includes('context invalidated')) {
+          message = '🔄 Extension was updated. Please refresh this page (F5) to continue.';
+        }
+        showNotice(noticeContainer, 'error', message);
+      } finally {
+        setLoadingState(allInteractiveButtons, autoBtn, false);
+      }
+    }
+
+    // Attach ⚡ Auto Generate button click listener
+    autoBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      runAutoGeneratePipeline();
+    });
+
+    // Keyboard Hotkey: Ctrl+Shift+G or Enter in instruction input
+    const handleHotkey = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'g') {
+        e.preventDefault();
+        e.stopPropagation();
+        runAutoGeneratePipeline();
+      }
+    };
+    toolbar.addEventListener('keydown', handleHotkey);
+    composer.addEventListener('keydown', handleHotkey);
+
+    inputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        runAutoGeneratePipeline();
+      }
+    });
 
     // Lazily fire tone recommendation — only on the first time the dropdown opens
     function ensureToneRecommendation() {
@@ -344,6 +452,10 @@
       if (!result || !result.success || !result.recommendedTone) {
         recommendBanner.hidden = true;
         return;
+      }
+
+      if (result && result.success && result.recommendedTone) {
+        recommendedToneCache = result.recommendedTone;
       }
 
       const label = TONE_LABEL_MAP[result.recommendedTone] || result.recommendedTone;
