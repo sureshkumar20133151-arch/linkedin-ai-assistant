@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const inputServices = document.getElementById('services');
   const inputTargetAudience = document.getElementById('targetAudience');
   const inputDetailedProfile = document.getElementById('detailedProfile');
+  const inputPortfolioUrl = document.getElementById('portfolioUrl');
+  const inputLinkedInUrl = document.getElementById('linkedInUrl');
   const inputBackendUrl = document.getElementById('backendUrl');
 
   // Action Buttons
@@ -66,6 +68,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           inputServices.value = Array.isArray(result.persona.services) ? result.persona.services.join(', ') : result.persona.services || '';
           inputTargetAudience.value = Array.isArray(result.persona.targetAudience) ? result.persona.targetAudience.join(', ') : result.persona.targetAudience || '';
           inputDetailedProfile.value = result.persona.detailedProfile || '';
+          inputPortfolioUrl.value = result.persona.portfolioUrl || '';
+          inputLinkedInUrl.value = result.persona.linkedInUrl || '';
         }
         if (result.backendUrl) {
           inputBackendUrl.value = result.backendUrl;
@@ -141,18 +145,29 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Save Persona Profile Handler
   btnSaveProfile.addEventListener('click', () => {
-    const persona = {
+    const formFields = {
       role: inputRole.value.trim(),
       tone: inputTone.value.trim(),
       skills: inputSkills.value.split(',').map(s => s.trim()).filter(Boolean),
       services: inputServices.value.split(',').map(s => s.trim()).filter(Boolean),
       targetAudience: inputTargetAudience.value.split(',').map(s => s.trim()).filter(Boolean),
-      detailedProfile: inputDetailedProfile.value.trim()
+      detailedProfile: inputDetailedProfile.value.trim(),
+      portfolioUrl: inputPortfolioUrl.value.trim(),
+      linkedInUrl: inputLinkedInUrl.value.trim()
     };
 
     if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-      chrome.storage.local.set({ persona, backendUrl: inputBackendUrl.value.trim() }, () => {
-        alert('Profile & Settings saved successfully!');
+      // IMPORTANT: merge onto the existing stored persona instead of
+      // replacing it outright. This form doesn't necessarily cover every
+      // field a persona object can have (and previously omitted
+      // portfolioUrl/linkedInUrl entirely, silently wiping them from
+      // storage on every save since they had no field here) — merging
+      // means any field this form doesn't expose is preserved as-is.
+      chrome.storage.local.get(['persona'], result => {
+        const persona = { ...(result.persona || {}), ...formFields };
+        chrome.storage.local.set({ persona, backendUrl: inputBackendUrl.value.trim() }, () => {
+          alert('Profile & Settings saved successfully!');
+        });
       });
     }
   });

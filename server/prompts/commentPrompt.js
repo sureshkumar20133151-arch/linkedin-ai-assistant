@@ -69,12 +69,12 @@ ${detailedProfileBlock}
 === ABSOLUTE RULES ===
 1. READ THE POST CAREFULLY. Determine if this post is a HIRING / FREELANCE REQUIREMENT POST (e.g. "Looking for...", "Hiring...", "Required...", "Project-based...", "DM portfolio").
 2. IF IT IS A HIRING POST:
-   - Greet the author by their first name (e.g., "Hi Vithya,").
+   - Greet the author by their first name (e.g., "Hi [Author's First Name],").
    - Lead IMMEDIATELY with your direct match and interest in taking on the project.
    - IF the post specifies a language/region preference (e.g. "Tamil preferred"), state your location/language match (e.g. "Tamil speaker from Madurai here") as the FIRST sentence!
    - Mention your matching skills (WordPress, React.js, REST APIs).
    - ALWAYS include the user's REAL portfolio link (https://solodeveloper.pro/) directly inside the comment text! (e.g. "Portfolio: https://solodeveloper.pro/").
-   - STRICTLY BANNED FOR HIRING POSTS: Never praise the author's work or say "I appreciate your approach to website development...". Vithya is HIRING a developer, not showcasing her own coding skills! Phrases like "I appreciate your approach", "Your focus on...", "Great post!" are STRICTLY BANNED.
+   - STRICTLY BANNED FOR HIRING POSTS: Never praise the author's work or say "I appreciate your approach to website development...". The author is HIRING a developer, not showcasing their own coding skills! Phrases like "I appreciate your approach", "Your focus on...", "Great post!" are STRICTLY BANNED.
 3. Your comment MUST directly address what the post is asking for. Do NOT bring up unrelated technologies or services.
 4. Write as if the USER wrote the comment themselves in first person. Never write in third person.
 5. DO NOT fabricate fake experience, fake clients, fake certifications, revenue numbers, or fictitious projects.
@@ -396,7 +396,7 @@ ${buildPostSection(post)}
 === DM PITCH GUIDELINES FOR HIRING POSTS ===
 When generating the "dmPitch" for a hiring/client requirement post, include ALL of these elements in order:
 
-1. GREETING: Greet the author by first name (e.g. "Hi Vithya,").
+1. GREETING: Greet the author by first name (e.g. "Hi [Author's First Name],").
 
 2. HOOK (Reference their post): One sentence connecting to their specific requirement.
 
@@ -406,7 +406,7 @@ When generating the "dmPitch" for a hiring/client requirement post, include ALL 
 
 5. MODERN WORKFLOW (MANDATORY — include in EVERY DM): Frame AI-assisted development as a speed and quality advantage using SIMPLE ENGLISH.
    APPROVED PHRASE: "I work with modern AI-assisted development tools to build fast and deliver high-quality work without cutting corners."
-   NEVER USE UNFAMILIAR OR JARGON WORDS LIKE: "iterate", "leverage", "robust", "scalable", "synergy", "utilize", "spearhead".
+   NEVER USE UNFAMILIAR OR JARGON WORDS LIKE: "iterate", "leverage", "synergy", "utilize", "spearhead".
    NEVER SAY: "I am a vibe coder", "I use AI to write code for me", or anything that implies low skill.
 
 6. PORTFOLIO INTENT (MANDATORY — include in EVERY DM): Frame early-career status as an opportunity for the client using SIMPLE, CLEAR WORDS.

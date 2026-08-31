@@ -51,7 +51,16 @@ async function processNaturalLanguageInstruction(instruction) {
     const result = await interpretBehaviorInstruction(instruction, currentBehaviorMemory);
     
     if (result.isPermanent && result.updatedBehavior) {
-      updateBehaviorMemory(result.updatedBehavior);
+      // Defensive merge: the prompt asks Gemini to return the FULL updated
+      // activeInstructions array (existing + new), but nothing guarantees
+      // it always will — an LLM response that drops or forgets older rules
+      // would otherwise silently erase them. Union with what's already
+      // saved so accumulated rules can never be lost this way.
+      const mergedBehavior = { ...result.updatedBehavior };
+      const existingRules = currentBehaviorMemory.activeInstructions || [];
+      const incomingRules = result.updatedBehavior.activeInstructions || [];
+      mergedBehavior.activeInstructions = [...new Set([...existingRules, ...incomingRules])];
+      updateBehaviorMemory(mergedBehavior);
     }
     
     return {

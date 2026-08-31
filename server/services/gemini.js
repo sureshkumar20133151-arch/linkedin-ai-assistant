@@ -47,12 +47,27 @@ async function callGeminiAPI(systemInstruction, userContent) {
 
   const data = await response.json();
 
-  if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-    throw new Error('Invalid or empty response structure from Gemini API.');
+  const candidate = data.candidates && data.candidates[0];
+
+  if (!candidate) {
+    throw new Error('Invalid or empty response structure from Gemini API (no candidates returned).');
   }
 
-  const responseText = data.candidates[0].content.parts[0].text;
-  
+  // finishReason can be SAFETY, RECITATION, MAX_TOKENS, etc. — in these
+  // cases candidate.content.parts is often missing entirely, so check this
+  // BEFORE trying to read parts[0].text (which would otherwise throw a raw
+  // TypeError instead of a clear, actionable error message).
+  if (!candidate.content || !Array.isArray(candidate.content.parts) || !candidate.content.parts[0]) {
+    const reason = candidate.finishReason || 'UNKNOWN';
+    throw new Error(`Gemini returned no usable content (finishReason: ${reason}). The post or persona content may have been blocked by safety filters, or the response was cut off.`);
+  }
+
+  const responseText = candidate.content.parts[0].text;
+
+  if (typeof responseText !== 'string' || !responseText.trim()) {
+    throw new Error('Gemini returned an empty response.');
+  }
+
   // Clean markdown code fence formatting if present
   const cleanedText = responseText.replace(/^```json\s*/i, '').replace(/```\s*$/i, '').trim();
 
