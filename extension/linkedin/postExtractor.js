@@ -280,6 +280,29 @@ async function extractPostContext(commentComposer) {
     }
   }
 
+  // Extract author profile URL (ignore links inside comments section)
+  const linkSelectors = [
+    'a.update-components-actor__meta-link',
+    'a.update-components-actor__image',
+    'a.feed-shared-actor__container-link',
+    'a.app-aware-link[href*="/in/"]',
+    'a[href*="/in/"]'
+  ];
+  let authorProfileUrl = '';
+  for (const sel of linkSelectors) {
+    const elements = postElement.querySelectorAll(sel);
+    for (const el of elements) {
+      if (el.closest('.comments-comments-list, .comments-comment-item, .comments-comment-box')) continue;
+      const href = el.getAttribute('href') || el.href || '';
+      if (href.includes('/in/')) {
+        const match = href.match(/(https?:\/\/[^\/]*linkedin\.com\/in\/[^\/\?#]+)/);
+        authorProfileUrl = match ? match[1] : href.split('?')[0];
+        break;
+      }
+    }
+    if (authorProfileUrl) break;
+  }
+
   // Extract hashtags
   const hashtagEls = postElement.querySelectorAll('a[href*="/hashtag/"]');
   const hashtags = Array.from(hashtagEls)
@@ -289,12 +312,14 @@ async function extractPostContext(commentComposer) {
   const result = {
     authorName,
     authorHeadline,
+    authorProfileUrl: authorProfileUrl || '',
     postText: postText || '',
     hashtags: [...new Set(hashtags)]
   };
 
   console.log(`[AI Assistant] ===== EXTRACTION RESULT =====`);
   console.log(`[AI Assistant] Author: "${authorName}"`);
+  console.log(`[AI Assistant] Profile URL: "${authorProfileUrl}"`);
   console.log(`[AI Assistant] Headline: "${authorHeadline}"`);
   console.log(`[AI Assistant] Post text (${postText.length} chars): "${postText.substring(0, 200)}..."`);
   console.log(`[AI Assistant] Hashtags: ${hashtags.join(', ')}`);
