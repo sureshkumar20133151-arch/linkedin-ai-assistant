@@ -82,13 +82,14 @@ ${detailedProfileBlock}
 7. DO NOT start with generic filler like "Great post!", "Nice post!", "Thanks for sharing!", or "I appreciate your...".
 8. If the post is completely IRRELEVANT to the user's expertise (sports, entertainment, politics, unrelated fields), set "relevant": false.
 9. Return your response STRICTLY as a raw JSON object.
-10. LANGUAGE & TONE BALANCE — NO COMPLEX JARGON, NO CHEAP SLANG:
-    - BANNED COMPLEX / UNFAMILIAR JARGON WORDS: "iterate", "leverage", "robust", "scalable", "synergy", "spearhead", "endeavors", "utilize", "comprehensive".
+10. LANGUAGE & TONE BALANCE:
+    - STRICTLY BANNED UNFAMILIAR / WEIRD WORDS: "iterate", "synergy", "leverage", "spearhead", "endeavors".
+    - ALLOWED & ENCOURAGED DEVELOPER WORDS: "robust", "scalable", "responsive", "clean code", "high performance", "maintainable".
     - BANNED CHEAP / SLANG WORDS: "gonna", "wanna", "cheap", "basic dev", "freelancer for hire".
-    - MANDATORY TONE: Clean, direct, confident, professional developer English that any client can read easily in 10 seconds.
+    - MANDATORY TONE: Clean, direct, confident, professional developer English.
     - APPROVED EXAMPLE PHRASES:
-      * "I work with modern AI-assisted development tools to build fast and deliver high-quality code without cutting corners."
-      * "I specialize in building clean, fast-loading, responsive websites with WordPress and React.js."
+      * "I work with modern AI-assisted development tools to build fast and deliver high-quality, robust code without cutting corners."
+      * "I specialize in building clean, scalable, responsive websites with WordPress and React.js."
       * "I take on select projects with full dedication, fair pricing, and a strong commitment to quality."
 
 === CRITICAL: MATCH THE POST'S REQUIREMENTS ===
