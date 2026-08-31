@@ -156,103 +156,123 @@ Share one real, specific observation about the topic. Sound like you've actually
 `,
   insightful: `
 === STYLE: INSIGHTFUL / CONFIDENT ===
-GOAL: High-confidence pitch demonstrating technical alignment.
+GOAL: Drop one sharp, specific observation that shows you know this space — not a pitch, not empty praise.
 
-INSTRUCTIONS FOR HIRING / CLIENT REQUIREMENT POSTS:
-- Greet the author by first name if available (e.g., "Hi Abhay,").
-- State clearly how the project aligns with the user's expertise in building clean, scalable applications.
-- Mention that portfolio and details have been shared via DM/connection request.
-- Keep it confident, direct, and solution-oriented.
+FOR HIRING POSTS:
+Lead with the most relevant technical insight about their requirement, then briefly pitch. Sound like you've done this before.
+Good: "React + REST API with SEO constraints is a tricky combo — hydration timing on dynamic routes needs careful handling. That's territory I know well. Sent you a DM with my portfolio."
+Good: "WordPress + Elementor for a maintenance-heavy site makes sense, though the REST API work usually sits better in a custom plugin than direct theme functions. Happy to take this on — portfolio in your DM."
+Bad: "Hi [Name], this project aligns well with my expertise in building modern, responsive, and scalable web applications. Looking forward to connecting."
 
-EXAMPLE FOR HIRING POST:
-"Hi [Name], this project aligns well with my expertise in building modern, responsive, and scalable web applications with clean code and API integrations. I've shared my portfolio via DM. Looking forward to connecting."
-
-INSTRUCTIONS FOR GENERAL DISCUSSION POSTS:
-- Read the post carefully and share a practical, expert observation or technical consideration.
-- Do NOT turn discussion posts into spam pitches.
+FOR DISCUSSION POSTS:
+One concrete, specific point. Something that adds nuance or a practical angle the post didn't cover.
+Should feel like a senior dev's quick Slack reply — direct, considered, no fluff.
+Bad: "This is such an important topic in today's rapidly evolving tech landscape!"
+Good: "The caching conflict between WordPress and React is where most hybrid setups fall apart — decoupling the REST endpoints cleanly usually sorts it."
 `,
   short: `
-=== STYLE: SHORT / SIMPLE ===
-GOAL: Concise, 1 to 2 sentences maximum. Direct pitch & DM notice.
+=== STYLE: SHORT ===
+GOAL: 1-3 sentences max. Every word earns its place. Read like a text message, not an email.
 
-INSTRUCTIONS FOR HIRING / CLIENT REQUIREMENT POSTS:
-- Greet the author by first name if available (e.g., "Hi Abhay,").
-- State interest and match in 1-2 short sentences.
-- Explicitly mention sending a connection request / portfolio via DM.
+FOR HIRING POSTS — be direct, name the match, done:
+"Hi Ravi — WordPress + React is my stack. Portfolio in your DM."
+"Hi Anjali, this matches what I do. Sent a connection request."
+"Tamil speaker from Madurai — this is a fit. Sent a DM."
+"Hi Priya, WordPress + REST API is my day-to-day. I've dropped you a DM."
 
-EXAMPLE FOR HIRING POST:
-"Hi [Name], I'm interested in this freelance opportunity. I'm a Full Stack Developer experienced in responsive web apps and I've sent you my portfolio via DM. Looking forward to hearing from you!"
+FOR DISCUSSION POSTS — one punchy line:
+"The real issue here isn't the framework, it's the deployment pipeline."
+"Most devs skip SEO until the client asks. Wrong order every time."
+"Performance budgets fix this faster than any framework swap."
 
-INSTRUCTIONS FOR GENERAL DISCUSSION POSTS:
-- Keep it extremely concise (1-2 sentences) addressing the topic directly.
+NO padding. NO sign-off. NO filler. Just the point.
 `,
   friendly: `
 === STYLE: FRIENDLY / CASUAL ===
-GOAL: Warm, informal, approachable — like talking to a peer, not a client.
+GOAL: Like a developer friend who casually replied — warm, genuine, still on point. Not a sales rep being friendly.
 
-INSTRUCTIONS:
-- Use a relaxed, conversational tone (contractions are fine, e.g. "I've", "that's").
-- A light, natural emoji is fine if it fits (max 1), but never forced.
-- Still relevant and on-topic — casual tone, not a casual/irrelevant comment.
-- For hiring posts: express interest warmly, still mention matching skills.
-- Avoid sounding stiff or corporate.
+Contractions everywhere. Relaxed sentence rhythm. Maybe a small observation before the pitch.
+No forced enthusiasm. "That's a great opportunity!" is banned. Just be real.
+
+FOR HIRING POSTS:
+"Hi Meena, this is right up my alley — I've been doing WordPress + React work for a while. Dropped you a DM, check it out when you get a chance."
+"Hey Raj, solid stack you're looking for — I work with all of this. Sent a connection request with details."
+"Hi Vithya, Tamil speaker here from Madurai — that detail caught my eye. I've got the WordPress side covered, sent you a DM."
+
+FOR DISCUSSION POSTS:
+Respond like you're replying to a WhatsApp message from a dev colleague who asked your take. Casual but with something real to contribute.
 `,
   congratulatory: `
 === STYLE: CONGRATULATORY ===
-GOAL: Specifically celebrate the achievement, milestone, launch, or announcement in the post.
+GOAL: Name the SPECIFIC thing they achieved — not generic congrats, the actual thing.
 
-INSTRUCTIONS:
-- Only use this naturally if the post is about an achievement/milestone/launch/promotion/announcement.
-  If the post has no such news to celebrate, congratulate genuinely on the effort/initiative shown instead of forcing it.
-- Name the SPECIFIC achievement from the post (not generic "congrats!").
-- Keep it warm and genuine — no generic filler like "Great job!" alone.
-- Where relevant, briefly connect it to the user's own expertise/interest, without turning it into a pitch.
+One genuine reaction. Optionally one line connecting it to your own angle.
+Say what you'd actually say to someone at a coffee chat, not what you'd write in a greeting card.
+
+Good: "That's a solid milestone — shipping a full ecommerce site with custom payment flows in 3 weeks is no small thing."
+Good: "Launching your own agency after freelancing solo for two years — that's a real step. Congrats."
+Bad: "Congratulations on this amazing achievement! Wishing you continued success in all your future endeavors! 🎉🎉"
+Bad: "So inspiring! Keep up the great work!"
+
+If there's nothing specific to celebrate, acknowledge the initiative honestly rather than faking it.
 `,
   question: `
-=== STYLE: QUESTION / ATTENTION-GRABBING ===
-GOAL: Ask a smart, specific clarifying question to grab the client's attention and start a direct conversation!
+=== STYLE: QUESTION ===
+GOAL: Ask ONE smart, specific question that makes them actually want to reply — not a generic "what are your requirements?"
 
-INSTRUCTIONS FOR HIRING / CLIENT REQUIREMENT POSTS:
-- Greet the author by first name if available (e.g., "Hi Abhay,").
-- Briefly state interest and matching skills.
-- Ask ONE smart, highly relevant technical or project clarifying question (e.g., about payment gateway preferences, API scope, design wireframes, or timeline) that demonstrates expert understanding and encourages the client to reply!
-- Mention that you've sent a DM with your portfolio.
+FOR HIRING POSTS:
+Pick a real technical or project detail they didn't specify and ask about it. Shows you read carefully.
+Good: "Hi Vithya — are you open to a Tamil-speaking developer working fully remote? WordPress + React is my stack. Sent a DM."
+Good: "Hi Priya, quick one — is the REST API connecting to an existing backend or does that need to be built from scratch? I've done both. Portfolio's in your DM."
+Good: "Hi Rahul, is this a rebuild or ongoing maintenance? Changes the approach a bit. I work with this stack — sent a connection request."
+Bad: "Hi [Name], I'm very interested in this exciting opportunity! What are the exact project requirements and budget?"
 
-EXAMPLE FOR HIRING POST:
-"Hi [Name], I'm interested in this opportunity — I build responsive web applications with React/Node.js and custom API integrations. Are you looking for a specific payment gateway like Razorpay/Stripe, or custom backend workflows? I've sent you a DM with my portfolio as well!"
-
-INSTRUCTIONS FOR GENERAL DISCUSSION POSTS:
-- Ask ONE specific, thoughtful question directly tied to a detail in the post to spark discussion.
+FOR DISCUSSION POSTS:
+The one follow-up question the post left unanswered. Specific enough that only someone who read it carefully would ask.
+Not "what do you think?" — something that actually moves the conversation.
 `,
   storytelling: `
-=== STYLE: STORYTELLING / PERSONAL EXPERIENCE ===
-GOAL: Relate the post to a brief, plausible personal/professional experience angle.
+=== STYLE: STORYTELLING ===
+GOAL: One brief, grounded observation from experience — something that connects to the post topic.
 
-INSTRUCTIONS:
-- Reference a short, realistic experience angle connected to the user's actual role/skills/detailed background — do NOT invent specific fake clients, numbers, or projects not present in the user's profile/detailed background.
-- Keep the "story" part brief (1-2 sentences) — this is a comment, not a blog post.
-- Tie the experience back to the post's specific topic.
-- If the user has no detailed background to draw from, keep the personal angle general (e.g. "I've run into this exact issue building X kind of sites") rather than fabricating specifics.
+NOT a story about a fake client. NOT inflated numbers. NOT a case study.
+Just: "I've run into this / built this / dealt with this — here's what I found."
+1-2 sentences of the experience angle, then tie it to the post. Keep it compact.
+
+Good: "Built a WordPress + React setup recently — the REST API layer is where caching usually causes issues. Interesting stack choice for a maintenance project."
+Good: "I've found SEO and React need to be planned together from the start, not bolted on later. Lesson from a recent build. Solid requirement to call out upfront."
+Bad: "I once worked with a Fortune 500 client on a similar project and helped them increase conversions by 300%."
+Bad: "In my extensive experience with enterprise web development, I've consistently found that..."
+
+Ground it in reality. No fake numbers, no inflated claims.
 `,
   contrarian: `
-=== STYLE: CONTRARIAN / THOUGHT-PROVOKING ===
-GOAL: Respectfully offer a different angle or gentle pushback on the post's main point, to spark discussion.
+=== STYLE: CONTRARIAN ===
+GOAL: Offer a different take — one that's genuinely considered, not just arguing for the sake of it.
 
-INSTRUCTIONS:
-- Stay respectful and professional — this is a differing perspective, NOT an argument or an attack.
-- Clearly acknowledge the post's point first, then offer the alternative angle.
-- The disagreement must be genuine and specific to the post's content, not contrarian for its own sake.
-- Never be dismissive, sarcastic, or condescending.
+Acknowledge their point first, then the counter. One tight paragraph.
+Sound like someone who thought about it overnight, not someone spoiling for a fight.
+Never "actually..." as an opener. Never condescending.
+
+Good: "WordPress + React makes sense for flexibility, though the maintenance overhead usually catches clients off guard a few months in — worth setting that expectation early."
+Good: "The performance argument for headless WordPress is real, though the added complexity for a small business site often outweighs the gains. Depends heavily on the traffic scale."
+Bad: "Actually, this approach is completely wrong and here's why you should do it differently."
+Bad: "Respectfully disagree with everything here."
 `,
   humorous: `
-=== STYLE: HUMOROUS / WITTY ===
-GOAL: A light, clever line relevant to the post — humor that lands naturally, not forced.
+=== STYLE: HUMOROUS ===
+GOAL: One wry, specific observation tied to something in the post. Land it and stop.
 
-INSTRUCTIONS:
-- Keep the humor gentle, professional-appropriate, and directly tied to the post's specific content.
-- Do NOT use humor on sensitive topics (layoffs, personal hardship, tragedy, serious business risk) — for those, fall back to a genuine, non-joking observation instead.
-- One witty line is enough — do not overdo it.
-- Never punch down at the post's author or anyone mentioned in it.
+Developer-appropriate humor: self-aware, dry, relatable. No exclamation marks to signal the joke.
+The best lines feel like something a tired senior dev would mutter in a standup.
+
+Good: "WordPress + React + REST API + SEO optimization. That's four job descriptions in one post."
+Good: "20 comments in 2 hours — LinkedIn really does move faster than a CI/CD pipeline."
+Good: "Hiring a developer who knows WordPress AND writes clean React. Bold requirement in this economy."
+Bad: "Haha this is so relatable!! We developers always go through this! 😂😂"
+Bad: "This made me chuckle! So true about the developer life! 🙌"
+
+Never use humor on layoffs, hiring struggles, personal hardship, or anything serious. Fall back to a genuine comment instead.
 `
 };
 
