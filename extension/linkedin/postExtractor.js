@@ -119,7 +119,20 @@ function expandPostText(postElement) {
 function extractTextFromPost(postElement) {
   if (!postElement) return '';
 
-  // Strategy 1: Use known post text selectors (including Search Result page selectors)
+  // STEP 1: Create a clean clone of postElement with all toolbars, comment boxes, and banners completely removed
+  const cleanPostNode = postElement.cloneNode(true);
+  cleanPostNode.querySelectorAll(
+    '.linkedin-ai-toolbar-container, ' +
+    '.linkedin-ai-recommend-banner, ' +
+    '.linkedin-ai-notice, ' +
+    '.comments-comment-box, ' +
+    '.comments-comments-list, ' +
+    '.comments-comment-texteditor, ' +
+    '.comments-reply-item, ' +
+    'button'
+  ).forEach(el => el.remove());
+
+  // STEP 2: Try specific post text selectors on the clean node
   const textSelectors = [
     '.update-components-text',
     '.feed-shared-inline-show-more-text',
@@ -128,77 +141,57 @@ function extractTextFromPost(postElement) {
     '.feed-shared-text',
     '.entity-result__summary',
     '.entity-result__content',
-    'span.break-words',
-    '.feed-shared-update-v2__description-wrapper',
-    'span[dir="ltr"]',
-    'p[dir="ltr"]'
+    '.feed-shared-update-v2__description-wrapper'
   ];
 
   for (const selector of textSelectors) {
-    const elements = postElement.querySelectorAll(selector);
+    const elements = cleanPostNode.querySelectorAll(selector);
     for (const textEl of elements) {
-      // Exclude text inside comments section or comment replies!
-      if (textEl.closest('.comments-comments-list, .comments-comment-item, .comments-comment-box, .comments-reply-item')) {
-        continue;
-      }
+      const text = (textEl.innerText || textEl.textContent || '')
+        .trim()
+        .replace(/\n{3,}/g, '\n\n');
 
-      const clone = textEl.cloneNode(true);
-      // Remove buttons, toolbars, "see more" links from clone
-      clone.querySelectorAll('button, .linkedin-ai-toolbar-container, .feed-shared-inline-show-more-text__see-more-less-toggle, .linkedin-ai-recommend-banner').forEach(el => el.remove());
-      const text = clone.innerText.trim().replace(/\n{3,}/g, '\n\n');
-      if (text.length > 20) {
+      if (text.length >= 15 && !text.includes('AI COMMENT') && !text.includes('Choose Tone')) {
         console.log(`[AI Assistant] Text extracted via selector '${selector}' (${text.length} chars)`);
         return text;
       }
     }
   }
 
-  // Strategy 2: Find the longest text block inside the post (excluding comments/toolbar)
+  // STEP 3: Find the longest text block in cleanPostNode
   let longestText = '';
-  const allNodes = postElement.querySelectorAll('span, div, p');
-  for (const node of allNodes) {
-    // Skip our toolbar, comment boxes, and interactive elements
-    if (node.closest('.linkedin-ai-toolbar-container')) continue;
-    if (node.closest('.comments-comment-box')) continue;
-    if (node.closest('.comments-comment-texteditor')) continue;
-    if (node.closest('.comments-comments-list')) continue;
-    if (node.tagName === 'BUTTON') continue;
-
-    const text = (node.innerText || '').trim();
+  const candidateNodes = cleanPostNode.querySelectorAll('span, div, p');
+  for (const node of candidateNodes) {
+    const text = (node.innerText || node.textContent || '').trim();
     if (
       text.length > longestText.length &&
-      text.length > 30 &&
-      !text.includes('AI Comment') &&
+      text.length > 25 &&
+      !text.includes('AI COMMENT') &&
       !text.includes('Choose Tone') &&
-      !text.includes('Recommended') &&
-      !text.includes('One-time instruction') &&
-      !text.includes('Add a comment')
+      !text.includes('Recommended:') &&
+      !text.includes('One-time instruction')
     ) {
       longestText = text;
     }
   }
 
-  if (longestText.length > 30) {
+  if (longestText.length > 25) {
     console.log(`[AI Assistant] Text extracted via longest-node scan (${longestText.length} chars)`);
     return longestText;
   }
 
-  // Strategy 3: Take the full innerText of the post and clean it
-  const fullText = postElement.innerText || '';
+  // STEP 4: Fallback to full cleaned innerText
+  const fullText = (cleanPostNode.innerText || cleanPostNode.textContent || '').trim();
   const lines = fullText.split('\n')
     .map(l => l.trim())
     .filter(l =>
-      l.length > 10 &&
-      !l.includes('Add a comment') &&
-      !l.includes('AI Comment') &&
-      !l.includes('Professional') &&
-      !l.includes('Insightful') &&
-      !l.includes('Short') &&
-      !l.includes('Most relevant') &&
+      l.length > 15 &&
+      !l.includes('AI COMMENT') &&
+      !l.includes('Choose Tone') &&
+      !l.includes('Recommended') &&
       !l.includes('One-time instruction') &&
-      !l.includes('GIF') &&
-      !l.match(/^\d+$/) &&         // skip standalone numbers (like counts)
-      !l.match(/^Like$|^Comment$|^Share$|^Send$|^Repost$/)
+      !l.match(/^\d+$/) &&
+      !l.match(/^Like$|^Comment$|^Share$|^Send$|^Repost$/i)
     );
 
   if (lines.length > 0) {
