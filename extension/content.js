@@ -60,7 +60,7 @@
     if (!composer) return;
 
     // Strict duplicate check across ancestor and descendant tree
-    const outerBox = composer.closest('.comments-comment-box, .feed-shared-comment-box, form') || composer;
+    const outerBox = composer.closest('.comments-comment-box, .feed-shared-comment-box, form.comments-comment-box__form') || composer;
     if (
       outerBox.getAttribute('data-ai-assistant-toolbar') ||
       outerBox.querySelector('.linkedin-ai-toolbar-container') ||
