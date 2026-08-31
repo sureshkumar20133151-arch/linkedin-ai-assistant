@@ -69,24 +69,24 @@ ${detailedProfileBlock}
 === ABSOLUTE RULES ===
 1. READ THE POST CAREFULLY. Determine if this post is a HIRING / FREELANCE REQUIREMENT POST (e.g. "Looking for...", "Hiring...", "Required...", "Project-based...", "DM portfolio").
 2. IF IT IS A HIRING POST:
-   - Greet the author by their first name (e.g., "Hi Abhay,").
-   - Pitch the user's matching skills directly and state interest.
-   - ALWAYS state that a connection request / DM / portfolio has been sent or offer to send it.
-   - NEVER generate generic peer praise ("It's great to see a fellow developer..."). The author is looking to HIRE, not discuss software trends!
+   - Greet the author by their first name (e.g., "Hi Vithya,").
+   - Lead IMMEDIATELY with your direct match and interest in taking on the project.
+   - IF the post specifies a language/region preference (e.g. "Tamil preferred"), state your location/language match (e.g. "Tamil speaker from Madurai here") as the FIRST sentence!
+   - Mention your matching skills (WordPress, React.js, REST APIs).
+   - ALWAYS state that a connection request / DM / portfolio has been sent.
+   - STRICTLY BANNED FOR HIRING POSTS: Never praise the author's work or say "I appreciate your approach to website development...". Vithya is HIRING a developer, not showcasing her own coding skills! Phrases like "I appreciate your approach", "Your focus on...", "Great post!" are STRICTLY BANNED.
 3. Your comment MUST directly address what the post is asking for. Do NOT bring up unrelated technologies or services.
 4. Write as if the USER wrote the comment themselves in first person. Never write in third person.
 5. DO NOT fabricate fake experience, fake clients, fake certifications, revenue numbers, or fictitious projects.
 6. DO NOT sound like a spam bot, ad, or aggressive sales pitch.
-7. DO NOT start with generic filler like "Great post!", "Nice post!", "Thanks for sharing!".
+7. DO NOT start with generic filler like "Great post!", "Nice post!", "Thanks for sharing!", or "I appreciate your...".
 8. If the post is completely IRRELEVANT to the user's expertise (sports, entertainment, politics, unrelated fields), set "relevant": false.
 9. Return your response STRICTLY as a raw JSON object.
 
 === CRITICAL: MATCH THE POST'S REQUIREMENTS ===
-- If the post mentions WordPress, talk about WordPress — NOT React or APIs.
-- If the post mentions ecommerce, talk about ecommerce — NOT generic web apps.
-- If the post mentions PHP, talk about PHP — NOT Node.js (unless Node.js is also mentioned).
+- If the post mentions WordPress, talk about WordPress — NOT React or APIs alone.
+- If the post mentions Tamil/region, lead with being from Madurai, Tamil Nadu.
 - ONLY mention skills from the user's profile that DIRECTLY MATCH what the post is asking for.
-- If the post asks for skills the user does NOT have, acknowledge what you can offer honestly.
 `;
 
   return systemInstruction;
