@@ -37,7 +37,7 @@ const DEFAULT_PERSONA = {
  * reference REAL facts (portfolio link, actual past projects, real experience)
  * instead of inventing generic ones — but still only when directly relevant.
  */
-function buildSystemInstruction(persona) {
+function buildSystemInstruction(persona, options = {}) {
   const activePersona = { ...DEFAULT_PERSONA, ...persona };
 
   const detailedProfileBlock = activePersona.detailedProfile && activePersona.detailedProfile.trim()
@@ -53,7 +53,7 @@ written here — treat it as the complete and only source of truth for experienc
 `
     : '';
 
-  const systemInstruction = `
+  const identityBlock = `
 You are the user's Personal LinkedIn AI Commenting Assistant.
 Your primary role is to help the user write authentic, context-aware LinkedIn comments.
 
@@ -65,7 +65,25 @@ Your primary role is to help the user write authentic, context-aware LinkedIn co
 - Preferred Tone: ${activePersona.tone}
 ${activePersona.linkedInUrl ? `- LinkedIn Profile: ${activePersona.linkedInUrl}` : ''}
 ${activePersona.portfolioUrl ? `- Portfolio: ${activePersona.portfolioUrl}` : ''}
-${detailedProfileBlock}
+${detailedProfileBlock}`;
+
+  // LITE MODE: used by tasks that only need to judge relevance/fit (e.g. tone
+  // recommendation) — NOT actually writing a comment. Skips the full
+  // comment-writing rulebook (banned phrases, DM pitch wording, style
+  // examples) since none of that affects a "pick 1 of 9 tones" classification,
+  // and this path runs automatically on every single post view, so trimming
+  // it meaningfully cuts tokens/latency on the highest-frequency call.
+  if (options.lite) {
+    return `${identityBlock}
+=== HOW TO JUDGE FIT ===
+- A post is a HIRING / FREELANCE REQUIREMENT POST if it uses words like "Looking for...",
+  "Hiring...", "Required...", "Project-based...", "DM portfolio".
+- Judge relevance based only on whether the user's role/skills/background above genuinely
+  match what the post is about or asking for.
+`;
+  }
+
+  const systemInstruction = `${identityBlock}
 === ABSOLUTE RULES ===
 1. READ THE POST CAREFULLY. Determine if this post is a HIRING / FREELANCE REQUIREMENT POST (e.g. "Looking for...", "Hiring...", "Required...", "Project-based...", "DM portfolio").
 2. IF IT IS A HIRING POST:
@@ -119,17 +137,9 @@ const STYLE_GUIDES = {
 === STYLE: PROFESSIONAL ===
 GOAL: The user is responding as an EXPERT FREELANCER / WEB DEVELOPER pitching for work on LinkedIn.
 
-CRITICAL INSTRUCTIONS FOR HIRING / CLIENT REQUIREMENT POSTS (Words like "Required", "Hiring", "Looking for", "Freelance", "Budget", "DM", "Project"):
-- Greet author by first name if authorName is available (e.g. "Hi Abhay,").
-- State your exact role and matching skills for the project (e.g. "I'm a Full Stack Developer specializing in responsive web applications, React, Node.js, and custom API/payment integrations.").
-- Highlight execution & quality: Mention clean, scalable code and delivering on time.
-- State DM & Portfolio status: "I've sent you a connection request and shared my portfolio & past project details via DM."
-- Call to Action: "I'd be glad to discuss your project requirements and timeline. Looking forward to connecting!"
+FOR HIRING / CLIENT REQUIREMENT POSTS: Follow the hiring-post rules already established above (greeting, language/region match, matching skills, mandatory portfolio link in the comment, no generic praise). Style-specific addition: state your exact role and matching skills plainly (e.g. "I'm a Full Stack Developer specializing in responsive web applications, React, Node.js, and custom API/payment integrations"), highlight clean/scalable code and on-time delivery, and close with a clear call to action to discuss the project.
 
-EXAMPLE FOR HIRING POST:
-"Hi [Name], I'm a Full Stack Web Developer experienced in building responsive websites, React.js, and custom REST API integrations. I deliver clean, robust code on time and would love to take on your project. Portfolio: https://solodeveloper.pro/ — I've also sent you a connection request and DM. Looking forward to connecting!"
-
-INSTRUCTIONS FOR GENERAL DISCUSSION / EDUCATIONAL POSTS:
+FOR GENERAL DISCUSSION / EDUCATIONAL POSTS:
 - Share a high-value, professional perspective directly addressing the post's core technical topic.
 - Demonstrate deep technical capability naturally without hard selling.
 `,
@@ -137,32 +147,19 @@ INSTRUCTIONS FOR GENERAL DISCUSSION / EDUCATIONAL POSTS:
 === STYLE: INSIGHTFUL / CONFIDENT ===
 GOAL: High-confidence pitch demonstrating technical alignment.
 
-INSTRUCTIONS FOR HIRING / CLIENT REQUIREMENT POSTS:
-- Greet the author by first name if available (e.g., "Hi Abhay,").
-- State clearly how the project aligns with the user's expertise in building clean, scalable applications.
-- Mention that portfolio and details have been shared via DM/connection request.
-- Keep it confident, direct, and solution-oriented.
+FOR HIRING / CLIENT REQUIREMENT POSTS: Follow the hiring-post rules already established above. Style-specific addition: state clearly and confidently how the project aligns with your expertise in building clean, scalable applications — direct, solution-oriented, no hedging.
 
-EXAMPLE FOR HIRING POST:
-"Hi [Name], this project aligns well with my expertise in building modern, responsive, and scalable web applications with clean code and API integrations. I've shared my portfolio via DM. Looking forward to connecting."
-
-INSTRUCTIONS FOR GENERAL DISCUSSION POSTS:
+FOR GENERAL DISCUSSION POSTS:
 - Read the post carefully and share a practical, expert observation or technical consideration.
 - Do NOT turn discussion posts into spam pitches.
 `,
   short: `
 === STYLE: SHORT / SIMPLE ===
-GOAL: Concise, 1 to 2 sentences maximum. Direct pitch & DM notice.
+GOAL: Concise, 1 to 2 sentences maximum.
 
-INSTRUCTIONS FOR HIRING / CLIENT REQUIREMENT POSTS:
-- Greet the author by first name if available (e.g., "Hi Abhay,").
-- State interest and match in 1-2 short sentences.
-- Explicitly mention sending a connection request / portfolio via DM.
+FOR HIRING / CLIENT REQUIREMENT POSTS: Follow the hiring-post rules already established above, compressed into 1-2 short sentences — the portfolio link is still mandatory even at this length.
 
-EXAMPLE FOR HIRING POST:
-"Hi [Name], I'm interested in this freelance opportunity. I'm a Full Stack Developer experienced in responsive web apps and I've sent you my portfolio via DM. Looking forward to hearing from you!"
-
-INSTRUCTIONS FOR GENERAL DISCUSSION POSTS:
+FOR GENERAL DISCUSSION POSTS:
 - Keep it extremely concise (1-2 sentences) addressing the topic directly.
 `,
   friendly: `
@@ -173,7 +170,7 @@ INSTRUCTIONS:
 - Use a relaxed, conversational tone (contractions are fine, e.g. "I've", "that's").
 - A light, natural emoji is fine if it fits (max 1), but never forced.
 - Still relevant and on-topic — casual tone, not a casual/irrelevant comment.
-- For hiring posts: express interest warmly, still mention matching skills.
+- For hiring posts: follow the hiring-post rules already established above, just delivered warmly instead of formally.
 - Avoid sounding stiff or corporate.
 `,
   congratulatory: `
@@ -191,16 +188,9 @@ INSTRUCTIONS:
 === STYLE: QUESTION / ATTENTION-GRABBING ===
 GOAL: Ask a smart, specific clarifying question to grab the client's attention and start a direct conversation!
 
-INSTRUCTIONS FOR HIRING / CLIENT REQUIREMENT POSTS:
-- Greet the author by first name if available (e.g., "Hi Abhay,").
-- Briefly state interest and matching skills.
-- Ask ONE smart, highly relevant technical or project clarifying question (e.g., about payment gateway preferences, API scope, design wireframes, or timeline) that demonstrates expert understanding and encourages the client to reply!
-- Mention that you've sent a DM with your portfolio.
+FOR HIRING / CLIENT REQUIREMENT POSTS: Follow the hiring-post rules already established above. Style-specific addition: after briefly stating interest and matching skills, ask ONE smart, highly relevant technical/project clarifying question (e.g. payment gateway preference, API scope, wireframes, or timeline) that demonstrates expert understanding and invites a reply.
 
-EXAMPLE FOR HIRING POST:
-"Hi [Name], I'm interested in this opportunity — I build responsive web applications with React/Node.js and custom API integrations. Are you looking for a specific payment gateway like Razorpay/Stripe, or custom backend workflows? I've sent you a DM with my portfolio as well!"
-
-INSTRUCTIONS FOR GENERAL DISCUSSION POSTS:
+FOR GENERAL DISCUSSION POSTS:
 - Ask ONE specific, thoughtful question directly tied to a detail in the post to spark discussion.
 `,
   storytelling: `
@@ -268,7 +258,7 @@ const TONE_DESCRIPTIONS = {
  * tone from the dropdown.
  */
 function buildRecommendTonePrompt({ post, persona, behavior }) {
-  const systemInstruction = buildSystemInstruction(persona);
+  const systemInstruction = buildSystemInstruction(persona, { lite: true });
   const behaviorSection = buildBehaviorSection(behavior);
 
   const toneList = Object.entries(TONE_DESCRIPTIONS)
