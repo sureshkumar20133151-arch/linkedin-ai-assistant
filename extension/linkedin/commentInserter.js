@@ -48,21 +48,25 @@ function findAndClickCommentPlaceholder(startElement) {
   let current = startElement;
   let depth = 0;
   while (current && depth < 15 && current !== document.body) {
-    // Look for the placeholder input/button
+    // IMPORTANT: keep this list scoped to the NEW-COMMENT composer only.
+    // Broader patterns like button[class*="comment"] or div[class*="comment-box"]
+    // also match LIKE/REPLY buttons on OTHER PEOPLE'S already-posted comments
+    // (e.g. "comments-comment-social-bar__like-action-button" contains "comment"),
+    // and since this walks upward through progressively bigger ancestor
+    // containers, a broad match could accidentally .click() a stranger's
+    // like/reply button instead of activating our own composer.
     const placeholders = current.querySelectorAll(
       '.comments-comment-box__form-container, ' +
       '.comments-comment-texteditor, ' +
-      '.comments-comment-box, ' +
-      'button[class*="comment"], ' +
-      'div[class*="comment-box"], ' +
-      'input[placeholder*="comment"], ' +
       'div[data-placeholder]'
     );
     for (const ph of placeholders) {
-      if (ph && typeof ph.click === 'function') {
-        ph.click();
-        return true;
-      }
+      if (!ph || typeof ph.click !== 'function') continue;
+      // Never click anything that's actually part of an existing, already-posted
+      // comment (its like/reply/react/delete controls) rather than the composer.
+      if (ph.closest('.comments-comment-item, .comments-comment-social-bar, .social-actions-bar')) continue;
+      ph.click();
+      return true;
     }
     current = current.parentElement;
     depth++;
