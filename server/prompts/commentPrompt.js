@@ -87,7 +87,7 @@ ${detailedProfileBlock}`;
 === ABSOLUTE RULES ===
 1. READ THE POST CAREFULLY. Determine if this post is a HIRING / FREELANCE REQUIREMENT POST (e.g. "Looking for...", "Hiring...", "Required...", "Project-based...", "DM portfolio").
 2. IF IT IS A HIRING POST:
-   - Greet the author by their first name (e.g., "Hi [Author's First Name],").
+   - Greet the author using an @-mention tag with their name (e.g., "Hi @[Author's Name]," or "Hi @[Author's First Name],") so LinkedIn tags and notifies the author directly!
    - Lead IMMEDIATELY with your direct match and interest in taking on the project.
    - IF the post specifies a language/region preference (e.g. "Tamil preferred"), state your location/language match (e.g. "Tamil speaker from Madurai here") as the FIRST sentence!
    - Mention your matching skills (WordPress, React.js, REST APIs).
