@@ -264,13 +264,14 @@ async function extractPostContext(commentComposer) {
   function cleanPersonName(rawText) {
     if (!rawText) return '';
     const firstLine = rawText.split('\n')[0].trim();
-    const cleaned = firstLine
+    let cleaned = firstLine
       .replace(/\s*•\s*(1st|2nd|3rd\+?|\d+\w*)\s*/gi, '')
       .replace(/\s*•\s*Author\s*/gi, '')
       .replace(/\s*•\s*Following\s*/gi, '')
       .replace(/\s*•\s*You\s*/gi, '')
       .replace(/\s*\+?\s*Follow\s*/gi, '')
       .replace(/\s*•\s*\d+\w*\s*/gi, '')
+      .replace(/\s+([a-z0-9]*\d+[a-z0-9]*)$/gi, '') // Strip trailing alphanumeric IDs like A962012a0 or 3151
       .trim();
 
     if (
@@ -344,12 +345,19 @@ async function extractPostContext(commentComposer) {
   if ((!authorName || authorName === 'LinkedIn User') && authorProfileUrl) {
     const slugMatch = authorProfileUrl.match(/\/in\/([^\/\?#]+)/);
     if (slugMatch && slugMatch[1]) {
-      const rawSlug = slugMatch[1].replace(/-\d+[a-z0-9]*$/i, '').replace(/-/g, ' ');
+      const rawSlug = slugMatch[1]
+        .replace(/-[a-z0-9]*\d+[a-z0-9]*$/i, '')
+        .replace(/-/g, ' ');
       const titleCase = rawSlug.replace(/\b\w/g, c => c.toUpperCase()).trim();
       if (titleCase && titleCase.length >= 2) {
         authorName = titleCase;
       }
     }
+  }
+
+  // Final cleanup: strip any leftover trailing alphanumeric hash/ID
+  if (authorName) {
+    authorName = authorName.replace(/\s+([a-z0-9]*\d+[a-z0-9]*)$/gi, '').trim();
   }
 
   if (!authorName || authorName.length > 50) authorName = 'LinkedIn User';
