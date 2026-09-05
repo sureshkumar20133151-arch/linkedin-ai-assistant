@@ -102,33 +102,41 @@
     const toolbar = document.createElement('div');
     toolbar.className = 'linkedin-ai-toolbar-container';
     toolbar.innerHTML = `
-      <div class="linkedin-ai-header">
-        <div class="linkedin-ai-title">
-          <span class="linkedin-ai-sparkle">✨</span> AI Comment
+      <button type="button" class="linkedin-ai-pill-btn" hidden title="Expand AI Comment Assistant">
+        <span class="linkedin-ai-sparkle">✨</span> AI Comment
+      </button>
+      <div class="linkedin-ai-main-body">
+        <div class="linkedin-ai-header">
+          <div class="linkedin-ai-title">
+            <span class="linkedin-ai-sparkle">✨</span> AI Comment
+          </div>
+          <div class="linkedin-ai-header-actions">
+            <button type="button" class="linkedin-ai-auto-btn" title="1-Click Auto: Analyzes profile & post, picks best tone, and generates (Ctrl+Shift+G)">
+              ⚡ Auto Generate
+            </button>
+            <button type="button" class="linkedin-ai-analyze-profile-btn" title="Analyze author's full profile">
+              🔍 Profile
+            </button>
+            <button type="button" class="linkedin-ai-close-btn" title="Minimize AI Toolbar">
+              ✕
+            </button>
+          </div>
         </div>
-        <div class="linkedin-ai-header-actions">
-          <button type="button" class="linkedin-ai-auto-btn" title="1-Click Auto: Analyzes profile & post, picks best tone, and generates (Ctrl+Shift+G)">
-            ⚡ Auto Generate
+        <div class="linkedin-ai-recommend-banner" hidden></div>
+        <div class="linkedin-ai-tone-select-wrapper">
+          <button type="button" class="linkedin-ai-tone-toggle">
+            <span class="linkedin-ai-tone-toggle-label">Choose Tone</span>
+            <span class="linkedin-ai-tone-toggle-caret">▾</span>
           </button>
-          <button type="button" class="linkedin-ai-analyze-profile-btn" title="Analyze author's full profile">
-            🔍 Profile
-          </button>
+          <div class="linkedin-ai-tone-menu" hidden>
+            ${TONE_OPTIONS.map(t => `<button type="button" class="linkedin-ai-tone-menu-item" data-style="${t.value}">${t.label}</button>`).join('')}
+          </div>
         </div>
-      </div>
-      <div class="linkedin-ai-recommend-banner" hidden></div>
-      <div class="linkedin-ai-tone-select-wrapper">
-        <button type="button" class="linkedin-ai-tone-toggle">
-          <span class="linkedin-ai-tone-toggle-label">Choose Tone</span>
-          <span class="linkedin-ai-tone-toggle-caret">▾</span>
-        </button>
-        <div class="linkedin-ai-tone-menu" hidden>
-          ${TONE_OPTIONS.map(t => `<button type="button" class="linkedin-ai-tone-menu-item" data-style="${t.value}">${t.label}</button>`).join('')}
+        <div class="linkedin-ai-prompt-box">
+          <input type="text" class="linkedin-ai-input" placeholder="Instruction (optional, press Enter or Ctrl+Shift+G)..." />
         </div>
+        <div class="linkedin-ai-notice-container"></div>
       </div>
-      <div class="linkedin-ai-prompt-box">
-        <input type="text" class="linkedin-ai-input" placeholder="Instruction (optional, press Enter or Ctrl+Shift+G)..." />
-      </div>
-      <div class="linkedin-ai-notice-container"></div>
     `;
 
     // Insertion Strategy: Insert toolbar directly before the composer element in the DOM
@@ -139,10 +147,30 @@
     }
 
     // Attach button event handlers
+    const pillBtn = toolbar.querySelector('.linkedin-ai-pill-btn');
+    const mainBody = toolbar.querySelector('.linkedin-ai-main-body');
+    const closeBtn = toolbar.querySelector('.linkedin-ai-close-btn');
     const recommendBanner = toolbar.querySelector('.linkedin-ai-recommend-banner');
     const toneToggle = toolbar.querySelector('.linkedin-ai-tone-toggle');
     const toneToggleLabel = toolbar.querySelector('.linkedin-ai-tone-toggle-label');
     const toneMenu = toolbar.querySelector('.linkedin-ai-tone-menu');
+
+    // Minimize / Expand event listeners
+    closeBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      mainBody.hidden = true;
+      pillBtn.hidden = false;
+      toolbar.classList.add('collapsed');
+    });
+
+    pillBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      pillBtn.hidden = true;
+      mainBody.hidden = false;
+      toolbar.classList.remove('collapsed');
+    });
     const buttons = toolbar.querySelectorAll('.linkedin-ai-tone-menu-item');
     const inputEl = toolbar.querySelector('.linkedin-ai-input');
     const noticeContainer = toolbar.querySelector('.linkedin-ai-notice-container');

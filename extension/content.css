@@ -97,6 +97,91 @@ html.dark-theme .linkedin-ai-title { color: #6cb4f5 !important; }
   gap: 6px !important;
 }
 
+/* ── Close / Minimize Button ───────────────────────────────── */
+.linkedin-ai-close-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 50% !important;
+  border: none !important;
+  background: rgba(0, 0, 0, 0.06) !important;
+  color: #666666 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  line-height: 1 !important;
+  margin-left: 2px !important;
+}
+
+.linkedin-ai-close-btn:hover {
+  background: #ff4d4f !important;
+  color: #ffffff !important;
+  transform: scale(1.08) !important;
+}
+
+/* ── Collapsed Pill Button ──────────────────────────────────── */
+.linkedin-ai-toolbar-container.collapsed {
+  padding: 4px 8px !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  margin: 4px 0 !important;
+  gap: 0 !important;
+  width: fit-content !important;
+  min-width: unset !important;
+}
+
+.linkedin-ai-pill-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 5px 14px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #0a66c2 !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f4f8ff 100%) !important;
+  border: 1.5px solid #0a66c2 !important;
+  border-radius: 20px !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 8px rgba(10, 102, 194, 0.18) !important;
+  transition: all 0.18s ease !important;
+  user-select: none !important;
+}
+
+.linkedin-ai-pill-btn:hover {
+  background: #0a66c2 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(10, 102, 194, 0.30) !important;
+  transform: translateY(-1px) !important;
+}
+
+.linkedin-ai-main-body {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  width: 100% !important;
+}
+
+.linkedin-ai-main-body[hidden] {
+  display: none !important;
+}
+
+.linkedin-ai-pill-btn[hidden] {
+  display: none !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .linkedin-ai-close-btn { background: rgba(255, 255, 255, 0.12) !important; color: #aaaaaa !important; }
+  .linkedin-ai-pill-btn { background: linear-gradient(135deg, #1d2226 0%, #16202a 100%) !important; color: #6cb4f5 !important; border-color: #2f7bc9 !important; }
+  .linkedin-ai-pill-btn:hover { background: #2f7bc9 !important; color: #ffffff !important; }
+}
+html.dark-theme .linkedin-ai-close-btn { background: rgba(255, 255, 255, 0.12) !important; color: #aaaaaa !important; }
+html.dark-theme .linkedin-ai-pill-btn { background: linear-gradient(135deg, #1d2226 0%, #16202a 100%) !important; color: #6cb4f5 !important; border-color: #2f7bc9 !important; }
+html.dark-theme .linkedin-ai-pill-btn:hover { background: #2f7bc9 !important; color: #ffffff !important; }
+
 /* ── ⚡ 1-Click Auto Generate Button ───────────────────────── */
 .linkedin-ai-auto-btn {
   display: inline-flex !important;

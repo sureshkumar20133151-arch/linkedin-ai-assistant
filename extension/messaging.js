@@ -56,24 +56,34 @@
     const toolbar = document.createElement('div');
     toolbar.className = 'linkedin-ai-toolbar-container';
     toolbar.innerHTML = `
-      <div class="linkedin-ai-header">
-        <div class="linkedin-ai-title">
-          <span class="linkedin-ai-sparkle">✨</span> AI Message
+      <button type="button" class="linkedin-ai-pill-btn" hidden title="Expand AI Messaging Assistant">
+        <span class="linkedin-ai-sparkle">✨</span> AI Message
+      </button>
+      <div class="linkedin-ai-main-body">
+        <div class="linkedin-ai-header">
+          <div class="linkedin-ai-title">
+            <span class="linkedin-ai-sparkle">✨</span> AI Message
+          </div>
+          <div class="linkedin-ai-header-actions">
+            <button type="button" class="linkedin-ai-close-btn" title="Minimize AI Toolbar">
+              ✕
+            </button>
+          </div>
         </div>
+        <div class="linkedin-ai-actions">
+          <button type="button" class="linkedin-ai-btn" data-style="professional">Professional</button>
+          <button type="button" class="linkedin-ai-btn" data-style="insightful">Insightful</button>
+          <button type="button" class="linkedin-ai-btn" data-style="short">Short</button>
+        </div>
+        <div class="linkedin-ai-actions-secondary">
+          <button type="button" class="linkedin-ai-btn-all" data-style="all">✨ Generate All 3</button>
+        </div>
+        <div class="linkedin-ai-prompt-box">
+          <input type="text" class="linkedin-ai-input" placeholder="One-time instruction for this message (optional)..." />
+        </div>
+        <div class="linkedin-ai-multi-results"></div>
+        <div class="linkedin-ai-notice-container"></div>
       </div>
-      <div class="linkedin-ai-actions">
-        <button type="button" class="linkedin-ai-btn" data-style="professional">Professional</button>
-        <button type="button" class="linkedin-ai-btn" data-style="insightful">Insightful</button>
-        <button type="button" class="linkedin-ai-btn" data-style="short">Short</button>
-      </div>
-      <div class="linkedin-ai-actions-secondary">
-        <button type="button" class="linkedin-ai-btn-all" data-style="all">✨ Generate All 3</button>
-      </div>
-      <div class="linkedin-ai-prompt-box">
-        <input type="text" class="linkedin-ai-input" placeholder="One-time instruction for this message (optional)..." />
-      </div>
-      <div class="linkedin-ai-multi-results"></div>
-      <div class="linkedin-ai-notice-container"></div>
     `;
 
     if (composer.parentNode) {
@@ -81,6 +91,26 @@
     } else {
       composer.appendChild(toolbar);
     }
+
+    const pillBtn = toolbar.querySelector('.linkedin-ai-pill-btn');
+    const mainBody = toolbar.querySelector('.linkedin-ai-main-body');
+    const closeBtn = toolbar.querySelector('.linkedin-ai-close-btn');
+
+    closeBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      mainBody.hidden = true;
+      pillBtn.hidden = false;
+      toolbar.classList.add('collapsed');
+    });
+
+    pillBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      pillBtn.hidden = true;
+      mainBody.hidden = false;
+      toolbar.classList.remove('collapsed');
+    });
 
     const buttons = toolbar.querySelectorAll('.linkedin-ai-btn');
     const allBtn = toolbar.querySelector('.linkedin-ai-btn-all');
