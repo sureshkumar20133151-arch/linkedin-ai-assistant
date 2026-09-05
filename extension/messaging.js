@@ -118,8 +118,13 @@
           throw new Error(response.error || 'Failed to generate messages.');
         }
       } catch (err) {
-        console.error('[AI Assistant Error]', err);
-        showToolbarNotice(noticeContainer, 'error', err.message || 'Unable to generate messages. Please try again.');
+        const msg = err.message || 'Unable to generate messages. Please try again.';
+        if (msg.toLowerCase().includes('timed out') || msg.toLowerCase().includes('cold-starting')) {
+          console.warn('[AI Assistant Notice]', msg);
+        } else {
+          console.error('[AI Assistant Error]', err);
+        }
+        showToolbarNotice(noticeContainer, 'error', msg);
       } finally {
         setToolbarLoadingState(allInteractiveButtons, allBtn, false);
       }
@@ -163,8 +168,13 @@
             throw new Error(response.error || 'Failed to generate message.');
           }
         } catch (err) {
-          console.error('[AI Assistant Error]', err);
-          showToolbarNotice(noticeContainer, 'error', err.message || 'Unable to generate message. Please try again.');
+          const msg = err.message || 'Unable to generate message. Please try again.';
+          if (msg.toLowerCase().includes('timed out') || msg.toLowerCase().includes('cold-starting')) {
+            console.warn('[AI Assistant Notice]', msg);
+          } else {
+            console.error('[AI Assistant Error]', err);
+          }
+          showToolbarNotice(noticeContainer, 'error', msg);
         } finally {
           setToolbarLoadingState(allInteractiveButtons, btn, false);
         }

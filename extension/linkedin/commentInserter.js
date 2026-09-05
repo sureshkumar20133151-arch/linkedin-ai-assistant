@@ -15,16 +15,20 @@ function findCommentEditor(startElement) {
 
   // Strategy 1: Direct search inside startElement
   const directEditor = startElement.querySelector('div[contenteditable="true"], div[role="textbox"]');
-  if (directEditor) return directEditor;
+  if (directEditor && !directEditor.closest('.linkedin-ai-toolbar-container')) return directEditor;
 
-  // Strategy 2: Search upward through parents until we find a post-level container,
-  // then search downward for any contenteditable editor
+  // Strategy 2: Search immediate parent composer container
+  // Scoped to the specific comment/reply form (stops before climbing into outer post comments container)
   let current = startElement;
   let depth = 0;
-  while (current && depth < 15 && current !== document.body) {
+  while (current && depth < 6 && current !== document.body) {
     const editor = current.querySelector('div[contenteditable="true"], div[role="textbox"]');
     if (editor && !editor.closest('.linkedin-ai-toolbar-container')) {
       return editor;
+    }
+    // Stop climbing if we hit a comment item or form boundary to avoid bleeding into other comment editors
+    if (current.matches && (current.matches('.comments-comment-item') || current.matches('form.comments-comment-box__form') || current.matches('.comments-comment-box'))) {
+      break;
     }
     current = current.parentElement;
     depth++;
@@ -32,11 +36,15 @@ function findCommentEditor(startElement) {
 
   // Strategy 3: Search siblings of the toolbar
   if (startElement.parentElement) {
-    const siblings = startElement.parentElement.children;
-    for (const sibling of siblings) {
-      if (sibling.classList && sibling.classList.contains('linkedin-ai-toolbar-container')) continue;
-      const editor = sibling.querySelector ? sibling.querySelector('div[contenteditable="true"], div[role="textbox"]') : null;
-      if (editor) return editor;
+    let sibling = startElement.nextElementSibling;
+    while (sibling) {
+      if (!sibling.classList || !sibling.classList.contains('linkedin-ai-toolbar-container')) {
+        const editor = sibling.matches && sibling.matches('div[contenteditable="true"], div[role="textbox"]')
+          ? sibling
+          : (sibling.querySelector ? sibling.querySelector('div[contenteditable="true"], div[role="textbox"]') : null);
+        if (editor) return editor;
+      }
+      sibling = sibling.nextElementSibling;
     }
   }
 

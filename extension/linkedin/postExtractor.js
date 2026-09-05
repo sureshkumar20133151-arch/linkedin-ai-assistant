@@ -29,7 +29,13 @@ function findPostForCommentComposer(commentComposer) {
     'div.occluded-update',
     'li.reusable-search__result-container',
     'div.reusable-search__result-container',
-    'div.entity-result'
+    'div.entity-result',
+    'div.update-outlet',
+    'div.feed-shared-single-update',
+    'div.profile-creator-shared-feed-update',
+    'div.pv-profile-activity-card',
+    'main.scaffold-layout__main',
+    'div.scaffold-layout__main'
   ];
 
   for (const selector of containerSelectors) {

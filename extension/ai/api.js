@@ -16,202 +16,91 @@ async function getBackendUrl() {
   });
 }
 
+async function fetchWithTimeoutAndRetry(endpoint, fetchOptions, timeoutMs = 45000, retries = 1) {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+      const response = await fetch(endpoint, {
+        ...fetchOptions,
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Backend server returned error ${response.status}`);
+      }
+      return await response.json();
+    } catch (err) {
+      clearTimeout(timeoutId);
+      const isTimeout = err.name === 'AbortError' || (err.message && (err.message.includes('504') || err.message.includes('timeout')));
+      if (isTimeout && attempt < retries) {
+        console.warn(`[AI Assistant API] Request timed out on attempt ${attempt + 1}. Retrying for backend cold start...`);
+        continue;
+      }
+      if (err.name === 'AbortError') {
+        throw new Error('Request timed out. The AI backend may be cold-starting — please try again in a few seconds.');
+      }
+      throw new Error(err.message || 'Unable to connect to AI backend. Please check your internet connection.');
+    }
+  }
+}
+
 async function requestGenerateComment({ post, persona, behavior, style, oneTimeInstruction }) {
   const baseUrl = await getBackendUrl();
   const endpoint = `${baseUrl.replace(/\/$/, '')}/api/generate-comment`;
 
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 20000);
-
-  try {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        post,
-        persona,
-        behavior,
-        style,
-        oneTimeInstruction
-      }),
-      signal: controller.signal
-    });
-
-    clearTimeout(timeoutId);
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || `Backend server returned error ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (err) {
-    clearTimeout(timeoutId);
-    if (err.name === 'AbortError') {
-      throw new Error('Request timed out. The AI backend may be cold-starting — please try again in a few seconds.');
-    }
-    throw new Error(err.message || 'Unable to connect to AI backend. Please check your internet connection.');
-  }
+  return await fetchWithTimeoutAndRetry(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ post, persona, behavior, style, oneTimeInstruction })
+  }, 45000, 1);
 }
 
 async function requestGenerateAllComments({ post, persona, behavior, oneTimeInstruction }) {
   const baseUrl = await getBackendUrl();
   const endpoint = `${baseUrl.replace(/\/$/, '')}/api/generate-comment-all`;
 
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 30000);
-
-  try {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        post,
-        persona,
-        behavior,
-        oneTimeInstruction
-      }),
-      signal: controller.signal
-    });
-
-    clearTimeout(timeoutId);
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || `Backend server returned error ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (err) {
-    clearTimeout(timeoutId);
-    if (err.name === 'AbortError') {
-      throw new Error('Request timed out. The AI backend may be cold-starting — please try again in a few seconds.');
-    }
-    throw new Error(err.message || 'Unable to connect to AI backend. Please check your internet connection.');
-  }
+  return await fetchWithTimeoutAndRetry(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ post, persona, behavior, oneTimeInstruction })
+  }, 60000, 1);
 }
 
 async function requestGenerateMessage({ recipient, conversation, persona, behavior, style, oneTimeInstruction }) {
   const baseUrl = await getBackendUrl();
   const endpoint = `${baseUrl.replace(/\/$/, '')}/api/generate-message`;
 
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 20000);
-
-  try {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        recipient,
-        conversation,
-        persona,
-        behavior,
-        style,
-        oneTimeInstruction
-      }),
-      signal: controller.signal
-    });
-
-    clearTimeout(timeoutId);
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || `Backend server returned error ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (err) {
-    clearTimeout(timeoutId);
-    if (err.name === 'AbortError') {
-      throw new Error('Request timed out. The AI backend may be cold-starting — please try again in a few seconds.');
-    }
-    throw new Error(err.message || 'Unable to connect to AI backend. Please check your internet connection.');
-  }
+  return await fetchWithTimeoutAndRetry(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ recipient, conversation, persona, behavior, style, oneTimeInstruction })
+  }, 45000, 1);
 }
 
 async function requestGenerateAllMessages({ recipient, conversation, persona, behavior, oneTimeInstruction }) {
   const baseUrl = await getBackendUrl();
   const endpoint = `${baseUrl.replace(/\/$/, '')}/api/generate-message-all`;
 
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 30000);
-
-  try {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        recipient,
-        conversation,
-        persona,
-        behavior,
-        oneTimeInstruction
-      }),
-      signal: controller.signal
-    });
-
-    clearTimeout(timeoutId);
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || `Backend server returned error ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (err) {
-    clearTimeout(timeoutId);
-    if (err.name === 'AbortError') {
-      throw new Error('Request timed out. The AI backend may be cold-starting — please try again in a few seconds.');
-    }
-    throw new Error(err.message || 'Unable to connect to AI backend. Please check your internet connection.');
-  }
+  return await fetchWithTimeoutAndRetry(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ recipient, conversation, persona, behavior, oneTimeInstruction })
+  }, 60000, 1);
 }
 
 async function requestRecommendTone({ post, persona, behavior }) {
   const baseUrl = await getBackendUrl();
   const endpoint = `${baseUrl.replace(/\/$/, '')}/api/recommend-comment-tone`;
 
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-  try {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        post,
-        persona,
-        behavior
-      }),
-      signal: controller.signal
-    });
-
-    clearTimeout(timeoutId);
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || `Backend server returned error ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (err) {
-    clearTimeout(timeoutId);
-    if (err.name === 'AbortError') {
-      throw new Error('Request timed out while connecting to AI backend.');
-    }
-    throw new Error(err.message || 'Unable to connect to backend server.');
-  }
+  return await fetchWithTimeoutAndRetry(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ post, persona, behavior })
+  }, 25000, 1);
 }
 
 async function checkBackendHealth() {

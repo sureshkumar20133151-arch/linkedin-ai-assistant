@@ -47,7 +47,7 @@ async function analyzeProfileInBackground(profileUrl) {
   const tab = await chrome.tabs.create({ url: profileUrl, active: false });
 
   try {
-    // Wait for the profile tab to finish loading (max 15s to avoid permanent tab leak
+    // Wait for the profile tab to finish loading (max 30s to avoid tab leak
     // if LinkedIn shows a login wall, redirect, or slow network)
     await Promise.race([
       new Promise((resolve) => {
@@ -60,7 +60,7 @@ async function analyzeProfileInBackground(profileUrl) {
         chrome.tabs.onUpdated.addListener(listener);
       }),
       new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Profile tab load timed out after 15 seconds.')), 15000)
+        setTimeout(() => reject(new Error('Profile tab load timed out after 30 seconds.')), 30000)
       )
     ]);
 
@@ -79,6 +79,9 @@ async function analyzeProfileInBackground(profileUrl) {
       return evalResult && evalResult[0] ? evalResult[0].result : null;
     }
     return null;
+  } catch (err) {
+    console.warn('[AI Assistant] Profile analysis background task:', err.message);
+    throw err;
   } finally {
     if (tab && tab.id) {
       chrome.tabs.remove(tab.id).catch(() => {});

@@ -55,22 +55,48 @@
     });
   }
 
+  // Helper to cleanly handle and log errors without causing Chrome Extension error flags for expected network/timeout warnings
+  function logAndNoticeError(noticeContainer, err, defaultMsg = 'Unable to generate comment. Please try again.') {
+    const rawMsg = err?.message || defaultMsg;
+    const lowerMsg = rawMsg.toLowerCase();
+    const isExpected = lowerMsg.includes('timed out') ||
+                       lowerMsg.includes('cold-starting') ||
+                       lowerMsg.includes('context invalidated') ||
+                       lowerMsg.includes('failed to fetch') ||
+                       lowerMsg.includes('networkerror');
+
+    if (isExpected) {
+      console.warn('[AI Assistant Notice]', rawMsg);
+    } else {
+      console.error('[AI Assistant Error]', err);
+    }
+
+    let userMsg = rawMsg;
+    if (rawMsg.includes('Extension context invalidated') || rawMsg.includes('context invalidated')) {
+      userMsg = '🔄 Extension was updated. Please refresh this page (F5) to continue using AI Assistant.';
+    }
+    showNotice(noticeContainer, isExpected ? 'warning' : 'error', userMsg);
+  }
+
   // Create & inject AI Toolbar into a detected comment composer
   function injectAIToolbar(composer) {
     if (!composer) return;
 
-    // Strict duplicate check across ancestor and descendant tree
-    const outerBox = composer.closest('.comments-comment-box, .feed-shared-comment-box, form.comments-comment-box__form') || composer;
+    // Strict duplicate check on specific composer container
+    const specificBox = composer.closest(
+      'form.comments-comment-box__form, .comments-comment-box__editor-container, .comments-comment-texteditor, .comments-comment-box--cr, .feed-shared-comment-box__form, .feed-shared-comment-box'
+    ) || composer;
+
     if (
-      outerBox.getAttribute('data-ai-assistant-toolbar') ||
-      outerBox.querySelector('.linkedin-ai-toolbar-container') ||
+      specificBox.getAttribute('data-ai-assistant-toolbar') ||
+      specificBox.querySelector('.linkedin-ai-toolbar-container') ||
       composer.querySelector('.linkedin-ai-toolbar-container')
     ) {
       return;
     }
 
-    // Mark both outer container and composer element
-    outerBox.setAttribute('data-ai-assistant-toolbar', 'true');
+    // Mark both container and composer element
+    specificBox.setAttribute('data-ai-assistant-toolbar', 'true');
     composer.setAttribute('data-ai-assistant-toolbar', 'true');
 
     const toolbar = document.createElement('div');
@@ -213,14 +239,7 @@
           throw new Error(response.error || 'Failed to generate comment.');
         }
       } catch (err) {
-        if (!err?.message?.includes('context invalidated')) {
-          console.error('[AI Assistant Error]', err);
-        }
-        let message = err.message || 'Unable to generate comment. Please try again.';
-        if (message.includes('context invalidated')) {
-          message = '🔄 Extension was updated. Please refresh this page (F5) to continue.';
-        }
-        showNotice(noticeContainer, 'error', message);
+        logAndNoticeError(noticeContainer, err);
       } finally {
         setLoadingState(allInteractiveButtons, autoBtn, false);
       }
@@ -414,14 +433,7 @@
           }
 
         } catch (err) {
-          if (!err?.message?.includes('context invalidated')) {
-            console.error('[AI Assistant Error]', err);
-          }
-          let message = err.message || 'Unable to generate comment. Please try again.';
-          if (message.includes('Extension context invalidated') || message.includes('context invalidated')) {
-            message = '🔄 Extension was updated. Please refresh this page (F5) to continue using AI Assistant.';
-          }
-          showNotice(noticeContainer, 'error', message);
+          logAndNoticeError(noticeContainer, err);
         } finally {
           setLoadingState(allInteractiveButtons, btn, false);
         }
