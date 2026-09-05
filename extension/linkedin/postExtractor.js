@@ -229,7 +229,7 @@ async function extractPostContext(commentComposer) {
     await new Promise(r => setTimeout(r, 500));
   }
 
-  // Helper to check if an element is inside any comment section
+  // Helper to check if an element is inside any comment section or reply section
   function isInsideCommentsSection(el) {
     if (!el) return false;
     return !!el.closest(
@@ -240,24 +240,66 @@ async function extractPostContext(commentComposer) {
       '.comments-comment-entity, ' +
       '.comments-reply-item, ' +
       '.comments-comment-item__main-content, ' +
+      '.feed-shared-comments-list, ' +
+      '.feed-shared-comment-item, ' +
+      '.feed-shared-comment-box, ' +
       '[class*="comments-"], ' +
-      '[class*="comment-"]'
+      '[class*="comment-"], ' +
+      '[class*="comments"], ' +
+      '[class*="comment"]'
     );
   }
 
-  // Locate top actor header of the post
-  const actorHeader = postElement.querySelector(
-    '.update-components-actor, ' +
-    '.feed-shared-actor, ' +
-    '.entity-result__actor-container, ' +
-    '.feed-shared-update-v2__actor, ' +
-    '.update-components-actor__container, ' +
-    'div[class*="actor"]'
-  );
+  // Helper to extract clean person name from raw string
+  function cleanPersonName(rawText) {
+    if (!rawText) return '';
+    const firstLine = rawText.split('\n')[0].trim();
+    const cleaned = firstLine
+      .replace(/\s*•\s*(1st|2nd|3rd\+?|\d+\w*)\s*/gi, '')
+      .replace(/\s*•\s*Author\s*/gi, '')
+      .replace(/\s*•\s*Following\s*/gi, '')
+      .replace(/\s*•\s*You\s*/gi, '')
+      .replace(/\s*\+?\s*Follow\s*/gi, '')
+      .replace(/\s*•\s*\d+\w*\s*/gi, '')
+      .trim();
 
-  const actorScope = (actorHeader && !isInsideCommentsSection(actorHeader)) ? actorHeader : postElement;
+    if (
+      cleaned &&
+      cleaned.length >= 2 &&
+      cleaned.length <= 50 &&
+      !cleaned.toLowerCase().includes('comment') &&
+      !cleaned.toLowerCase().includes('repost') &&
+      !cleaned.toLowerCase().includes('like') &&
+      !cleaned.toLowerCase().includes('promoted') &&
+      !cleaned.toLowerCase().includes('search') &&
+      !cleaned.toLowerCase().includes('linkedin')
+    ) {
+      return cleaned;
+    }
+    return '';
+  }
 
-  // Extract author name (ignore commenters in comments section)
+  // 1. Extract Profile URL & Name from VERY FIRST <a> link matching /in/ OUTSIDE comments
+  const allProfileLinks = postElement.querySelectorAll('a[href*="/in/"]');
+  let authorProfileUrl = '';
+  let authorNameFromLink = '';
+
+  for (const a of allProfileLinks) {
+    if (isInsideCommentsSection(a)) continue;
+    const href = a.getAttribute('href') || a.href || '';
+    if (href.includes('/in/')) {
+      const match = href.match(/(https?:\/\/[^\/]*linkedin\.com\/in\/[^\/\?#]+)/);
+      authorProfileUrl = match ? match[1] : href.split('?')[0];
+
+      const textName = cleanPersonName(a.innerText || a.textContent || '');
+      if (textName) {
+        authorNameFromLink = textName;
+      }
+      break; // Found the top post author link!
+    }
+  }
+
+  // 2. Extract author name via selectors if link text was empty
   const nameSelectors = [
     '.update-components-actor__name span[aria-hidden="true"]',
     '.update-components-actor__name',
@@ -265,32 +307,41 @@ async function extractPostContext(commentComposer) {
     '.feed-shared-actor__name',
     '.update-components-actor__title span[aria-hidden="true"]',
     '.update-components-actor__title',
+    '.feed-shared-actor__title span[aria-hidden="true"]',
+    '.feed-shared-actor__title',
     '.entity-result__title-text a',
     '.entity-result__title-text',
     'span[data-anonymize="person-name"]'
   ];
-  let authorName = '';
-  for (const sel of nameSelectors) {
-    const elements = actorScope.querySelectorAll(sel);
-    for (const el of elements) {
-      if (isInsideCommentsSection(el)) continue;
-      let text = (el.innerText || el.textContent || '').trim();
-      if (text) {
-        text = text.split('\n')[0]
-                   .replace(/\s*•\s*(1st|2nd|3rd\+?|\d+\w*)\s*/gi, '')
-                   .replace(/\s*•\s*Author\s*/gi, '')
-                   .replace(/\s*•\s*Following\s*/gi, '')
-                   .replace(/\s*•\s*You\s*/gi, '')
-                   .replace(/\s*\+?\s*Follow\s*/gi, '')
-                   .trim();
-        if (text && text.length >= 2 && text.length <= 60 && !text.toLowerCase().includes('comment')) {
+
+  let authorName = authorNameFromLink;
+  if (!authorName) {
+    for (const sel of nameSelectors) {
+      const elements = postElement.querySelectorAll(sel);
+      for (const el of elements) {
+        if (isInsideCommentsSection(el)) continue;
+        const text = cleanPersonName(el.innerText || el.textContent || '');
+        if (text) {
           authorName = text;
           break;
         }
       }
+      if (authorName) break;
     }
-    if (authorName) break;
   }
+
+  // 3. Fallback: extract name from profile URL slug if name still missing
+  if ((!authorName || authorName === 'LinkedIn User') && authorProfileUrl) {
+    const slugMatch = authorProfileUrl.match(/\/in\/([^\/\?#]+)/);
+    if (slugMatch && slugMatch[1]) {
+      const rawSlug = slugMatch[1].replace(/-\d+[a-z0-9]*$/i, '').replace(/-/g, ' ');
+      const titleCase = rawSlug.replace(/\b\w/g, c => c.toUpperCase()).trim();
+      if (titleCase && titleCase.length >= 2) {
+        authorName = titleCase;
+      }
+    }
+  }
+
   if (!authorName || authorName.length > 50) authorName = 'LinkedIn User';
 
   // Extract author headline (ignore commenters and post summary)
@@ -304,7 +355,7 @@ async function extractPostContext(commentComposer) {
   ];
   let authorHeadline = '';
   for (const sel of headlineSelectors) {
-    const elements = actorScope.querySelectorAll(sel);
+    const elements = postElement.querySelectorAll(sel);
     for (const el of elements) {
       if (isInsideCommentsSection(el)) continue;
       const text = (el.innerText || el.textContent || '').trim();
@@ -326,29 +377,6 @@ async function extractPostContext(commentComposer) {
       await new Promise(r => setTimeout(r, 800));
       postText = extractTextFromPost(postElement);
     }
-  }
-
-  // Extract author profile URL (ignore links inside comments section)
-  const linkSelectors = [
-    'a.update-components-actor__meta-link',
-    'a.update-components-actor__image',
-    'a.feed-shared-actor__container-link',
-    'a.app-aware-link[href*="/in/"]',
-    'a[href*="/in/"]'
-  ];
-  let authorProfileUrl = '';
-  for (const sel of linkSelectors) {
-    const elements = actorScope.querySelectorAll(sel);
-    for (const el of elements) {
-      if (isInsideCommentsSection(el)) continue;
-      const href = el.getAttribute('href') || el.href || '';
-      if (href.includes('/in/')) {
-        const match = href.match(/(https?:\/\/[^\/]*linkedin\.com\/in\/[^\/\?#]+)/);
-        authorProfileUrl = match ? match[1] : href.split('?')[0];
-        break;
-      }
-    }
-    if (authorProfileUrl) break;
   }
 
   // Extract hashtags

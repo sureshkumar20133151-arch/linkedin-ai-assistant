@@ -156,8 +156,8 @@
     let toneRecommendationTriggered = false;
     let recommendedToneCache = null;
 
-    async function getPostContext() {
-      if (cachedPostContext && cachedPostContext.postText && cachedPostContext.postText.length >= 20) {
+    async function getPostContext(forceRefresh = false) {
+      if (!forceRefresh && cachedPostContext && cachedPostContext.postText && cachedPostContext.postText.length >= 20 && cachedPostContext.authorName !== 'LinkedIn User') {
         return cachedPostContext;
       }
       const ctx = await extractPostContext(composer);
