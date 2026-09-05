@@ -109,6 +109,10 @@ ${detailedProfileBlock}`;
       * "I work with modern AI-assisted development tools to build fast and deliver high-quality, robust code without cutting corners."
       * "I specialize in building clean, scalable, responsive websites with WordPress and React.js."
       * "I take on select projects with full dedication, fair pricing, and a strong commitment to quality."
+11. MANDATORY AUTHOR ADDRESSING RULE:
+    - You are writing a comment TO THE POST AUTHOR specified in the post metadata.
+    - If you include an @-mention tag or greeting, it MUST ONLY tag/greet THE POST AUTHOR (e.g. "Hi @[Author's Name]," or "@[Author's Name],").
+    - STRICTLY BANNED: NEVER tag, greet, or respond to any commenter from the existing comments list (e.g. NEVER tag Kaushal Khokhar or any other commenter). Existing comments are provided ONLY to find missing topic gaps — NOT to reply to commenters!
 
 === CRITICAL: MATCH THE POST'S REQUIREMENTS ===
 - If the post mentions WordPress, talk about WordPress — NOT React or APIs alone.
@@ -351,7 +355,13 @@ RULE: Do NOT copy or repeat what others already said. Your comment must occupy a
 
   return `
 === TARGET LINKEDIN POST ===
-- Author: ${post.authorName || 'Unknown'} (${post.authorHeadline || 'LinkedIn User'})
+- Author Name (THE ONLY PERSON YOU CAN TAG OR ADDRESS): "${post.authorName || 'LinkedIn User'}" (${post.authorHeadline || 'LinkedIn User'})
+
+=== MANDATORY AUTHOR ADDRESSING RULE FOR THIS POST ===
+- THE POST AUTHOR IS: "${post.authorName || 'LinkedIn User'}".
+- Your comment MUST be written directly to THE POST AUTHOR: "${post.authorName || 'LinkedIn User'}".
+- IF you include an @-mention tag or greeting, it MUST ONLY tag/greet THE POST AUTHOR: "@${post.authorName || 'LinkedIn User'}".
+- STRICTLY BANNED: NEVER tag, greet, or address any commenter listed under existing comments (e.g. NEVER tag Kaushal Khokhar or any other commenter).
 ${profileBlock}${gapBlock}- Post Text:
 """
 ${post.postText}

@@ -133,8 +133,18 @@ function extractTextFromPost(postElement) {
     '.linkedin-ai-notice, ' +
     '.comments-comment-box, ' +
     '.comments-comments-list, ' +
+    '.comments-comment-item, ' +
+    '.comments-comment-entity, ' +
+    '.comments-post-meta, ' +
     '.comments-comment-texteditor, ' +
     '.comments-reply-item, ' +
+    '.feed-shared-comments-list, ' +
+    '.feed-shared-comment-item, ' +
+    '.feed-shared-comment-box, ' +
+    '[class*="comments-"], ' +
+    '[class*="comment-"], ' +
+    '[class*="comments"], ' +
+    '[class*="comment"], ' +
     'button'
   ).forEach(el => el.remove());
 
