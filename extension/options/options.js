@@ -232,8 +232,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     await saveChatMessageHistory('user', text);
 
     try {
+      // Fetch the locally-persisted behavior (the real source of truth,
+      // since the backend's own memory can reset on a serverless cold
+      // start) and send it along so the backend merges rather than
+      // silently dropping rules saved in a previous session.
+      const currentBehavior = await new Promise(resolve => {
+        chrome.storage.local.get(['assistantBehavior'], res => resolve(res.assistantBehavior || {}));
+      });
+
       // Call Backend API to interpret behavior instruction
-      const response = await sendBehaviorInstruction(text);
+      const response = await sendBehaviorInstruction(text, currentBehavior);
       const replyMsg = response.message || 'Understood! I will follow this preference for your future comments.';
       
       appendChatMessage('assistant', replyMsg);

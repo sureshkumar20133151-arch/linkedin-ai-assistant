@@ -118,14 +118,14 @@ async function checkBackendHealth() {
   }
 }
 
-async function sendBehaviorInstruction(instruction) {
+async function sendBehaviorInstruction(instruction, currentBehavior) {
   const baseUrl = await getBackendUrl();
   const endpoint = `${baseUrl.replace(/\/$/, '')}/api/assistant/behavior`;
 
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ instruction })
+    body: JSON.stringify({ instruction, currentBehavior })
   });
 
   if (!response.ok) {

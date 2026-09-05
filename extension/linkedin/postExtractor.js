@@ -33,9 +33,17 @@ function findPostForCommentComposer(commentComposer) {
     'div.update-outlet',
     'div.feed-shared-single-update',
     'div.profile-creator-shared-feed-update',
-    'div.pv-profile-activity-card',
-    'main.scaffold-layout__main',
-    'div.scaffold-layout__main'
+    'div.pv-profile-activity-card'
+    // NOTE: 'main.scaffold-layout__main' / 'div.scaffold-layout__main' were
+    // removed from here on purpose. Those wrap the ENTIRE page (including
+    // sidebar/suggested posts), so when a post's real container class isn't
+    // matched above, closest() would match the whole-page container first
+    // and "extractTextFromPost" would then grab text from a DIFFERENT post
+    // entirely (e.g. a suggested job post in the sidebar) — producing
+    // comments about the wrong post. Strategy 2/3 below (which require post
+    // text AND author to be found together, walking up from the composer)
+    // are much safer fallbacks and are now what actually runs when the
+    // specific selectors above don't match.
   ];
 
   for (const selector of containerSelectors) {

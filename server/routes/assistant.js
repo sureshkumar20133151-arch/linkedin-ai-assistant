@@ -23,7 +23,7 @@ router.get('/assistant/behavior', (req, res) => {
 // POST update behavior via natural language instruction or structured payload
 router.post('/assistant/behavior', async (req, res) => {
   try {
-    const { instruction, behavior } = req.body;
+    const { instruction, behavior, currentBehavior } = req.body;
 
     if (instruction) {
       const validation = validateBehaviorRequest(req);
@@ -31,7 +31,7 @@ router.post('/assistant/behavior', async (req, res) => {
         return res.status(400).json({ success: false, error: validation.message });
       }
 
-      const result = await processNaturalLanguageInstruction(instruction);
+      const result = await processNaturalLanguageInstruction(instruction, currentBehavior);
       return res.json(result);
     } else if (behavior && typeof behavior === 'object') {
       const updated = updateBehaviorMemory(behavior);

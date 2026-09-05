@@ -46,23 +46,45 @@ function resetBehaviorMemory() {
   return getBehaviorMemory();
 }
 
-async function processNaturalLanguageInstruction(instruction) {
+async function processNaturalLanguageInstruction(instruction, clientBehavior) {
+  // IMPORTANT: this module's in-memory state (currentBehaviorMemory) does
+  // NOT reliably survive across requests on serverless platforms like
+  // Vercel — each cold start can reset it back to the defaults above.
+  // The extension is the real source of truth (it persists behavior in
+  // chrome.storage.local across sessions), so if the caller passes its
+  // current locally-saved behavior, merge it in FIRST — unioning
+  // activeInstructions rather than replacing — so previously-saved rules
+  // are never silently dropped just because this server instance is cold.
+  if (clientBehavior && typeof clientBehavior === 'object') {
+    const existingRules = currentBehaviorMemory.activeInstructions || [];
+    const clientRules = clientBehavior.activeInstructions || [];
+    currentBehaviorMemory = {
+      ...currentBehaviorMemory,
+      ...clientBehavior,
+      activeInstructions: [...new Set([...existingRules, ...clientRules])]
+    };
+  }
+
   try {
     const result = await interpretBehaviorInstruction(instruction, currentBehaviorMemory);
-    
-    if (result.isPermanent && result.updatedBehavior) {
-      // Defensive merge: the prompt asks Gemini to return the FULL updated
-      // activeInstructions array (existing + new), but nothing guarantees
-      // it always will — an LLM response that drops or forgets older rules
-      // would otherwise silently erase them. Union with what's already
-      // saved so accumulated rules can never be lost this way.
-      const mergedBehavior = { ...result.updatedBehavior };
+
+    if (result.isPermanent) {
       const existingRules = currentBehaviorMemory.activeInstructions || [];
-      const incomingRules = result.updatedBehavior.activeInstructions || [];
-      mergedBehavior.activeInstructions = [...new Set([...existingRules, ...incomingRules])];
+      const newRules = Array.isArray(result.newInstructions) ? result.newInstructions : [];
+      const removedRules = Array.isArray(result.removedInstructions) ? result.removedInstructions : [];
+
+      // Remove first (exact text match against what's currently saved), then add new ones, deduped.
+      const afterRemoval = existingRules.filter(r => !removedRules.includes(r));
+      const mergedRules = [...new Set([...afterRemoval, ...newRules])];
+
+      const mergedBehavior = {
+        ...currentBehaviorMemory,
+        ...(result.changedBehavior || {}),
+        activeInstructions: mergedRules
+      };
       updateBehaviorMemory(mergedBehavior);
     }
-    
+
     return {
       success: true,
       isPermanent: result.isPermanent !== false,
