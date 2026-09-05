@@ -229,24 +229,64 @@ async function extractPostContext(commentComposer) {
     await new Promise(r => setTimeout(r, 500));
   }
 
+  // Helper to check if an element is inside any comment section
+  function isInsideCommentsSection(el) {
+    if (!el) return false;
+    return !!el.closest(
+      '.comments-comments-list, ' +
+      '.comments-comment-item, ' +
+      '.comments-comment-box, ' +
+      '.comments-post-meta, ' +
+      '.comments-comment-entity, ' +
+      '.comments-reply-item, ' +
+      '.comments-comment-item__main-content, ' +
+      '[class*="comments-"], ' +
+      '[class*="comment-"]'
+    );
+  }
+
+  // Locate top actor header of the post
+  const actorHeader = postElement.querySelector(
+    '.update-components-actor, ' +
+    '.feed-shared-actor, ' +
+    '.entity-result__actor-container, ' +
+    '.feed-shared-update-v2__actor, ' +
+    '.update-components-actor__container, ' +
+    'div[class*="actor"]'
+  );
+
+  const actorScope = (actorHeader && !isInsideCommentsSection(actorHeader)) ? actorHeader : postElement;
+
   // Extract author name (ignore commenters in comments section)
   const nameSelectors = [
-    '.update-components-actor__name span span[aria-hidden="true"]',
+    '.update-components-actor__name span[aria-hidden="true"]',
     '.update-components-actor__name',
+    '.feed-shared-actor__name span[aria-hidden="true"]',
     '.feed-shared-actor__name',
-    '.entity-result__title-text',
+    '.update-components-actor__title span[aria-hidden="true"]',
     '.update-components-actor__title',
+    '.entity-result__title-text a',
+    '.entity-result__title-text',
     'span[data-anonymize="person-name"]'
   ];
   let authorName = '';
   for (const sel of nameSelectors) {
-    const elements = postElement.querySelectorAll(sel);
+    const elements = actorScope.querySelectorAll(sel);
     for (const el of elements) {
-      if (el.closest('.comments-comments-list, .comments-comment-item, .comments-comment-box')) continue;
-      const text = el.innerText.trim();
+      if (isInsideCommentsSection(el)) continue;
+      let text = (el.innerText || el.textContent || '').trim();
       if (text) {
-        authorName = text.split('\n')[0];
-        break;
+        text = text.split('\n')[0]
+                   .replace(/\s*•\s*(1st|2nd|3rd\+?|\d+\w*)\s*/gi, '')
+                   .replace(/\s*•\s*Author\s*/gi, '')
+                   .replace(/\s*•\s*Following\s*/gi, '')
+                   .replace(/\s*•\s*You\s*/gi, '')
+                   .replace(/\s*\+?\s*Follow\s*/gi, '')
+                   .trim();
+        if (text && text.length >= 2 && text.length <= 60 && !text.toLowerCase().includes('comment')) {
+          authorName = text;
+          break;
+        }
       }
     }
     if (authorName) break;
@@ -257,16 +297,18 @@ async function extractPostContext(commentComposer) {
   const headlineSelectors = [
     '.update-components-actor__description span[aria-hidden="true"]',
     '.update-components-actor__description',
+    '.feed-shared-actor__sub-description span[aria-hidden="true"]',
     '.feed-shared-actor__sub-description',
-    '.update-components-actor__sub-description span[aria-hidden="true"]'
+    '.update-components-actor__sub-description span[aria-hidden="true"]',
+    '.entity-result__primary-subtitle'
   ];
   let authorHeadline = '';
   for (const sel of headlineSelectors) {
-    const elements = postElement.querySelectorAll(sel);
+    const elements = actorScope.querySelectorAll(sel);
     for (const el of elements) {
-      if (el.closest('.comments-comments-list, .comments-comment-item, .comments-comment-box')) continue;
-      const text = el.innerText.trim();
-      if (text) {
+      if (isInsideCommentsSection(el)) continue;
+      const text = (el.innerText || el.textContent || '').trim();
+      if (text && !text.includes(authorName)) {
         authorHeadline = text.replace(/\s+/g, ' ');
         break;
       }
@@ -296,9 +338,9 @@ async function extractPostContext(commentComposer) {
   ];
   let authorProfileUrl = '';
   for (const sel of linkSelectors) {
-    const elements = postElement.querySelectorAll(sel);
+    const elements = actorScope.querySelectorAll(sel);
     for (const el of elements) {
-      if (el.closest('.comments-comments-list, .comments-comment-item, .comments-comment-box')) continue;
+      if (isInsideCommentsSection(el)) continue;
       const href = el.getAttribute('href') || el.href || '';
       if (href.includes('/in/')) {
         const match = href.match(/(https?:\/\/[^\/]*linkedin\.com\/in\/[^\/\?#]+)/);
