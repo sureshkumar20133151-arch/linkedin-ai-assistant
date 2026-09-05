@@ -100,15 +100,19 @@ ${detailedProfileBlock}`;
 7. DO NOT start with generic filler like "Great post!", "Nice post!", "Thanks for sharing!", or "I appreciate your...".
 8. If the post is completely IRRELEVANT to the user's expertise (sports, entertainment, politics, unrelated fields), set "relevant": false.
 9. Return your response STRICTLY as a raw JSON object.
-10. LANGUAGE & TONE BALANCE:
-    - STRICTLY BANNED UNFAMILIAR / WEIRD WORDS: "iterate", "synergy", "leverage", "spearhead", "endeavors".
-    - ALLOWED & ENCOURAGED DEVELOPER WORDS: "robust", "scalable", "responsive", "clean code", "high performance", "maintainable".
-    - BANNED CHEAP / SLANG WORDS: "gonna", "wanna", "cheap", "basic dev", "freelancer for hire".
-    - MANDATORY TONE: Clean, direct, confident, professional developer English.
-    - APPROVED EXAMPLE PHRASES:
-      * "I work with modern AI-assisted development tools to build fast and deliver high-quality, robust code without cutting corners."
-      * "I specialize in building clean, scalable, responsive websites with WordPress and React.js."
-      * "I take on select projects with full dedication, fair pricing, and a strong commitment to quality."
+10. LANGUAGE & TONE BALANCE (STRICT SIMPLE ENGLISH):
+    - STRICTLY BANNED HEAVY / TEXTBOOK / CORPORATE BUZZWORDS:
+      "iterate", "synergy", "leverage", "spearhead", "endeavors", "paramount", "unwavering",
+      "core architecture", "intuitive navigation", "page hierarchy", "integrated from initial planning stages",
+      "delivering high-impact work", "highlighted a critical aspect", "truly need to be", "testament".
+    - MANDATORY WRITING STYLE:
+      * Use SIMPLE, CONVERSATIONAL, EVERYDAY ENGLISH that sounds like a real human freelancer talking directly to a client on LinkedIn.
+      * Keep comments SHORT, NATURAL, and DIRECT (maximum 2 to 3 short, easy-to-read sentences).
+      * State what you build plainly without corporate fluff (e.g. "I build fast, clean, and mobile-friendly websites with React and WordPress.").
+    - APPROVED NATURAL EXAMPLE COMMENTS:
+      * "Hi @[Author's First Name], I can help build this website for you! I specialize in clean, fast, and responsive sites using React and Node.js. Check out my work: https://solodeveloper.pro/"
+      * "Hi @[Author's First Name], mobile speed and clean design are super important for a business site. I build fast, responsive web apps with React and custom APIs. Here is my portfolio: https://solodeveloper.pro/"
+      * "Hi @[Author's First Name], I'm available for this project! I deliver clean code, fast loading speeds, and quick turnarounds. You can view my portfolio here: https://solodeveloper.pro/"
 11. MANDATORY AUTHOR ADDRESSING RULE:
     - You are writing a comment TO THE POST AUTHOR specified in the post metadata.
     - If you include an @-mention tag or greeting, it MUST ONLY tag/greet THE POST AUTHOR (e.g. "Hi @[Author's Name]," or "@[Author's Name],").
@@ -130,8 +134,8 @@ function buildBehaviorSection(behavior) {
 - Promotion Level: ${behavior?.promotionLevel || 'low'}
 - Use Emojis: ${behavior?.useEmojis ? 'Allowed (sparingly)' : 'STRICTLY NO EMOJIS'}
 - Avoid Generic Praise: ${behavior?.genericPraise === false ? 'No' : 'Yes (Do not start with "Great post!")'}
-- Preferred Comment Length: ${behavior?.commentLength || 'adaptive'}
-- Client Requirement Response Style: ${behavior?.clientRequirementStyle || 'direct, value-focused, non-salesy'}
+- Preferred Comment Length: ${behavior?.commentLength || 'short'}
+- Client Requirement Response Style: ${behavior?.clientRequirementStyle || 'direct, simple English, non-salesy'}
 ${behavior?.activeInstructions?.length ? `- Active Custom Rules:\n  * ${behavior.activeInstructions.join('\n  * ')}` : ''}
 `;
 }
@@ -139,13 +143,12 @@ ${behavior?.activeInstructions?.length ? `- Active Custom Rules:\n  * ${behavior
 const STYLE_GUIDES = {
   professional: `
 === STYLE: PROFESSIONAL ===
-GOAL: The user is responding as an EXPERT FREELANCER / WEB DEVELOPER pitching for work on LinkedIn.
+GOAL: Simple, clean, direct developer pitch without corporate buzzwords or heavy textbook language.
 
-FOR HIRING / CLIENT REQUIREMENT POSTS: Follow the hiring-post rules already established above (greeting, language/region match, matching skills, mandatory portfolio link in the comment, no generic praise). Style-specific addition: state your exact role and matching skills plainly (e.g. "I'm a Full Stack Developer specializing in responsive web applications, React, Node.js, and custom API/payment integrations"), highlight clean/scalable code and on-time delivery, and close with a clear call to action to discuss the project.
+FOR HIRING / CLIENT REQUIREMENT POSTS: Follow the hiring-post rules established above (greeting, language/region match, matching skills, mandatory portfolio link, simple language, no generic praise). State your role and matching skills plainly (e.g. "I build fast, responsive websites with React and Node.js"), highlight clean code and quick delivery, and include your portfolio link (https://solodeveloper.pro/). Keep it 2-3 short, natural sentences.
 
 FOR GENERAL DISCUSSION / EDUCATIONAL POSTS:
-- Share a high-value, professional perspective directly addressing the post's core technical topic.
-- Demonstrate deep technical capability naturally without hard selling.
+- Share a clear, practical developer observation directly addressing the post's core topic in simple English.
 `,
   insightful: `
 === STYLE: INSIGHTFUL / CONFIDENT ===
