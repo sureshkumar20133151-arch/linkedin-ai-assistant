@@ -60,23 +60,70 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Load Settings from chrome.storage.local
   function loadSettings() {
     if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-      chrome.storage.local.get(['persona', 'assistantBehavior', 'backendUrl'], result => {
-        if (result.persona) {
-          inputRole.value = result.persona.role || '';
-          inputTone.value = result.persona.tone || '';
-          inputSkills.value = Array.isArray(result.persona.skills) ? result.persona.skills.join(', ') : result.persona.skills || '';
-          inputServices.value = Array.isArray(result.persona.services) ? result.persona.services.join(', ') : result.persona.services || '';
-          inputTargetAudience.value = Array.isArray(result.persona.targetAudience) ? result.persona.targetAudience.join(', ') : result.persona.targetAudience || '';
-          inputDetailedProfile.value = result.persona.detailedProfile || '';
-          inputPortfolioUrl.value = result.persona.portfolioUrl || '';
-          inputLinkedInUrl.value = result.persona.linkedInUrl || '';
-        }
+      chrome.storage.local.get(['persona', 'assistantBehavior', 'backendUrl', 'behaviorChatHistory'], result => {
+        const persona = result.persona || {};
+        const behavior = result.assistantBehavior || {};
+        const chatHistory = result.behaviorChatHistory || [];
+
+        inputRole.value = persona.role || '';
+        inputTone.value = persona.tone || '';
+        inputSkills.value = Array.isArray(persona.skills) ? persona.skills.join(', ') : persona.skills || '';
+        inputServices.value = Array.isArray(persona.services) ? persona.services.join(', ') : persona.services || '';
+        inputTargetAudience.value = Array.isArray(persona.targetAudience) ? persona.targetAudience.join(', ') : persona.targetAudience || '';
+        inputDetailedProfile.value = persona.detailedProfile || '';
+        inputPortfolioUrl.value = persona.portfolioUrl || '';
+        inputLinkedInUrl.value = persona.linkedInUrl || '';
+
         if (result.backendUrl) {
           inputBackendUrl.value = result.backendUrl;
         }
-        renderBehaviorRules(result.assistantBehavior);
+
+        renderBehaviorRules(behavior);
+        renderBehaviorChat(persona, behavior, chatHistory);
       });
     }
+  }
+
+  // Render Assistant Behavior Chat Context & History
+  function renderBehaviorChat(persona, behavior, chatHistory = []) {
+    chatMessages.innerHTML = '';
+
+    const activeInstructions = behavior?.activeInstructions || [
+      "Don't start comments with 'Great post'",
+      "Keep comments natural and non-promotional",
+      "Don't use emojis"
+    ];
+
+    const rulesHtml = activeInstructions.map(r => `<li>✓ ${escapeHtml(r)}</li>`).join('');
+    const roleText = persona?.role || 'Full Stack Web Developer';
+    const portfolioText = persona?.portfolioUrl || 'https://solodeveloper.pro/';
+    const linkedInText = persona?.linkedInUrl || 'https://www.linkedin.com/in/suresh-kumar3151/';
+
+    const contextBubble = document.createElement('div');
+    contextBubble.className = 'chat-bubble assistant';
+    contextBubble.innerHTML = `
+      <strong>🤖 Active Prompt & Memory Context Injected:</strong><br>
+      <div style="margin-top: 6px; font-size: 13px; line-height: 1.5;">
+        <strong>👤 Active Developer Persona:</strong> ${escapeHtml(roleText)}<br>
+        <strong>🌐 Portfolio Link:</strong> <a href="${escapeHtml(portfolioText)}" target="_blank" style="color: #2563eb;">${escapeHtml(portfolioText)}</a><br>
+        <strong>🔗 LinkedIn Profile:</strong> <a href="${escapeHtml(linkedInText)}" target="_blank" style="color: #2563eb;">${escapeHtml(linkedInText)}</a><br>
+        <strong style="display: block; margin-top: 8px;">📜 Active Rules Memory (${activeInstructions.length} rules loaded):</strong>
+        <ul style="margin: 4px 0 0 18px; padding: 0;">${rulesHtml}</ul>
+      </div>
+      <div style="margin-top: 8px; font-size: 12px; opacity: 0.85;">
+        💡 <em>Type any instruction below (e.g. "Don't use emojis", "Keep comments under 20 words", "Always add portfolio link") to update my memory!</em>
+      </div>
+    `;
+    chatMessages.appendChild(contextBubble);
+
+    // Render stored chat conversation history
+    if (Array.isArray(chatHistory)) {
+      chatHistory.forEach(item => {
+        appendChatMessage(item.sender, item.text, false);
+      });
+    }
+
+    chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 
   // Render Saved Behavior Rules List
@@ -125,6 +172,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const updatedBehavior = { ...behavior, activeInstructions };
         await saveBehaviorToStorage(updatedBehavior);
         renderBehaviorRules(updatedBehavior);
+        chrome.storage.local.get(['persona', 'behaviorChatHistory'], res => {
+          renderBehaviorChat(res.persona, updatedBehavior, res.behaviorChatHistory || []);
+        });
       });
     });
 
@@ -138,6 +188,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           const updatedBehavior = { ...behavior, activeInstructions };
           await saveBehaviorToStorage(updatedBehavior);
           renderBehaviorRules(updatedBehavior);
+          chrome.storage.local.get(['persona', 'behaviorChatHistory'], res => {
+            renderBehaviorChat(res.persona, updatedBehavior, res.behaviorChatHistory || []);
+          });
         }
       });
     });
@@ -157,15 +210,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-      // IMPORTANT: merge onto the existing stored persona instead of
-      // replacing it outright. This form doesn't necessarily cover every
-      // field a persona object can have (and previously omitted
-      // portfolioUrl/linkedInUrl entirely, silently wiping them from
-      // storage on every save since they had no field here) — merging
-      // means any field this form doesn't expose is preserved as-is.
-      chrome.storage.local.get(['persona'], result => {
+      chrome.storage.local.get(['persona', 'assistantBehavior', 'behaviorChatHistory'], result => {
         const persona = { ...(result.persona || {}), ...formFields };
         chrome.storage.local.set({ persona, backendUrl: inputBackendUrl.value.trim() }, () => {
+          renderBehaviorChat(persona, result.assistantBehavior, result.behaviorChatHistory || []);
           alert('Profile & Settings saved successfully!');
         });
       });
@@ -181,11 +229,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     appendChatMessage('user', text);
     chatInput.value = '';
 
+    await saveChatMessageHistory('user', text);
+
     try {
       // Call Backend API to interpret behavior instruction
       const response = await sendBehaviorInstruction(text);
+      const replyMsg = response.message || 'Understood! I will follow this preference for your future comments.';
       
-      appendChatMessage('assistant', response.message || 'Understood! I will follow this preference for your future comments.');
+      appendChatMessage('assistant', replyMsg);
+      await saveChatMessageHistory('assistant', replyMsg);
 
       if (response.behavior) {
         await saveBehaviorToStorage(response.behavior);
@@ -193,7 +245,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     } catch (err) {
       // Offline fallback: Add rule locally
-      appendChatMessage('assistant', `Got it! I saved your preference: "${text}"`);
+      const replyMsg = `Got it! I saved your preference: "${text}"`;
+      appendChatMessage('assistant', replyMsg);
+      await saveChatMessageHistory('assistant', replyMsg);
       
       chrome.storage.local.get(['assistantBehavior'], result => {
         const current = result.assistantBehavior || {};
@@ -214,13 +268,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   btnAddRule.addEventListener('click', () => {
     const rule = prompt('Enter new behavior rule (e.g. "Keep comments short"):');
     if (rule && rule.trim()) {
-      chrome.storage.local.get(['assistantBehavior'], result => {
+      chrome.storage.local.get(['assistantBehavior', 'persona', 'behaviorChatHistory'], result => {
         const current = result.assistantBehavior || {};
         const activeInstructions = current.activeInstructions || [];
         activeInstructions.push(rule.trim());
         const updated = { ...current, activeInstructions: [...new Set(activeInstructions)] };
         saveBehaviorToStorage(updated);
         renderBehaviorRules(updated);
+        renderBehaviorChat(result.persona, updated, result.behaviorChatHistory || []);
       });
     }
   });
@@ -240,8 +295,12 @@ document.addEventListener('DOMContentLoaded', async () => {
           "Don't use emojis"
         ]
       };
+      chrome.storage.local.set({ behaviorChatHistory: [] });
       saveBehaviorToStorage(defaultBehavior);
       renderBehaviorRules(defaultBehavior);
+      chrome.storage.local.get(['persona'], res => {
+        renderBehaviorChat(res.persona, defaultBehavior, []);
+      });
     }
   });
 
@@ -273,6 +332,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function saveBehaviorToStorage(behavior) {
     return new Promise(resolve => {
       chrome.storage.local.set({ assistantBehavior: behavior }, resolve);
+    });
+  }
+
+  async function saveChatMessageHistory(sender, text) {
+    return new Promise(resolve => {
+      chrome.storage.local.get(['behaviorChatHistory'], result => {
+        const history = result.behaviorChatHistory || [];
+        history.push({ sender, text, timestamp: Date.now() });
+        const trimmed = history.slice(-50);
+        chrome.storage.local.set({ behaviorChatHistory: trimmed }, resolve);
+      });
     });
   }
 
