@@ -11,18 +11,22 @@ function findUnprocessedCommentComposers() {
   );
 
   targets.forEach(target => {
-    // Find the specific composer container for this comment or reply box
-    const specificBox = target.closest(
-      'form.comments-comment-box__form, .comments-comment-box__editor-container, .comments-comment-texteditor, .comments-comment-box--cr, .feed-shared-comment-box__form, .feed-shared-comment-box'
+    // Walk up to find the outermost form / comment box container
+    const outerBox = target.closest(
+      'form.comments-comment-box__form, .feed-shared-comment-box__form, .comments-comment-box, .feed-shared-comment-box, .comments-comment-box--cr'
+    ) || target.closest(
+      '.comments-comment-box__editor-container, .comments-comment-texteditor'
     ) || target.parentElement;
 
-    if (specificBox) {
-      // Make sure this specific composer box does not already have a toolbar
-      if (
-        !specificBox.getAttribute('data-ai-assistant-toolbar') &&
-        !specificBox.querySelector('.linkedin-ai-toolbar-container')
-      ) {
-        canonicalContainers.add(specificBox);
+    if (outerBox) {
+      // Make sure this container or any of its parent/child elements doesn't already have a toolbar or attribute
+      const alreadyHasToolbar =
+        outerBox.getAttribute('data-ai-assistant-toolbar') === 'true' ||
+        outerBox.querySelector('.linkedin-ai-toolbar-container') !== null ||
+        outerBox.closest('[data-ai-assistant-toolbar="true"]') !== null;
+
+      if (!alreadyHasToolbar) {
+        canonicalContainers.add(outerBox);
       }
     }
   });

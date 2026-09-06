@@ -82,21 +82,34 @@
   function injectAIToolbar(composer) {
     if (!composer) return;
 
-    // Strict duplicate check on specific composer container
-    const specificBox = composer.closest(
-      'form.comments-comment-box__form, .comments-comment-box__editor-container, .comments-comment-texteditor, .comments-comment-box--cr, .feed-shared-comment-box__form, .feed-shared-comment-box'
+    // Resolve to outermost form/container
+    const outerBox = composer.closest(
+      'form.comments-comment-box__form, .feed-shared-comment-box__form, .comments-comment-box, .feed-shared-comment-box, .comments-comment-box--cr'
+    ) || composer.closest(
+      '.comments-comment-box__editor-container, .comments-comment-texteditor'
     ) || composer;
 
+    // Strict duplicate check across entire tree & clean up any stray extra toolbars
+    const existingToolbars = outerBox.querySelectorAll('.linkedin-ai-toolbar-container');
+    if (existingToolbars.length > 0) {
+      // Keep only the first toolbar, remove any excess duplicates
+      for (let i = 1; i < existingToolbars.length; i++) {
+        existingToolbars[i].remove();
+      }
+      outerBox.setAttribute('data-ai-assistant-toolbar', 'true');
+      composer.setAttribute('data-ai-assistant-toolbar', 'true');
+      return;
+    }
+
     if (
-      specificBox.getAttribute('data-ai-assistant-toolbar') ||
-      specificBox.querySelector('.linkedin-ai-toolbar-container') ||
-      composer.querySelector('.linkedin-ai-toolbar-container')
+      outerBox.getAttribute('data-ai-assistant-toolbar') === 'true' ||
+      outerBox.closest('[data-ai-assistant-toolbar="true"]')
     ) {
       return;
     }
 
-    // Mark both container and composer element
-    specificBox.setAttribute('data-ai-assistant-toolbar', 'true');
+    // Mark both outer container and composer element
+    outerBox.setAttribute('data-ai-assistant-toolbar', 'true');
     composer.setAttribute('data-ai-assistant-toolbar', 'true');
 
     const toolbar = document.createElement('div');
@@ -536,6 +549,16 @@
 
   // Scan and inject toolbars
   function scanAndInject() {
+    // Clean up any duplicate toolbars attached to the same comment container
+    document.querySelectorAll('form.comments-comment-box__form, .comments-comment-box, .feed-shared-comment-box').forEach(box => {
+      const toolbars = box.querySelectorAll('.linkedin-ai-toolbar-container');
+      if (toolbars.length > 1) {
+        for (let i = 1; i < toolbars.length; i++) {
+          toolbars[i].remove();
+        }
+      }
+    });
+
     const composers = findUnprocessedCommentComposers();
     composers.forEach(composer => injectAIToolbar(composer));
   }
