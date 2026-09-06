@@ -204,7 +204,35 @@ function extractTextFromPost(postElement) {
     return longestText;
   }
 
-  // STEP 4: Fallback to full cleaned innerText
+  // STEP 4: Extract Image Alt Text & Captions (for Image Posts / Flyers)
+  const imgElements = postElement.querySelectorAll(
+    'img.update-components-image__image, img.feed-shared-image__image, .update-components-image img, .feed-shared-image img, img[alt]'
+  );
+  const imageAltTexts = [];
+  for (const img of imgElements) {
+    const alt = (img.getAttribute('alt') || '').trim();
+    if (
+      alt &&
+      alt.length > 10 &&
+      !alt.toLowerCase().includes('profile picture') &&
+      !alt.toLowerCase().includes('no photo description available') &&
+      !alt.toLowerCase().includes('avatar')
+    ) {
+      imageAltTexts.push(alt);
+    }
+  }
+
+  if (imageAltTexts.length > 0) {
+    const imgCaption = `[Image Content/Alt: ${[...new Set(imageAltTexts)].join(' | ')}]`;
+    if (!longestText || longestText.length < 15) {
+      console.log(`[AI Assistant] Extracted post content from Image Alt Text (${imgCaption.length} chars)`);
+      return imgCaption;
+    } else {
+      longestText = `${longestText}\n${imgCaption}`;
+    }
+  }
+
+  // STEP 5: Fallback to full cleaned innerText
   const fullText = (cleanPostNode.innerText || cleanPostNode.textContent || '').trim();
   const lines = fullText.split('\n')
     .map(l => l.trim())
@@ -224,7 +252,7 @@ function extractTextFromPost(postElement) {
     return cleaned;
   }
 
-  return '';
+  return longestText || '';
 }
 
 async function extractPostContext(commentComposer) {

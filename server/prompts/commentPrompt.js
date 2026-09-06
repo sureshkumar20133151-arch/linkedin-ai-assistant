@@ -85,11 +85,18 @@ ${detailedProfileBlock}`;
 
   const systemInstruction = `${identityBlock}
 === ABSOLUTE RULES ===
+0. 🚨 CRITICAL: ONE-TIME USER INSTRUCTION OVERRIDE (HIGHEST PRIORITY):
+   - IF the user provides a ONE-TIME USER INSTRUCTION (e.g., "mention Chennai developer requirement", "highlight local candidate", "ask about budget"):
+     --> YOU MUST STRICTLY FOLLOW THAT INSTRUCTION AS THE PRIMARY THEME AND HIGHLIGHT OF THE COMMENT!
+     --> OVERRIDE DEFAULT PITCH TEMPLATES ("I can help with website development...") and directly write what the user asked for.
+     --> EXAMPLE: If user instruction says "pls mention on highlight if u want developer from chennai", the comment MUST say:
+         "Hi @[Author's First Name], if you specifically need a local developer based in Chennai/Tamil Nadu (rather than candidates from Delhi or Mumbai), I'm based nearby and available for this project! Check out my work: https://solodeveloper.pro/"
+
 1. READ THE POST CAREFULLY. Determine if this post is a HIRING / FREELANCE REQUIREMENT POST (e.g. "Looking for...", "Hiring...", "Required...", "Project-based...", "DM portfolio").
 2. IF IT IS A HIRING POST:
    - Greet the author using an @-mention tag with their name (e.g., "Hi @[Author's Name]," or "Hi @[Author's First Name],") so LinkedIn tags and notifies the author directly!
-   - Lead IMMEDIATELY with your direct match and interest in taking on the project.
-   - IF the post specifies a language/region preference (e.g. "Tamil preferred"), state your location/language match (e.g. "Tamil speaker from Madurai here") as the FIRST sentence!
+   - Lead IMMEDIATELY with your direct match and interest in taking on the project (or follow the user's ONE-TIME INSTRUCTION if provided!).
+   - IF the post specifies a language/region preference (e.g. "Tamil preferred" or Chennai/Tamil Nadu location), state your location/language match (e.g. "Chennai / Tamil Nadu developer here") as the FIRST sentence!
    - Mention your matching skills (WordPress, React.js, REST APIs).
    - ALWAYS include the user's REAL portfolio link (https://solodeveloper.pro/) directly inside the comment text! (e.g. "Portfolio: https://solodeveloper.pro/").
    - STRICTLY BANNED FOR HIRING POSTS: Never praise the author's work or say "I appreciate your approach to website development...". The author is HIRING a developer, not showcasing their own coding skills! Phrases like "I appreciate your approach", "Your focus on...", "Great post!" are STRICTLY BANNED.
@@ -390,7 +397,11 @@ ${behaviorSection}
 
 ${selectedStyleGuide}
 
-${oneTimeInstruction ? `=== ONE-TIME USER INSTRUCTION FOR THIS COMMENT ===\n"${oneTimeInstruction}"\n` : ''}
+${oneTimeInstruction ? `=== 🚨 ABSOLUTE HIGHEST PRIORITY: ONE-TIME USER INSTRUCTION 🚨 ===
+The user explicitly typed this custom instruction: "${oneTimeInstruction}"
+YOU MUST MAKE THIS INSTRUCTION THE CENTRAL THEME AND HIGHLIGHT OF THE GENERATED COMMENT AND DM PITCH!
+Do NOT use generic templates ("I can help with website development...") when this instruction is present — fulfill the user's exact request!
+` : ''}
 
 ${buildPostSection(post)}
 
