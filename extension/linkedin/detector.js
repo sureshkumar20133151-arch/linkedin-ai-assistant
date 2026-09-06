@@ -7,7 +7,7 @@ function findUnprocessedCommentComposers() {
   const canonicalContainers = new Set();
 
   const targets = document.querySelectorAll(
-    'div[contenteditable="true"], .comments-comment-box, .feed-shared-comment-box, form.comments-comment-box__form, .comments-comment-texteditor'
+    'div[contenteditable="true"], div[role="textbox"], .comments-comment-box, .feed-shared-comment-box, form.comments-comment-box__form, .comments-comment-texteditor, .comments-comment-box__editor-container, .comments-comment-box__form-container, .comments-comment-box--cr, .editor-content'
   );
 
   targets.forEach(target => {

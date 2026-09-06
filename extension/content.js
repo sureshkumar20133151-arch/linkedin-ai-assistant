@@ -546,7 +546,13 @@
     injectAIToolbar(composer);
   });
 
-  // Also trigger scan on click or focus inside LinkedIn feed / comment areas
+  // Also trigger scan on click, focus, or keyup inside LinkedIn feed / comment areas
+  const triggerScan = () => {
+    scanAndInject();
+    setTimeout(scanAndInject, 100);
+    setTimeout(scanAndInject, 400);
+  };
+
   document.addEventListener('click', (e) => {
     const target = e.target;
     if (
@@ -554,13 +560,32 @@
         target.closest('.comments-comment-box') ||
         target.closest('.feed-shared-comment-box') ||
         target.closest('.comments-comment-texteditor') ||
+        target.closest('.comments-comment-box__editor-container') ||
+        target.closest('.comments-comment-box__form-container') ||
+        target.closest('.comments-comment-box--cr') ||
         target.closest('div[contenteditable="true"]') ||
+        target.closest('div[role="textbox"]') ||
         target.closest('button.comment-button') ||
-        target.closest('.artdeco-button')
+        target.closest('.artdeco-button') ||
+        target.closest('form')
       )
     ) {
-      setTimeout(scanAndInject, 100);
-      setTimeout(scanAndInject, 400);
+      triggerScan();
+    }
+  }, true);
+
+  document.addEventListener('focusin', (e) => {
+    const target = e.target;
+    if (
+      target.closest && (
+        target.closest('div[contenteditable="true"]') ||
+        target.closest('div[role="textbox"]') ||
+        target.closest('.comments-comment-box') ||
+        target.closest('.feed-shared-comment-box') ||
+        target.closest('.comments-comment-box__editor-container')
+      )
+    ) {
+      triggerScan();
     }
   }, true);
 
