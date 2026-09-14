@@ -99,7 +99,20 @@ ${buildModeSection(mode)}
 
 ${selectedStyleGuide}
 
-${oneTimeInstruction ? `=== ONE-TIME USER INSTRUCTION FOR THIS MESSAGE ===\n"${oneTimeInstruction}"\n` : ''}
+${oneTimeInstruction ? `=== 🚨 ABSOLUTE HIGHEST PRIORITY: ONE-TIME USER INSTRUCTION 🚨 ===
+The user explicitly typed this custom instruction: "${oneTimeInstruction}"
+YOU MUST MAKE THIS THE CENTRAL THEME OF YOUR REPLY — override any default template!
+
+EXAMPLES:
+- If instruction is "politely decline, not interested now but will contact if needed":
+  → Write a warm, brief, professional decline message. Do NOT pitch services.
+- If instruction is "ask about budget and timeline":
+  → Ask 2 smart qualifying questions about budget range, timeline, and tech stack.
+- If instruction is "thank warmly and introduce work briefly":
+  → Thank them warmly in 1 line, mention your role + portfolio in 1-2 lines. Keep it short.
+- If instruction is "short and friendly":
+  → Max 2 sentences, conversational tone.
+` : ''}
 
 ${buildRecipientSection(recipient)}
 ${buildConversationSection(conversation)}
@@ -142,7 +155,10 @@ ${MESSAGE_STYLE_GUIDES.professional}
 ${MESSAGE_STYLE_GUIDES.insightful}
 ${MESSAGE_STYLE_GUIDES.short}
 
-${oneTimeInstruction ? `=== ONE-TIME USER INSTRUCTION (applies to all three) ===\n"${oneTimeInstruction}"\n` : ''}
+${oneTimeInstruction ? `=== 🚨 ABSOLUTE HIGHEST PRIORITY: ONE-TIME USER INSTRUCTION 🚨 ===
+The user explicitly typed: "${oneTimeInstruction}"
+Apply this instruction as the central theme across ALL THREE styles — each must honor it while varying the tone.
+` : ''}
 
 ${buildRecipientSection(recipient)}
 ${buildConversationSection(conversation)}

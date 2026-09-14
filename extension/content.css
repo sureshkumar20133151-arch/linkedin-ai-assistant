@@ -780,3 +780,361 @@ html.dark-theme .linkedin-ai-dm-text { background: rgba(29,34,38,0.85) !importan
 html.dark-theme .linkedin-ai-copy-dm-btn { background: #1d2226 !important; color: #6cb4f5 !important; border-color: #2f7bc9 !important; }
 @media (prefers-color-scheme: dark) { .linkedin-ai-copy-dm-btn:hover { background: #23282e !important; } }
 html.dark-theme .linkedin-ai-copy-dm-btn:hover { background: #23282e !important; }
+
+/* ════════════════════════════════════════════════════════════
+   AI Messaging Toolbar v2.0 — Premium UI
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Messaging Toolbar Container ─────────────────────────── */
+.linkedin-ai-msg-toolbar {
+  display: flex !important;
+  flex-direction: column !important;
+  margin: 8px 0 !important;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  font-size: 13px !important;
+  color: #191919 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* ── Collapsed Pill ──────────────────────────────────────── */
+.linkedin-ai-msg-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  padding: 5px 14px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #0a66c2 !important;
+  background: linear-gradient(135deg, #fff 0%, #f0f7ff 100%) !important;
+  border: 1.5px solid #0a66c2 !important;
+  border-radius: 20px !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 8px rgba(10,102,194,0.15) !important;
+  transition: all 0.18s ease !important;
+  width: fit-content !important;
+}
+.linkedin-ai-msg-pill:hover { background: #0a66c2 !important; color: #fff !important; }
+.linkedin-ai-msg-pill[hidden] { display: none !important; }
+
+/* ── Main Body Card ──────────────────────────────────────── */
+.linkedin-ai-msg-body {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  padding: 14px 16px !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%) !important;
+  border: 1.5px solid #0a66c2 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 20px rgba(10,102,194,0.10), 0 1px 4px rgba(0,0,0,0.04) !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  animation: linkedin-ai-slidein 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.linkedin-ai-msg-body[hidden] { display: none !important; }
+
+/* ── Header ──────────────────────────────────────────────── */
+.linkedin-ai-msg-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+}
+
+.linkedin-ai-msg-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-weight: 700 !important;
+  font-size: 11px !important;
+  letter-spacing: 0.8px !important;
+  color: #0a66c2 !important;
+  text-transform: uppercase !important;
+}
+
+.linkedin-ai-msg-sparkle {
+  font-size: 15px !important;
+  animation: linkedin-ai-pulse 2.4s ease-in-out infinite !important;
+  display: inline-block !important;
+}
+
+.linkedin-ai-msg-header-right {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.linkedin-ai-msg-type-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 3px 10px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  border-radius: 20px !important;
+  white-space: nowrap !important;
+  letter-spacing: 0.3px !important;
+}
+.linkedin-ai-msg-type-badge[hidden] { display: none !important; }
+
+.linkedin-ai-msg-close {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 50% !important;
+  border: none !important;
+  background: rgba(0,0,0,0.06) !important;
+  color: #666 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  line-height: 1 !important;
+}
+.linkedin-ai-msg-close:hover { background: #ff4d4f !important; color: #fff !important; transform: scale(1.08) !important; }
+
+/* ── Hint Bar ────────────────────────────────────────────── */
+.linkedin-ai-msg-hint {
+  font-size: 11.5px !important;
+  font-style: italic !important;
+  opacity: 0.9 !important;
+  padding: 6px 10px !important;
+  border-radius: 8px !important;
+  background: rgba(10,102,194,0.05) !important;
+}
+.linkedin-ai-msg-hint[hidden] { display: none !important; }
+
+/* ── Quick Action Chips ──────────────────────────────────── */
+.linkedin-ai-msg-chips {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+}
+.linkedin-ai-msg-chips[hidden] { display: none !important; }
+
+.linkedin-ai-msg-chip {
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 4px 11px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  border-radius: 20px !important;
+  border: 1.5px solid !important;
+  background: transparent !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  white-space: nowrap !important;
+  user-select: none !important;
+}
+.linkedin-ai-msg-chip:hover { opacity: 0.85 !important; transform: translateY(-1px) !important; }
+
+/* ── Instruction Input ───────────────────────────────────── */
+.linkedin-ai-msg-input-row {
+  display: flex !important;
+  width: 100% !important;
+}
+
+.linkedin-ai-msg-input {
+  flex: 1 !important;
+  padding: 8px 13px !important;
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
+  border: 1.5px solid #0a66c2 !important;
+  border-radius: 10px !important;
+  outline: none !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease !important;
+  box-sizing: border-box !important;
+}
+.linkedin-ai-msg-input:focus {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.15) !important;
+}
+.linkedin-ai-msg-input::placeholder { color: #64748b !important; opacity: 0.85 !important; }
+
+/* ── Action Buttons Row ──────────────────────────────────── */
+.linkedin-ai-msg-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-wrap: wrap !important;
+}
+
+/* Auto Reply — Primary CTA */
+.linkedin-ai-msg-auto-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 6px 14px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  background: linear-gradient(135deg, #0a66c2 0%, #0855a3 100%) !important;
+  border: none !important;
+  border-radius: 20px !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  box-shadow: 0 2px 8px rgba(10,102,194,0.28) !important;
+  transition: all 0.18s ease !important;
+}
+.linkedin-ai-msg-auto-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0855a3 0%, #064080 100%) !important;
+  box-shadow: 0 4px 12px rgba(10,102,194,0.38) !important;
+  transform: translateY(-1px) !important;
+}
+.linkedin-ai-msg-auto-btn:disabled { opacity: 0.55 !important; cursor: not-allowed !important; }
+
+/* Style Buttons group */
+.linkedin-ai-msg-style-btns {
+  display: flex !important;
+  gap: 4px !important;
+}
+
+.linkedin-ai-msg-style-btn {
+  padding: 5px 11px !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  color: #0a66c2 !important;
+  background: rgba(10,102,194,0.07) !important;
+  border: 1px solid rgba(10,102,194,0.25) !important;
+  border-radius: 20px !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  transition: all 0.15s ease !important;
+}
+.linkedin-ai-msg-style-btn:hover:not(:disabled) { background: #0a66c2 !important; color: #fff !important; border-color: #0a66c2 !important; }
+.linkedin-ai-msg-style-btn:disabled { opacity: 0.5 !important; cursor: not-allowed !important; }
+
+/* All 3 Button */
+.linkedin-ai-msg-all-btn {
+  padding: 5px 12px !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  color: #7c3aed !important;
+  background: rgba(124,58,237,0.07) !important;
+  border: 1.5px dashed rgba(124,58,237,0.4) !important;
+  border-radius: 20px !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  transition: all 0.15s ease !important;
+}
+.linkedin-ai-msg-all-btn:hover:not(:disabled) { background: #7c3aed !important; color: #fff !important; border-style: solid !important; }
+.linkedin-ai-msg-all-btn:disabled { opacity: 0.5 !important; cursor: not-allowed !important; }
+
+/* ── Result Cards ─────────────────────────────────────────── */
+.linkedin-ai-msg-results {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+.linkedin-ai-msg-result-card {
+  padding: 12px 14px !important;
+  background: linear-gradient(135deg, #fafcff 0%, #f5f9ff 100%) !important;
+  border: 1px solid #dde3ea !important;
+  border-radius: 10px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+.linkedin-ai-msg-result-card:hover { border-color: #0a66c2 !important; box-shadow: 0 2px 10px rgba(10,102,194,0.10) !important; }
+
+.linkedin-ai-msg-result-label {
+  font-size: 10.5px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.6px !important;
+  color: #0a66c2 !important;
+}
+
+.linkedin-ai-msg-result-text {
+  font-size: 12.5px !important;
+  line-height: 1.6 !important;
+  color: #1a1a1a !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+}
+
+.linkedin-ai-msg-result-actions {
+  display: flex !important;
+  gap: 6px !important;
+}
+
+.linkedin-ai-msg-insert-btn {
+  padding: 5px 14px !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  border-radius: 16px !important;
+  border: 1.5px solid #0a66c2 !important;
+  background: #0a66c2 !important;
+  color: #fff !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+.linkedin-ai-msg-insert-btn:hover { background: #084e96 !important; box-shadow: 0 2px 8px rgba(10,102,194,0.28) !important; }
+
+.linkedin-ai-msg-copy-btn {
+  padding: 5px 14px !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  border-radius: 16px !important;
+  border: 1.5px solid #dde3ea !important;
+  background: transparent !important;
+  color: #5c6e82 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+.linkedin-ai-msg-copy-btn:hover { background: #f0f4f8 !important; border-color: #b3c6d9 !important; }
+
+/* ── Notice / Status ─────────────────────────────────────── */
+.linkedin-ai-msg-notice {
+  display: none !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+  font-weight: 500 !important;
+}
+.linkedin-ai-msg-notice.success { display: flex !important; background: #f0fdf4 !important; color: #15803d !important; border: 1px solid #bbf7d0 !important; }
+.linkedin-ai-msg-notice.error   { display: flex !important; background: #fff0f0 !important; color: #c0392b !important; border: 1px solid #f5c6cb !important; }
+.linkedin-ai-msg-notice.warning { display: flex !important; background: #fffbec !important; color: #92400e !important; border: 1px solid #fde68a !important; }
+
+/* ── Spinner ─────────────────────────────────────────────── */
+.linkedin-ai-msg-spinner {
+  display: inline-block !important;
+  width: 12px !important;
+  height: 12px !important;
+  border: 2px solid currentColor !important;
+  border-right-color: transparent !important;
+  border-radius: 50% !important;
+  animation: linkedin-ai-spin 0.7s linear infinite !important;
+  vertical-align: middle !important;
+}
+
+/* ── Dark Mode ───────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  .linkedin-ai-msg-body { background: linear-gradient(135deg, #1d2226 0%, #16202a 100%) !important; border-color: #2f7bc9 !important; color: #e8f4fd !important; }
+  .linkedin-ai-msg-title { color: #6cb4f5 !important; }
+  .linkedin-ai-msg-hint { background: rgba(108,180,245,0.08) !important; }
+  .linkedin-ai-msg-input { background: #1e293b !important; border-color: #3b82f6 !important; color: #f8fafc !important; }
+  .linkedin-ai-msg-result-card { background: linear-gradient(135deg, #1d2226 0%, #1a2530 100%) !important; border-color: #38434f !important; }
+  .linkedin-ai-msg-result-text { color: #e8f4fd !important; }
+  .linkedin-ai-msg-style-btn { color: #6cb4f5 !important; border-color: rgba(108,180,245,0.3) !important; background: rgba(108,180,245,0.08) !important; }
+}
+
+html.dark-theme .linkedin-ai-msg-body,
+body.theme--dark .linkedin-ai-msg-body {
+  background: linear-gradient(135deg, #1d2226 0%, #16202a 100%) !important;
+  border-color: #2f7bc9 !important;
+  color: #e8f4fd !important;
+}
+html.dark-theme .linkedin-ai-msg-input,
+body.theme--dark .linkedin-ai-msg-input {
+  background: #1e293b !important;
+  border-color: #3b82f6 !important;
+  color: #f8fafc !important;
+}
+
