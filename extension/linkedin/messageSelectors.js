@@ -35,31 +35,42 @@ const LINKEDIN_MESSAGE_SELECTORS = {
 
   // Recipient display name near the top of a conversation
   recipientName: [
+    '.msg-overlay-bubble-header a[href*="/in/"]',
+    '.msg-overlay-bubble-header__title a',
     '.msg-overlay-bubble-header__title',
+    '.msg-overlay-bubble-header h2',
     '.msg-entity-lockup__entity-title',
     '.artdeco-entity-lockup__title',
     'h2.msg-entity-lockup__entity-title',
     '.msg-title-bar__title',
-    '.msg-thread__link-to-profile'
+    '.msg-thread__link-to-profile',
+    '.msg-thread__topcard-title',
+    '.msg-conversation-card__participant-names'
   ],
 
   // Recipient headline/subtitle (role, company) if shown
   recipientHeadline: [
+    '.msg-overlay-bubble-header__badge',
     '.msg-entity-lockup__entity-info',
-    '.artdeco-entity-lockup__subtitle'
+    '.artdeco-entity-lockup__subtitle',
+    '.msg-thread__topcard-subtext'
   ],
 
   // Individual message bubbles inside the thread
   messageBubbles: [
     '.msg-s-event-listitem',
     'li.msg-s-message-list__event',
-    '.msg-s-message-list__event'
+    '.msg-s-message-list__event',
+    '.msg-s-message-group',
+    '[data-event-urn]'
   ],
 
   // Text content inside a message bubble
   messageBubbleText: [
     '.msg-s-event-listitem__body',
-    '.msg-s-event-listitem__message-bubble'
+    'p.msg-s-event-listitem__body',
+    '.msg-s-event-listitem__message-bubble',
+    '.msg-s-message-group__message'
   ]
 };
 

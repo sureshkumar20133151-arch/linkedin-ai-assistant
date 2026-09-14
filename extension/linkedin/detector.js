@@ -11,6 +11,11 @@ function findUnprocessedCommentComposers() {
   );
 
   targets.forEach(target => {
+    // GUARD: If this target is inside a messaging/chat container, SKIP IT! It belongs to Messaging, not post comments.
+    if (target.closest('.msg-form, .msg-overlay-conversation-bubble, .msg-convo-wrapper, [class*="msg-"]')) {
+      return;
+    }
+
     // Walk up to find the outermost form / comment box container
     const outerBox = target.closest(
       'form.comments-comment-box__form, .feed-shared-comment-box__form, .comments-comment-box, .feed-shared-comment-box, .comments-comment-box--cr'

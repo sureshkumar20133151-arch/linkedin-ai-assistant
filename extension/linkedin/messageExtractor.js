@@ -26,8 +26,28 @@ function queryAllFirstMatch(parent, selectorArray) {
   return [];
 }
 
+function cleanRecipientName(rawText) {
+  if (!rawText) return null;
+  const firstLine = rawText.split('\n')[0].trim();
+  const cleaned = firstLine
+    .replace(/\s*•.*$/gi, '')
+    .replace(/\s*\(.*?\)/g, '')
+    .replace(/\s*\[.*?\]/g, '')
+    .replace(/\s+active\s+now.*$/gi, '')
+    .replace(/\s+mobile.*$/gi, '')
+    .replace(/\s*\d+\w*\s*ago.*$/gi, '')
+    .trim();
+  return (cleaned.length >= 2 && cleaned.length <= 60) ? cleaned : null;
+}
+
 function findConversationContainer(startElement) {
   if (!startElement) return null;
+
+  // Fast primary match via closest
+  const matched = startElement.closest(
+    '.msg-overlay-conversation-bubble, .msg-convo-wrapper, .scaffold-layout__detail, [class*="msg-overlay"], .msg-form'
+  );
+  if (matched) return matched;
 
   let current = startElement;
   let depth = 0;
@@ -45,20 +65,41 @@ function findConversationContainer(startElement) {
 }
 
 function extractRecipientInfo(conversationContainer) {
-  const nameEl = querySelectorFallback(conversationContainer, LINKEDIN_MESSAGE_SELECTORS.recipientName);
+  if (!conversationContainer) return { name: null, headline: null };
+
+  let rawName = null;
+  const profileLink = conversationContainer.querySelector(
+    '.msg-overlay-bubble-header a[href*="/in/"], a.msg-thread__link-to-profile, .msg-entity-lockup a[href*="/in/"]'
+  );
+  if (profileLink && profileLink.innerText.trim()) {
+    rawName = profileLink.innerText.trim();
+  }
+
+  if (!rawName) {
+    const nameEl = querySelectorFallback(conversationContainer, LINKEDIN_MESSAGE_SELECTORS.recipientName);
+    if (nameEl) rawName = nameEl.innerText.trim();
+  }
+
   const headlineEl = querySelectorFallback(conversationContainer, LINKEDIN_MESSAGE_SELECTORS.recipientHeadline);
 
   return {
-    name: nameEl ? nameEl.innerText.trim() : null,
-    headline: headlineEl ? headlineEl.innerText.trim() : null
+    name: cleanRecipientName(rawName),
+    headline: headlineEl ? headlineEl.innerText.trim().replace(/\s+/g, ' ') : null
   };
 }
 
-// Best-effort, class-name-independent heuristic: compares a bubble's
-// horizontal center against its container's center. Right-aligned bubbles
-// are treated as the user's own outgoing messages.
+// Best-effort heuristic: checks CSS class indicators first, then compares bubble's
+// horizontal center against its container's center for right-aligned outgoing messages.
 function guessSenderByAlignment(bubbleEl, containerRect) {
   try {
+    const className = ((bubbleEl.className || '') + ' ' + (bubbleEl.parentElement?.className || '')).toLowerCase();
+    if (className.includes('--me') || className.includes('from-me') || className.includes('--outgoing')) {
+      return 'me';
+    }
+    if (className.includes('--other') || className.includes('from-other') || className.includes('--incoming')) {
+      return 'them';
+    }
+
     const rect = bubbleEl.getBoundingClientRect();
     if (!rect.width || !containerRect.width) return 'them';
     const bubbleCenter = rect.left + rect.width / 2;
