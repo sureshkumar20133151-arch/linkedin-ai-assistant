@@ -198,6 +198,64 @@ Table: ICP Signal | Where to Find | What to Look For | Outreach Angle
 
 ---
 
+## 34. Ready-to-Use DM & Outreach Scripts
+
+This is a critical section. Write COMPLETE, COPY-PASTE READY scripts. Not templates with [brackets] — write them as if you ARE the user sending the message. Use the persona's information, services, and offer.
+
+### Script 1 — LinkedIn Connection Request Note (300 char max)
+A short, human note to send with a connection request. NOT salesy. Personalized, curious, genuine.
+
+### Script 2 — Cold Outreach DM (First Message After Connecting)
+A natural first DM after connecting. DO NOT pitch immediately. Ask a genuine question. 3-5 sentences max.
+
+### Script 3 — Project Enquiry Reply
+When a prospect asks "Can you build a website for me?" or similar. Professional, qualifying, excitement.
+Include: acknowledge → ask 2 qualifying questions → mention portfolio → suggest next step.
+
+### Script 4 — Sales / Promotion Decline (Polite Professional)
+When someone sends a sales or promotion message you don't need right now.
+Include: thank them → politely decline → keep the door open → professional close.
+
+### Script 5 — Connection Thank-You Reply
+When someone thanks you for accepting their connection request.
+Include: warm acknowledgement → 1-line intro → genuine curiosity question.
+
+### Script 6 — Job Seeker Reply
+When someone messages asking for a job/referral/internship you can't offer.
+Include: acknowledge effort → encourage genuinely → give 1 useful tip → professional close.
+
+### Script 7 — Follow-Up Message (After No Reply — Day 3)
+A non-pushy follow-up if they didn't reply to your first message. 2-3 sentences max.
+
+### Script 8 — Follow-Up Message (After No Reply — Day 7)
+A final follow-up that adds value. Share a useful insight or ask a different question. Then let it go.
+
+### Script 9 — Sales Call Booking Message
+After a good conversation, when the prospect seems interested. Ask for a call or discovery meeting.
+Include: summary of their problem → value you can offer → propose a specific time → easy next step.
+
+### Script 10 — Post-Sales-Call Thank You Message
+After a discovery call. Recap, next step, social proof.
+Include: thank them → recap their problem → confirm what was discussed → clear next step.
+
+---
+
+## 35. LinkedIn Comment Outreach Scripts
+(Use these to comment on ICP's posts to start natural conversations)
+
+### Comment Type 1 — On a Problem Post
+When ICP posts about a challenge your service solves.
+
+### Comment Type 2 — On a Milestone / Achievement Post
+When ICP posts a business win or milestone.
+
+### Comment Type 3 — On a Question Post
+When ICP asks a question in their post that you can answer genuinely.
+
+Each comment: 2-3 sentences, add real value, DO NOT mention your service in the comment.
+
+---
+
 ### ICP in One Sentence
 One highly specific sentence describing the ideal customer.
 
@@ -206,8 +264,9 @@ The single most important strategic insight about how to find and sell to this I
 
 ---
 
-OUTPUT FORMAT: Use clean markdown with headers, tables, and bullet points. Be specific enough that the user could immediately build a prospect list. Never be vague.
+OUTPUT FORMAT: Use clean markdown with headers, tables, and bullet points. Be specific enough that the user could immediately build a prospect list and copy-paste the scripts directly. Never use placeholder brackets like [Name] or [X] — write real example text as if you are the user. Never be vague.
 `;
+
 
   return { systemInstruction: ICP_SYSTEM_INSTRUCTION, userContent };
 }
