@@ -1138,3 +1138,268 @@ body.theme--dark .linkedin-ai-msg-input {
   color: #f8fafc !important;
 }
 
+/* ════════════════════════════════════════════════════════════
+   LinkedIn Opportunity Outreach Agent — Premium UI
+   ════════════════════════════════════════════════════════════ */
+
+.linkedin-ai-outreach-container {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  margin: 10px 0 !important;
+  padding: 14px 16px !important;
+  background: linear-gradient(135deg, #fbfaff 0%, #f8fafc 100%) !important;
+  border: 1.5px solid #6366f1 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.12) !important;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  font-size: 12.5px !important;
+  color: #1e293b !important;
+  box-sizing: border-box !important;
+  animation: linkedin-ai-slidein 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.linkedin-ai-outreach-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.linkedin-ai-outreach-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-wrap: wrap !important;
+}
+
+.linkedin-ai-outreach-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 4px 10px !important;
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+  color: #ffffff !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  border-radius: 20px !important;
+  letter-spacing: 0.4px !important;
+}
+
+.linkedin-ai-outreach-pill {
+  padding: 2px 8px !important;
+  background: #e0e7ff !important;
+  color: #3730a3 !important;
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  border-radius: 12px !important;
+}
+
+.linkedin-ai-outreach-pill.hiring {
+  background: #dcfce7 !important;
+  color: #166534 !important;
+}
+
+/* Opportunity Breakdown */
+.linkedin-ai-outreach-analysis {
+  background: rgba(99, 102, 241, 0.05) !important;
+  border: 1px solid rgba(99, 102, 241, 0.18) !important;
+  border-radius: 10px !important;
+  padding: 10px 12px !important;
+}
+
+.linkedin-ai-outreach-analysis-title {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.6px !important;
+  color: #4f46e5 !important;
+  margin-bottom: 6px !important;
+}
+
+.linkedin-ai-outreach-analysis-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px !important;
+  font-size: 11.5px !important;
+  line-height: 1.4 !important;
+}
+
+/* Outreach Sections (Comment & DM) */
+.linkedin-ai-outreach-section {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  padding: 12px 14px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+.linkedin-ai-outreach-section.dm-section {
+  border-color: rgba(99, 102, 241, 0.25) !important;
+  background: linear-gradient(135deg, #ffffff 0%, #fbfaff 100%) !important;
+}
+
+.linkedin-ai-outreach-section-title {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+}
+
+.linkedin-ai-outreach-status {
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  color: #16a34a !important;
+}
+
+.linkedin-ai-outreach-comment-box,
+.linkedin-ai-outreach-dm-box {
+  font-size: 12.5px !important;
+  line-height: 1.6 !important;
+  color: #0f172a !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+}
+
+/* DM Tabs */
+.linkedin-ai-outreach-dm-tabs {
+  display: flex !important;
+  gap: 5px !important;
+  flex-wrap: wrap !important;
+}
+
+.linkedin-ai-outreach-tab-btn {
+  padding: 4px 10px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  border-radius: 16px !important;
+  border: 1px solid #cbd5e1 !important;
+  background: #f8fafc !important;
+  color: #475569 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.linkedin-ai-outreach-tab-btn:hover {
+  border-color: #6366f1 !important;
+  color: #4f46e5 !important;
+}
+
+.linkedin-ai-outreach-tab-btn.active {
+  background: #4f46e5 !important;
+  color: #ffffff !important;
+  border-color: #4f46e5 !important;
+}
+
+/* Action Buttons */
+.linkedin-ai-outreach-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+}
+
+.linkedin-ai-outreach-copy-comment-btn,
+.linkedin-ai-outreach-copy-dm-btn {
+  padding: 5px 14px !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  border-radius: 16px !important;
+  border: 1px solid #cbd5e1 !important;
+  background: #f8fafc !important;
+  color: #334155 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.linkedin-ai-outreach-copy-comment-btn:hover,
+.linkedin-ai-outreach-copy-dm-btn:hover {
+  background: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+}
+
+/* Follow-ups Details */
+.linkedin-ai-outreach-followups {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  padding: 8px 12px !important;
+  cursor: pointer !important;
+}
+
+.linkedin-ai-outreach-followups summary {
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  color: #475569 !important;
+  user-select: none !important;
+}
+
+.linkedin-ai-outreach-followup-content {
+  margin-top: 10px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+.linkedin-ai-outreach-followup-item {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  padding: 8px 10px !important;
+}
+
+.linkedin-ai-outreach-followup-label {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  font-size: 10.5px !important;
+  font-weight: 700 !important;
+  color: #6366f1 !important;
+  margin-bottom: 4px !important;
+}
+
+.linkedin-ai-copy-followup-btn {
+  padding: 2px 8px !important;
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  border-radius: 12px !important;
+  border: 1px solid #cbd5e1 !important;
+  background: #ffffff !important;
+  color: #475569 !important;
+  cursor: pointer !important;
+}
+
+.linkedin-ai-outreach-followup-text {
+  font-size: 11.5px !important;
+  line-height: 1.5 !important;
+  color: #334155 !important;
+}
+
+/* Dark Theme Support */
+@media (prefers-color-scheme: dark) {
+  .linkedin-ai-outreach-container {
+    background: linear-gradient(135deg, #1e1b2e 0%, #161e2e 100%) !important;
+    border-color: #818cf8 !important;
+    color: #e2e8f0 !important;
+  }
+  .linkedin-ai-outreach-section {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+  }
+  .linkedin-ai-outreach-comment-box,
+  .linkedin-ai-outreach-dm-box {
+    color: #f1f5f9 !important;
+  }
+}
+
+html.dark-theme .linkedin-ai-outreach-container,
+body.theme--dark .linkedin-ai-outreach-container {
+  background: linear-gradient(135deg, #1e1b2e 0%, #161e2e 100%) !important;
+  border-color: #818cf8 !important;
+  color: #e2e8f0 !important;
+}
+
+

@@ -70,6 +70,17 @@ async function requestGenerateAllComments({ post, persona, behavior, oneTimeInst
   }, 60000, 1);
 }
 
+async function requestGenerateOutreach({ post, persona, behavior, oneTimeInstruction }) {
+  const baseUrl = await getBackendUrl();
+  const endpoint = `${baseUrl.replace(/\/$/, '')}/api/generate-outreach`;
+
+  return await fetchWithTimeoutAndRetry(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ post, persona, behavior, oneTimeInstruction })
+  }, 60000, 1);
+}
+
 async function requestGenerateMessage({ recipient, conversation, persona, behavior, style, oneTimeInstruction }) {
   const baseUrl = await getBackendUrl();
   const endpoint = `${baseUrl.replace(/\/$/, '')}/api/generate-message`;
@@ -137,5 +148,5 @@ async function sendBehaviorInstruction(instruction, currentBehavior) {
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { requestGenerateComment, requestGenerateAllComments, requestRecommendTone, requestGenerateMessage, requestGenerateAllMessages, checkBackendHealth, sendBehaviorInstruction };
+  module.exports = { requestGenerateComment, requestGenerateAllComments, requestGenerateOutreach, requestRecommendTone, requestGenerateMessage, requestGenerateAllMessages, checkBackendHealth, sendBehaviorInstruction };
 }

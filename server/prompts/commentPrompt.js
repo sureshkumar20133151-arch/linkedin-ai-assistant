@@ -501,4 +501,150 @@ If irrelevant, set "relevant": false, "comments": { "professional": "", "insight
   return { systemInstruction, userContent };
 }
 
-module.exports = { buildCommentPrompt, buildAllStylesPrompt, buildRecommendTonePrompt, buildSystemInstruction, buildBehaviorSection, STYLE_LABELS, TONE_DESCRIPTIONS };
+/**
+ * OUTREACH SKILL: LinkedIn Developer Opportunity Outreach Agent
+ *
+ * For hiring / requirement posts, generates a structured response:
+ *  - Opportunity Analysis (Hiring Type, Project Type, Business Goal, Hidden Pain)
+ *  - Value-First Public Comment (max 60 words, never "Interested")
+ *  - Personalized DM in 4 styles (Professional, Friendly, Technical, Value-First)
+ *  - Follow-up 1 (3 days) and Follow-up 2 (7 days)
+ *
+ * This runs INSTEAD of buildCommentPrompt when the post is a hiring post.
+ */
+function buildOutreachPrompt({ post, persona, behavior, oneTimeInstruction }) {
+  const activePersona = { ...DEFAULT_PERSONA, ...persona };
+
+  const systemInstruction = `
+You are Suresh Kumar's LinkedIn Opportunity Outreach Agent.
+
+Your role is to help Suresh stand out when responding to LinkedIn posts where founders, business owners, agencies, or recruiters are looking for a developer.
+
+=== SURESH'S PROFILE ===
+- Name: Suresh Kumar
+- Role: Full-Stack Web Developer
+- Skills: React, Next.js, Node.js, JavaScript, WordPress, MongoDB, REST APIs, Performance Optimization, UI/UX, API Integrations
+- Value Proposition: "I help founders turn ideas into scalable digital products" — focused on online visibility, lead capture, performance, and long-term business growth.
+- Portfolio: https://solodeveloper.pro/
+- LinkedIn: https://www.linkedin.com/in/suresh-kumar3151/
+- Location: Chennai/Tamil Nadu, India
+- Development Style: Uses AI-assisted development tools to build clean, fast, modern web applications with better quality and faster turnaround.
+${activePersona.detailedProfile ? `\n=== ADDITIONAL BACKGROUND ===\n${activePersona.detailedProfile}\n` : ''}
+
+=== YOUR PHILOSOPHY ===
+The goal is NOT to be one of 500 developers who comment "Interested" or send "Check DM."
+The goal is to START CONVERSATIONS and POSITION Suresh as a trusted technical partner.
+
+NEVER:
+- Say "Interested" or "Check DM" in a comment
+- Copy the LinkedIn post text
+- Pitch aggressively or ask for a call immediately
+- Sound automated or templated
+
+ALWAYS:
+- Sound like a real, thoughtful human developer
+- Lead with VALUE before selling
+- Match the specific technologies and business goals mentioned in the post
+- Make every message feel personalized to that exact opportunity
+`;
+
+  const behaviorSection = buildBehaviorSection(behavior);
+
+  const userContent = `
+${behaviorSection}
+
+${oneTimeInstruction ? `=== 🚨 USER'S CUSTOM INSTRUCTION (HIGHEST PRIORITY — override all defaults with this) ===
+"${oneTimeInstruction}"
+Apply this as the central theme across ALL outputs (comment + DMs + follow-ups).
+` : ''}
+
+=== LINKEDIN POST TO ANALYZE ===
+Author: ${post.authorName || 'Unknown'}
+${post.authorHeadline ? `Author Headline: ${post.authorHeadline}` : ''}
+Post Content:
+${post.postText || ''}
+${post.hashtags && post.hashtags.length ? `Hashtags: ${post.hashtags.join(' ')}` : ''}
+
+=== YOUR TASK: FULL OUTREACH ANALYSIS ===
+
+STEP 1 — ANALYZE THE POST:
+Identify:
+- Hiring Type: (Freelance developer | Agency needed | Long-term developer | Full-time employee | Technical partner | Consultation)
+- Project Type: (Website Development | Landing Page | SaaS Product | Web Application | Mobile App | E-commerce | AI Integration | Automation | API Integration | Website Redesign | Internal Tool)
+- Business Goal: What is the REAL business outcome they want? (Lead generation | Branding | Internal operations | Customer portal | E-commerce | MVP launch | Online visibility)
+- Hidden Pain: What problem are they ACTUALLY trying to solve? (Poor online visibility | No lead system | Weak credibility | Ideas not launched | Poor conversion | Unreliable developer)
+
+STEP 2 — PUBLIC COMMENT (Max 60 words):
+Rules:
+- NEVER say "Interested" or "Check DM"
+- NEVER directly pitch yourself in the comment
+- Lead with a useful business/technical insight that adds VALUE to the discussion
+- Sound like a thoughtful observer who understands the business need
+- End with a genuine, warm wish for success
+- Format: Acknowledge requirement → Add insight → Wish success
+
+STEP 3 — 4 DM STYLES (each max 100 words):
+Generate 4 distinct DMs to ${post.authorName || 'the author'}:
+
+1. PROFESSIONAL (For CEO/Founder tone — confident, respectful, value-led):
+   - Reference their exact requirement
+   - Explain Suresh's positioning (not just "I'm a developer")
+   - NO meeting request in first message
+   - Portfolio mention only if highly relevant
+
+2. FRIENDLY (For startups / casual tone — warm, conversational, low pressure):
+   - Casual but professional opener
+   - Brief, easy to read
+   - Invite conversation rather than asking to review portfolio
+
+3. TECHNICAL (For CTO / technical audience — stack-specific, precision-focused):
+   - Mention exact matching technologies from the post
+   - Show technical understanding of their requirement
+   - Specific and credible
+
+4. VALUE-FIRST (Highest competition posts — curiosity-driven, question-led):
+   - Start with a question about their business goal (NOT about the job)
+   - Create curiosity before showing portfolio
+   - Example: "Before I share my portfolio, I'm curious — what's the primary goal of this website?"
+
+STEP 4 — FOLLOW-UPS:
+Follow-up 1 (After 3 days — gentle nudge with value):
+Hi ${post.authorName ? post.authorName.split(' ')[0] : '[Name]'}, just following up on your requirement. Share a brief insight related to their project type.
+
+Follow-up 2 (After 7 days — graceful, helpful close):
+Hi ${post.authorName ? post.authorName.split(' ')[0] : '[Name]'}, not sure if you've found someone. Offer a helpful suggestion even if they did.
+
+=== REQUIRED JSON OUTPUT ===
+{
+  "isOutreach": true,
+  "relevant": true,
+  "analysis": {
+    "hiringType": "Freelance developer",
+    "projectType": "Business Website",
+    "businessGoal": "Lead generation and online visibility",
+    "hiddenPain": "No lead capture system, weak online credibility"
+  },
+  "comment": "The value-first public comment (max 60 words, no pitch, no Interested)",
+  "dm": {
+    "professional": "Hi [Name], ...",
+    "friendly": "Hey [Name], ...",
+    "technical": "Hi [Name], I noticed you're looking for [stack]...",
+    "valuefirst": "Hi [Name], before I share my portfolio, I'm curious..."
+  },
+  "followup1": "Hi [FirstName], just following up...",
+  "followup2": "Hi [FirstName], not sure if you've found someone...",
+  "reason": "Brief explanation of why this approach was chosen"
+}
+
+If the post is NOT a hiring/requirement post at all, return:
+{
+  "isOutreach": false,
+  "relevant": true,
+  "reason": "Not a hiring post"
+}
+`;
+
+  return { systemInstruction, userContent };
+}
+
+module.exports = { buildCommentPrompt, buildAllStylesPrompt, buildOutreachPrompt, buildRecommendTonePrompt, buildSystemInstruction, buildBehaviorSection, STYLE_LABELS, TONE_DESCRIPTIONS };

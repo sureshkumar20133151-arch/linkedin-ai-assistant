@@ -250,6 +250,39 @@
         const { persona, behavior } = await getStoredSettings();
         const oneTimeInstruction = inputEl.value.trim();
 
+        // Detect if this is an opportunity / hiring post (Zahid Raza / Sachin Rajput pattern)
+        const postTextCombined = ((postContext.postText || '') + ' ' + (postContext.authorHeadline || '')).toLowerCase();
+        const isOpportunity = [
+          'hiring', 'looking for', 'wanted', 'need a', 'needs a', 'require', 'freelance',
+          'project-based', 'dm me', 'send your portfolio', 'share your portfolio',
+          'rates & availability', 'developer', 'web development', 'engineer'
+        ].some(k => postTextCombined.includes(k));
+
+        if (isOpportunity && !customStyle) {
+          try {
+            const outreachResponse = await requestGenerateOutreach({
+              post: postContext,
+              persona,
+              behavior,
+              oneTimeInstruction: oneTimeInstruction || null
+            });
+
+            if (outreachResponse && outreachResponse.isOutreach && outreachResponse.comment) {
+              const insertResult = await insertCommentIntoEditor(composer, outreachResponse.comment);
+              if (insertResult.success) {
+                showNotice(noticeContainer, 'info', '🎯 Opportunity detected! Value-first comment auto-inserted.');
+              } else {
+                showNotice(noticeContainer, 'warning', `Opportunity analyzed! Couldn't auto-insert comment.`, outreachResponse.comment);
+              }
+
+              renderOutreachCard(noticeContainer, outreachResponse, postContext, composer, insertResult.success);
+              return;
+            }
+          } catch (outreachErr) {
+            console.warn('[AI Assistant] Outreach pipeline fallback to standard comment:', outreachErr);
+          }
+        }
+
         const response = await requestGenerateComment({
           post: postContext,
           persona,

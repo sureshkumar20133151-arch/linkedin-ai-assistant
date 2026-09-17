@@ -289,11 +289,205 @@ function renderGeneratedCommentCard(container, commentText, autoInserted = false
   container.appendChild(card);
 }
 
+// Renders the full Outreach Agent result for hiring/opportunity posts
+function renderOutreachCard(container, outreachData, postContext = null, composer = null, autoInserted = false) {
+  if (!outreachData) return;
+
+  const card = document.createElement('div');
+  card.className = 'linkedin-ai-outreach-container';
+
+  const authorName = postContext?.authorName || 'Author';
+  const isConnected = postContext?.isConnected;
+  const analysis = outreachData.analysis || {};
+  const dms = outreachData.dm || {};
+  const commentText = outreachData.comment || '';
+
+  // DM styles available
+  const dmStyles = [
+    { id: 'professional', label: '👔 Professional', text: dms.professional || '' },
+    { id: 'friendly',     label: '😊 Friendly',     text: dms.friendly || '' },
+    { id: 'technical',    label: '🔧 Technical',    text: dms.technical || '' },
+    { id: 'valuefirst',   label: '💡 Value-First',  text: dms.valuefirst || '' }
+  ].filter(s => s.text);
+
+  let activeDmStyle = dmStyles[0]?.id || 'professional';
+  let activeDmText = dmStyles[0]?.text || '';
+
+  let directDmBtnHtml = '';
+  if (isConnected) {
+    directDmBtnHtml = `
+      <button type="button" class="linkedin-ai-outreach-dm-open-btn" style="background: linear-gradient(135deg, #0a66c2 0%, #0855a3 100%); color: #fff; border: none; border-radius: 16px; padding: 6px 14px; font-size: 11.5px; font-weight: 600; cursor: pointer;">
+        💬 DM ${escapeHtml(authorName)}
+      </button>
+    `;
+  } else {
+    directDmBtnHtml = `
+      <button type="button" disabled title="Direct messaging is only available for 1st-degree connections on LinkedIn" style="background: #f1f5f9; color: #94a3b8; border: 1px solid #cbd5e1; border-radius: 16px; padding: 5px 12px; font-size: 11px; font-weight: 500; cursor: not-allowed;">
+        🔒 Not Connected (1st degree required)
+      </button>
+    `;
+  }
+
+  card.innerHTML = `
+    <!-- Main Badge Header -->
+    <div class="linkedin-ai-outreach-header">
+      <div class="linkedin-ai-outreach-title">
+        <span class="linkedin-ai-outreach-badge">🎯 OPPORTUNITY OUTREACH AGENT</span>
+        <span class="linkedin-ai-outreach-pill">${escapeHtml(analysis.projectType || 'Project')}</span>
+        <span class="linkedin-ai-outreach-pill hiring">${escapeHtml(analysis.hiringType || 'Hiring')}</span>
+      </div>
+    </div>
+
+    <!-- Opportunity Analysis Box -->
+    <div class="linkedin-ai-outreach-analysis">
+      <div class="linkedin-ai-outreach-analysis-title">🔍 Opportunity Breakdown</div>
+      <div class="linkedin-ai-outreach-analysis-grid">
+        <div><strong>Business Goal:</strong> ${escapeHtml(analysis.businessGoal || 'Business Growth & Leads')}</div>
+        <div><strong>Hidden Need:</strong> ${escapeHtml(analysis.hiddenPain || 'Reliable execution & scalable system')}</div>
+      </div>
+    </div>
+
+    <!-- Public Comment Section -->
+    <div class="linkedin-ai-outreach-section">
+      <div class="linkedin-ai-outreach-section-title">
+        <span>💬 Value-First Public Comment</span>
+        <span class="linkedin-ai-outreach-status">${autoInserted ? '✓ Inserted in Box' : 'Ready to Post'}</span>
+      </div>
+      <div class="linkedin-ai-outreach-comment-box">${escapeHtml(commentText)}</div>
+      <div class="linkedin-ai-outreach-actions">
+        <button type="button" class="linkedin-ai-outreach-copy-comment-btn">📋 Copy Comment</button>
+      </div>
+    </div>
+
+    <!-- 4 DM Styles Section -->
+    <div class="linkedin-ai-outreach-section dm-section">
+      <div class="linkedin-ai-outreach-section-title">
+        <span>📨 Personalized 1:1 Direct Message</span>
+        <span style="font-size: 11px; color: #64748b;">Select Style:</span>
+      </div>
+
+      <!-- DM Style Switcher Pills -->
+      <div class="linkedin-ai-outreach-dm-tabs">
+        ${dmStyles.map((s, idx) => `
+          <button type="button" class="linkedin-ai-outreach-tab-btn ${idx === 0 ? 'active' : ''}" data-style="${s.id}">
+            ${s.label}
+          </button>
+        `).join('')}
+      </div>
+
+      <div class="linkedin-ai-outreach-dm-box">${escapeHtml(activeDmText)}</div>
+
+      <div class="linkedin-ai-outreach-actions">
+        <button type="button" class="linkedin-ai-outreach-copy-dm-btn">📋 Copy DM</button>
+        ${directDmBtnHtml}
+      </div>
+    </div>
+
+    <!-- Follow-up Sequences (Collapsible) -->
+    ${(outreachData.followup1 || outreachData.followup2) ? `
+      <details class="linkedin-ai-outreach-followups">
+        <summary>⏰ Follow-Up Sequence (If No Reply)</summary>
+        <div class="linkedin-ai-outreach-followup-content">
+          ${outreachData.followup1 ? `
+            <div class="linkedin-ai-outreach-followup-item">
+              <div class="linkedin-ai-outreach-followup-label">
+                <span>Follow-up 1 (After 3 days)</span>
+                <button type="button" class="linkedin-ai-copy-followup-btn" data-text="${escapeHtml(outreachData.followup1)}">📋 Copy</button>
+              </div>
+              <div class="linkedin-ai-outreach-followup-text">${escapeHtml(outreachData.followup1)}</div>
+            </div>
+          ` : ''}
+
+          ${outreachData.followup2 ? `
+            <div class="linkedin-ai-outreach-followup-item">
+              <div class="linkedin-ai-outreach-followup-label">
+                <span>Follow-up 2 (After 7 days)</span>
+                <button type="button" class="linkedin-ai-copy-followup-btn" data-text="${escapeHtml(outreachData.followup2)}">📋 Copy</button>
+              </div>
+              <div class="linkedin-ai-outreach-followup-text">${escapeHtml(outreachData.followup2)}</div>
+            </div>
+          ` : ''}
+        </div>
+      </details>
+    ` : ''}
+  `;
+
+  // --- Attach Event Handlers ---
+  const commentCopyBtn = card.querySelector('.linkedin-ai-outreach-copy-comment-btn');
+  commentCopyBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const copied = await copyCommentToClipboard(commentText);
+    commentCopyBtn.textContent = copied ? 'Comment Copied! ✓' : 'Copy Failed';
+    setTimeout(() => { commentCopyBtn.textContent = '📋 Copy Comment'; }, 2000);
+  });
+
+  const dmBox = card.querySelector('.linkedin-ai-outreach-dm-box');
+  const dmCopyBtn = card.querySelector('.linkedin-ai-outreach-copy-dm-btn');
+  const tabBtns = card.querySelectorAll('.linkedin-ai-outreach-tab-btn');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      tabBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const styleId = btn.getAttribute('data-style');
+      const match = dmStyles.find(s => s.id === styleId);
+      if (match) {
+        activeDmText = match.text;
+        dmBox.textContent = match.text;
+      }
+    });
+  });
+
+  dmCopyBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const copied = await copyCommentToClipboard(activeDmText);
+    dmCopyBtn.textContent = copied ? 'DM Copied! ✓' : 'Copy Failed';
+    setTimeout(() => { dmCopyBtn.textContent = '📋 Copy DM'; }, 2000);
+  });
+
+  const dmOpenBtn = card.querySelector('.linkedin-ai-outreach-dm-open-btn');
+  if (dmOpenBtn) {
+    dmOpenBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      copyCommentToClipboard(activeDmText);
+      const postContainer = composer
+        ? (composer.closest('div.feed-shared-update-v2, article, li.reusable-search__result-container, div.entity-result, div[data-urn]') || composer.parentElement)
+        : null;
+      const { messageBtn, authorLink } = resolvePostAuthorTargets(postContainer);
+
+      if (messageBtn) {
+        messageBtn.click();
+      } else if (postContext?.authorProfileUrl) {
+        window.open(postContext.authorProfileUrl, '_blank');
+      } else if (authorLink && authorLink.href) {
+        window.open(authorLink.href, '_blank');
+      } else {
+        window.open('https://www.linkedin.com/messaging/', '_blank');
+      }
+    });
+  }
+
+  // Follow-up copy buttons
+  const followupCopyBtns = card.querySelectorAll('.linkedin-ai-copy-followup-btn');
+  followupCopyBtns.forEach(b => {
+    b.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const text = b.getAttribute('data-text');
+      const copied = await copyCommentToClipboard(text);
+      b.textContent = copied ? 'Copied! ✓' : 'Failed';
+      setTimeout(() => { b.textContent = '📋 Copy'; }, 2000);
+    });
+  });
+
+  container.appendChild(card);
+}
+
 function escapeHtml(str) {
   return (str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { setToolbarLoadingState, showToolbarNotice, renderToolbarResultCards, renderDMPitchCard, renderGeneratedCommentCard, resolvePostAuthorTargets };
+  module.exports = { setToolbarLoadingState, showToolbarNotice, renderToolbarResultCards, renderDMPitchCard, renderGeneratedCommentCard, renderOutreachCard, resolvePostAuthorTargets };
 }
 

@@ -4,10 +4,11 @@
 
 const express = require('express');
 const router = express.Router();
-const { generateComment, generateAllComments, generateToneRecommendation } = require('../services/gemini');
+const { generateComment, generateOutreach, generateAllComments, generateToneRecommendation } = require('../services/gemini');
 const { getBehaviorMemory } = require('../services/behavior');
 const { validateGenerateCommentRequest, validateGenerateAllCommentsRequest, validateRecommendToneRequest } = require('../utils/validation');
 
+// Single style comment generation
 router.post('/generate-comment', async (req, res) => {
   try {
     const validation = validateGenerateCommentRequest(req);
@@ -17,7 +18,6 @@ router.post('/generate-comment', async (req, res) => {
 
     const { post, persona, behavior, style, oneTimeInstruction } = req.body;
 
-    // Merge backend behavior memory with request behavior memory if provided
     const activeBehavior = {
       ...getBehaviorMemory(),
       ...(behavior || {})
@@ -60,8 +60,59 @@ router.post('/generate-comment', async (req, res) => {
   }
 });
 
-// Generate all three styles (professional, insightful, short) in one call,
-// so the user can compare them side-by-side and pick one to insert.
+// Outreach Skill: For hiring / requirement posts — returns:
+//   Opportunity Analysis + Value-First Public Comment + 4 DM styles + 2 Follow-ups
+router.post('/generate-outreach', async (req, res) => {
+  try {
+    const { post, persona, behavior, oneTimeInstruction } = req.body;
+
+    if (!post || !post.postText || !post.postText.trim()) {
+      return res.status(400).json({ success: false, error: 'Post content is required.' });
+    }
+
+    const activeBehavior = {
+      ...getBehaviorMemory(),
+      ...(behavior || {})
+    };
+
+    console.log(`[AI Assistant API] Running Outreach Skill for post by "${post.authorName || 'Unknown'}"`);
+
+    const result = await generateOutreach({
+      post,
+      persona: persona || {},
+      behavior: activeBehavior,
+      oneTimeInstruction: oneTimeInstruction || null
+    });
+
+    if (result.isOutreach === false) {
+      return res.json({
+        success: true,
+        isOutreach: false,
+        reason: result.reason || 'Not a hiring/requirement post.'
+      });
+    }
+
+    return res.json({
+      success: true,
+      isOutreach: true,
+      analysis: result.analysis || {},
+      comment: result.comment || '',
+      dm: result.dm || {},
+      followup1: result.followup1 || '',
+      followup2: result.followup2 || '',
+      reason: result.reason || 'Outreach generated successfully.'
+    });
+
+  } catch (err) {
+    console.error('[AI Assistant API Error - generate-outreach]', err.message);
+    return res.status(500).json({
+      success: false,
+      error: err.message || 'Internal server error while generating outreach.'
+    });
+  }
+});
+
+// Generate all three styles (professional, insightful, short) in one call
 router.post('/generate-comment-all', async (req, res) => {
   try {
     const validation = validateGenerateAllCommentsRequest(req);
@@ -112,9 +163,7 @@ router.post('/generate-comment-all', async (req, res) => {
   }
 });
 
-// Recommends the single best-fitting comment tone for a post, so the
-// extension can show a "⭐ Recommended: X" hint before the user picks a
-// tone from the dropdown.
+// Recommends the single best-fitting comment tone for a post
 router.post('/recommend-comment-tone', async (req, res) => {
   try {
     const validation = validateRecommendToneRequest(req);
