@@ -344,6 +344,7 @@ function renderOutreachCard(container, outreachData, postContext = null, compose
       <div class="linkedin-ai-outreach-analysis-grid">
         <div><strong>Business Goal:</strong> ${escapeHtml(analysis.businessGoal || 'Business Growth & Leads')}</div>
         <div><strong>Hidden Need:</strong> ${escapeHtml(analysis.hiddenPain || 'Reliable execution & scalable system')}</div>
+        <div style="grid-column: span 2;"><strong>Suggested Solution:</strong> ${escapeHtml(analysis.suggestedSolution || 'Build a scalable solution aligned with their business goal.')}</div>
       </div>
     </div>
 
@@ -358,6 +359,20 @@ function renderOutreachCard(container, outreachData, postContext = null, compose
         <button type="button" class="linkedin-ai-outreach-copy-comment-btn">📋 Copy Comment</button>
       </div>
     </div>
+
+    <!-- Connection Request Note Section -->
+    ${outreachData.connectionNote ? `
+      <div class="linkedin-ai-outreach-section connection-section">
+        <div class="linkedin-ai-outreach-section-title">
+          <span>🤝 Connection Request Note (No Selling)</span>
+          <span class="linkedin-ai-outreach-char-count">${outreachData.connectionNote.length} / 280 chars</span>
+        </div>
+        <div class="linkedin-ai-outreach-connection-box">${escapeHtml(outreachData.connectionNote)}</div>
+        <div class="linkedin-ai-outreach-actions">
+          <button type="button" class="linkedin-ai-outreach-copy-connection-btn">📋 Copy Connection Note</button>
+        </div>
+      </div>
+    ` : ''}
 
     <!-- 4 DM Styles Section -->
     <div class="linkedin-ai-outreach-section dm-section">
@@ -410,6 +425,14 @@ function renderOutreachCard(container, outreachData, postContext = null, compose
         </div>
       </details>
     ` : ''}
+
+    <!-- Strategic Tactical Tip -->
+    ${outreachData.tip ? `
+      <div class="linkedin-ai-outreach-tip">
+        <span class="linkedin-ai-outreach-tip-icon">💡</span>
+        <span><strong>Strategic Tip:</strong> ${escapeHtml(outreachData.tip)}</span>
+      </div>
+    ` : ''}
   `;
 
   // --- Attach Event Handlers ---
@@ -420,6 +443,16 @@ function renderOutreachCard(container, outreachData, postContext = null, compose
     commentCopyBtn.textContent = copied ? 'Comment Copied! ✓' : 'Copy Failed';
     setTimeout(() => { commentCopyBtn.textContent = '📋 Copy Comment'; }, 2000);
   });
+
+  const connectionCopyBtn = card.querySelector('.linkedin-ai-outreach-copy-connection-btn');
+  if (connectionCopyBtn && outreachData.connectionNote) {
+    connectionCopyBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const copied = await copyCommentToClipboard(outreachData.connectionNote);
+      connectionCopyBtn.textContent = copied ? 'Note Copied! ✓' : 'Copy Failed';
+      setTimeout(() => { connectionCopyBtn.textContent = '📋 Copy Connection Note'; }, 2000);
+    });
+  }
 
   const dmBox = card.querySelector('.linkedin-ai-outreach-dm-box');
   const dmCopyBtn = card.querySelector('.linkedin-ai-outreach-copy-dm-btn');

@@ -97,9 +97,11 @@ router.post('/generate-outreach', async (req, res) => {
       isOutreach: true,
       analysis: result.analysis || {},
       comment: result.comment || '',
+      connectionNote: result.connectionNote || '',
       dm: result.dm || {},
       followup1: result.followup1 || '',
       followup2: result.followup2 || '',
+      tip: result.tip || '',
       reason: result.reason || 'Outreach generated successfully.'
     });
 

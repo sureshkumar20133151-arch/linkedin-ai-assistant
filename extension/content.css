@@ -1378,6 +1378,66 @@ body.theme--dark .linkedin-ai-msg-input {
   color: #334155 !important;
 }
 
+/* Connection Section */
+.linkedin-ai-outreach-section.connection-section {
+  border-color: rgba(14, 165, 233, 0.3) !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%) !important;
+}
+
+.linkedin-ai-outreach-char-count {
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  color: #0284c7 !important;
+  background: #e0f2fe !important;
+  padding: 2px 7px !important;
+  border-radius: 10px !important;
+}
+
+.linkedin-ai-outreach-connection-box {
+  font-size: 12.5px !important;
+  line-height: 1.55 !important;
+  color: #0f172a !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+}
+
+.linkedin-ai-outreach-copy-connection-btn {
+  padding: 5px 14px !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  border-radius: 16px !important;
+  border: 1px solid #bae6fd !important;
+  background: #f0f9ff !important;
+  color: #0369a1 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.linkedin-ai-outreach-copy-connection-btn:hover {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+  border-color: #0284c7 !important;
+}
+
+/* Strategic Tip */
+.linkedin-ai-outreach-tip {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+  background: linear-gradient(135deg, #fefce8 0%, #fffbeb 100%) !important;
+  border: 1px solid #fde047 !important;
+  border-radius: 10px !important;
+  padding: 10px 12px !important;
+  font-size: 11.5px !important;
+  line-height: 1.5 !important;
+  color: #854d0e !important;
+}
+
+.linkedin-ai-outreach-tip-icon {
+  font-size: 14px !important;
+  line-height: 1 !important;
+}
+
 /* Dark Theme Support */
 @media (prefers-color-scheme: dark) {
   .linkedin-ai-outreach-container {
@@ -1390,8 +1450,18 @@ body.theme--dark .linkedin-ai-msg-input {
     border-color: #334155 !important;
   }
   .linkedin-ai-outreach-comment-box,
-  .linkedin-ai-outreach-dm-box {
+  .linkedin-ai-outreach-dm-box,
+  .linkedin-ai-outreach-connection-box {
     color: #f1f5f9 !important;
+  }
+  .linkedin-ai-outreach-section.connection-section {
+    background: #172554 !important;
+    border-color: #1e40af !important;
+  }
+  .linkedin-ai-outreach-tip {
+    background: #422006 !important;
+    border-color: #ca8a04 !important;
+    color: #fef08a !important;
   }
 }
 
@@ -1401,5 +1471,6 @@ body.theme--dark .linkedin-ai-outreach-container {
   border-color: #818cf8 !important;
   color: #e2e8f0 !important;
 }
+
 
 
