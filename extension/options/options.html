@@ -28,6 +28,9 @@
         <a href="#memory" class="nav-item" data-tab="memory">
           <span class="icon">📋</span> Saved Rules
         </a>
+        <a href="#icp" class="nav-item" data-tab="icp">
+          <span class="icon">🎯</span> ICP Research
+        </a>
         <a href="#backend" class="nav-item" data-tab="backend">
           <span class="icon">⚙️</span> Backend Config
         </a>
@@ -135,6 +138,59 @@
               <button id="btnAddRule" class="btn btn-secondary">+ Add Custom Rule</button>
               <button id="btnResetBehavior" class="btn btn-danger">Reset Behavior to Defaults</button>
             </div>
+          </div>
+        </section>
+
+        <!-- SECTION ICP: IDEAL CLIENT PERSONA RESEARCH -->
+        <section id="section-icp" class="tab-section">
+          <div class="card">
+            <h3>🎯 ICP Research — Ideal Client Persona</h3>
+            <p class="card-desc">Enter your business offer details. AI will generate a complete 33-section International Ideal Client Persona (ICP) report — persona, fears, buying triggers, outreach strategy, objections, closing, and more.</p>
+
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label for="icpTargetAudience">Who is your target audience? *</label>
+                <input type="text" id="icpTargetAudience" placeholder="e.g. Small business owners, Real estate agents, SaaS founders">
+              </div>
+
+              <div class="form-group full-width">
+                <label for="icpWhatYouHelp">What exactly do you help them with?</label>
+                <input type="text" id="icpWhatYouHelp" placeholder="e.g. Getting a professional website, Generating qualified leads, Automating their backend">
+              </div>
+
+              <div class="form-group full-width">
+                <label for="icpHowYouHelp">How do you help them? (your method/service)</label>
+                <input type="text" id="icpHowYouHelp" placeholder="e.g. React + Node.js web development, Meta Ads + Google Ads, Custom automation systems">
+              </div>
+
+              <div class="form-group full-width">
+                <label for="icpDesiredResult">What result or transformation do you promise?</label>
+                <input type="text" id="icpDesiredResult" placeholder="e.g. A fast, modern website live in 2 weeks, 30-40 qualified leads per month">
+              </div>
+
+              <div class="form-group">
+                <label for="icpCountries">Target Countries / Regions</label>
+                <input type="text" id="icpCountries" placeholder="e.g. USA, UK, Australia, India, International">
+              </div>
+
+              <div class="form-group">
+                <label for="icpPricePoint">Price Point / Budget Range</label>
+                <input type="text" id="icpPricePoint" placeholder="e.g. $500-$5000/project, $1000/month retainer">
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <button id="btnGenerateICP" class="btn btn-primary">🎯 Generate ICP Report</button>
+              <button id="btnCopyICP" class="btn btn-secondary" style="display:none;">📋 Copy Full Report</button>
+              <button id="btnDownloadICP" class="btn btn-secondary" style="display:none;">⬇️ Download as .txt</button>
+            </div>
+          </div>
+
+          <!-- ICP Report Output Card -->
+          <div id="icpReportCard" class="card" style="display:none; margin-top: 16px;">
+            <h3>📄 Your ICP Research Report</h3>
+            <div id="icpStatus" class="icp-status"></div>
+            <div id="icpReportContent" class="icp-report-content"></div>
           </div>
         </section>
 
