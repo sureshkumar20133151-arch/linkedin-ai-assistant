@@ -213,13 +213,33 @@ function renderDMPitchCard(container, dmPitch, authorName, composer) {
 }
 
 // Renders a clear Generated Comment card inside the extension UI
-function renderGeneratedCommentCard(container, commentText, autoInserted = false) {
+function renderGeneratedCommentCard(container, commentText, autoInserted = false, postContext = null, composer = null) {
   if (!commentText || !commentText.trim()) return;
 
   const card = document.createElement('div');
   card.className = 'linkedin-ai-dm-pitch-card linkedin-ai-comment-card';
   card.style.background = 'linear-gradient(135deg, #f4fbf7 0%, #e6f7ef 100%)';
   card.style.borderColor = '#057642';
+
+  const isConnected = postContext?.isConnected;
+  const authorName = postContext?.authorName || 'Author';
+
+  let dmButtonHtml = '';
+  if (postContext && postContext.authorName && postContext.authorName !== 'LinkedIn User') {
+    if (isConnected) {
+      dmButtonHtml = `
+        <button type="button" class="linkedin-ai-direct-dm-btn" style="background: linear-gradient(135deg, #0a66c2 0%, #0855a3 100%); color: #ffffff; border: none; border-radius: 16px; padding: 5px 14px; font-size: 11.5px; font-weight: 600; cursor: pointer; transition: all 0.15s ease;">
+          💬 DM ${escapeHtml(authorName)}
+        </button>
+      `;
+    } else {
+      dmButtonHtml = `
+        <button type="button" disabled title="Direct messaging is only available for 1st-degree connections on LinkedIn" style="background: #f1f5f9; color: #94a3b8; border: 1px solid #cbd5e1; border-radius: 16px; padding: 5px 12px; font-size: 11px; font-weight: 500; cursor: not-allowed;">
+          🔒 Not Connected (1st degree required)
+        </button>
+      `;
+    }
+  }
 
   card.innerHTML = `
     <div class="linkedin-ai-dm-header">
@@ -231,6 +251,7 @@ function renderGeneratedCommentCard(container, commentText, autoInserted = false
     <div class="linkedin-ai-dm-text" style="border-color: rgba(5, 118, 66, 0.2);"></div>
     <div class="linkedin-ai-dm-actions">
       <button type="button" class="linkedin-ai-copy-dm-btn" style="color: #057642; border-color: #057642;">📋 Copy Comment</button>
+      ${dmButtonHtml}
     </div>
   `;
 
@@ -243,6 +264,27 @@ function renderGeneratedCommentCard(container, commentText, autoInserted = false
     copyBtn.textContent = copied ? 'Comment Copied! ✓' : 'Copy Failed';
     setTimeout(() => { copyBtn.textContent = '📋 Copy Comment'; }, 2000);
   });
+
+  const directDmBtn = card.querySelector('.linkedin-ai-direct-dm-btn');
+  if (directDmBtn) {
+    directDmBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const postContainer = composer
+        ? (composer.closest('div.feed-shared-update-v2, article, li.reusable-search__result-container, div.entity-result, div[data-urn]') || composer.parentElement)
+        : null;
+      const { messageBtn, authorLink } = resolvePostAuthorTargets(postContainer);
+
+      if (messageBtn) {
+        messageBtn.click();
+      } else if (postContext?.authorProfileUrl) {
+        window.open(postContext.authorProfileUrl, '_blank');
+      } else if (authorLink && authorLink.href) {
+        window.open(authorLink.href, '_blank');
+      } else {
+        window.open('https://www.linkedin.com/messaging/', '_blank');
+      }
+    });
+  }
 
   container.appendChild(card);
 }

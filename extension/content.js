@@ -271,11 +271,7 @@
             showNotice(noticeContainer, 'warning', `Generated! Couldn't auto-insert.`, response.comment);
           }
 
-          renderGeneratedCommentCard(noticeContainer, response.comment, insertResult.success);
-
-          if (response.dmPitch) {
-            renderDMPitchCard(noticeContainer, response.dmPitch, postContext.authorName, composer);
-          }
+          renderGeneratedCommentCard(noticeContainer, response.comment, insertResult.success, postContext, composer);
         } else {
           throw new Error(response.error || 'Failed to generate comment.');
         }
@@ -464,11 +460,7 @@
               showNotice(noticeContainer, 'warning', `Couldn't insert automatically.`, response.comment);
             }
 
-            renderGeneratedCommentCard(noticeContainer, response.comment, insertResult.success);
-
-            if (response.dmPitch) {
-              renderDMPitchCard(noticeContainer, response.dmPitch, postContext.authorName, composer);
-            }
+            renderGeneratedCommentCard(noticeContainer, response.comment, insertResult.success, postContext, composer);
           } else {
             throw new Error(response.error || 'Failed to generate comment.');
           }

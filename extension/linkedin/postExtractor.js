@@ -421,6 +421,24 @@ async function extractPostContext(commentComposer) {
     if (authorHeadline) break;
   }
 
+  // Extract connection status (1st degree vs 2nd/3rd)
+  let isConnected = false;
+  const actorContainer = postElement.querySelector('.update-components-actor, .feed-shared-actor, [data-view-name="feed-actor"]') || postElement;
+  const actorText = (actorContainer.innerText || '').toLowerCase();
+
+  if (actorText.includes('• 1st') || actorText.includes('1st degree') || actorText.includes('1st connection')) {
+    isConnected = true;
+  } else {
+    // Check if there is a direct message button in the author header
+    const hasDirectMessageBtn = Array.from(actorContainer.querySelectorAll('button')).some(b => {
+      const label = (b.getAttribute('aria-label') || b.innerText || '').trim().toLowerCase();
+      return label.startsWith('message') && !label.includes('comment');
+    });
+    if (hasDirectMessageBtn) {
+      isConnected = true;
+    }
+  }
+
   // STEP 2: Extract the actual post text
   let postText = extractTextFromPost(postElement);
 
@@ -443,6 +461,7 @@ async function extractPostContext(commentComposer) {
     authorName,
     authorHeadline,
     authorProfileUrl: authorProfileUrl || '',
+    isConnected,
     postText: postText || '',
     hashtags: [...new Set(hashtags)]
   };
