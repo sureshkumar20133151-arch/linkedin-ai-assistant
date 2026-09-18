@@ -307,7 +307,7 @@ function renderOutreachCard(container, outreachData, postContext = null, compose
     { id: 'professional', label: '👔 Professional', text: dms.professional || '' },
     { id: 'friendly',     label: '😊 Friendly',     text: dms.friendly || '' },
     { id: 'technical',    label: '🔧 Technical',    text: dms.technical || '' },
-    { id: 'valuefirst',   label: '💡 Value-First',  text: dms.valuefirst || '' }
+    { id: 'valuefirst',   label: '💡 Consultative', text: dms.valuefirst || '' }
   ].filter(s => s.text);
 
   let activeDmStyle = dmStyles[0]?.id || 'professional';
@@ -364,8 +364,8 @@ function renderOutreachCard(container, outreachData, postContext = null, compose
     ${outreachData.connectionNote ? `
       <div class="linkedin-ai-outreach-section connection-section">
         <div class="linkedin-ai-outreach-section-title">
-          <span>🤝 Connection Request Note (No Selling)</span>
-          <span class="linkedin-ai-outreach-char-count">${outreachData.connectionNote.length} / 280 chars</span>
+          <span>🤝 Connection Note (Max 200 chars, No Selling)</span>
+          <span class="linkedin-ai-outreach-char-count">${outreachData.connectionNote.length} / 200 max</span>
         </div>
         <div class="linkedin-ai-outreach-connection-box">${escapeHtml(outreachData.connectionNote)}</div>
         <div class="linkedin-ai-outreach-actions">
