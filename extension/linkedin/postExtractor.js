@@ -326,27 +326,7 @@ async function extractPostContext(commentComposer) {
     return '';
   }
 
-  // 1. Extract Profile URL & Name from VERY FIRST <a> link matching /in/ OUTSIDE comments
-  const allProfileLinks = postElement.querySelectorAll('a[href*="/in/"]');
-  let authorProfileUrl = '';
-  let authorNameFromLink = '';
-
-  for (const a of allProfileLinks) {
-    if (isInsideCommentsSection(a)) continue;
-    const href = a.getAttribute('href') || a.href || '';
-    if (href.includes('/in/')) {
-      const match = href.match(/(https?:\/\/[^\/]*linkedin\.com\/in\/[^\/\?#]+)/);
-      authorProfileUrl = match ? match[1] : href.split('?')[0];
-
-      const textName = cleanPersonName(a.innerText || a.textContent || '');
-      if (textName) {
-        authorNameFromLink = textName;
-      }
-      break; // Found the top post author link!
-    }
-  }
-
-  // 2. Extract author name via selectors if link text was empty
+  // 1. Extract author name via dedicated actor name selectors (most accurate on LinkedIn)
   const nameSelectors = [
     '.update-components-actor__name span[aria-hidden="true"]',
     '.update-components-actor__name',
@@ -361,19 +341,38 @@ async function extractPostContext(commentComposer) {
     'span[data-anonymize="person-name"]'
   ];
 
-  let authorName = authorNameFromLink;
-  if (!authorName) {
-    for (const sel of nameSelectors) {
-      const elements = postElement.querySelectorAll(sel);
-      for (const el of elements) {
-        if (isInsideCommentsSection(el)) continue;
-        const text = cleanPersonName(el.innerText || el.textContent || '');
-        if (text) {
-          authorName = text;
-          break;
+  let authorName = '';
+  for (const sel of nameSelectors) {
+    const elements = postElement.querySelectorAll(sel);
+    for (const el of elements) {
+      if (isInsideCommentsSection(el)) continue;
+      const text = cleanPersonName(el.innerText || el.textContent || '');
+      if (text) {
+        authorName = text;
+        break;
+      }
+    }
+    if (authorName) break;
+  }
+
+  // 2. Extract Profile URL & Name fallback from first /in/ link OUTSIDE comments
+  const allProfileLinks = postElement.querySelectorAll('a[href*="/in/"]');
+  let authorProfileUrl = '';
+
+  for (const a of allProfileLinks) {
+    if (isInsideCommentsSection(a)) continue;
+    const href = a.getAttribute('href') || a.href || '';
+    if (href.includes('/in/')) {
+      const match = href.match(/(https?:\/\/[^\/]*linkedin\.com\/in\/[^\/\?#]+)/);
+      authorProfileUrl = match ? match[1] : href.split('?')[0];
+
+      if (!authorName) {
+        const textName = cleanPersonName(a.innerText || a.textContent || '');
+        if (textName) {
+          authorName = textName;
         }
       }
-      if (authorName) break;
+      break; // Found the top post author link!
     }
   }
 

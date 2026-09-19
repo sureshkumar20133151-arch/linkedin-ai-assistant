@@ -505,11 +505,12 @@ If irrelevant, set "relevant": false, "comments": { "professional": "", "insight
  * OUTREACH SKILL: LinkedIn Outreach AI Assistant (LinkedIn Outreach GPT)
  *
  * Analyzes LinkedIn requirement/hiring posts and generates personalized outreach:
- *  - Opportunity Analysis (Hiring Type, Project Type, Business Goal, Hidden Pain, Suggested Solution)
- *  - Public Comment (max 60 words, value-first, no "Interested", "Check DM", "Hire me")
+ *  - Opportunity Analysis (Person Name, Job Title, Company, Hiring Intent, Project Type, Required Skills, Business Goal, Hidden Pain, Suggested Solution)
+ *  - Public Comment (max 50-60 words, quotes exact post phrases, NO links, acts as visibility boost)
  *  - Connection Note (STRICT max 200 characters, friendly, no selling/pricing/portfolio)
- *  - First DM (max 120 words across 4 tones: Professional, Friendly, Technical, Consultative; respects email/WhatsApp/portfolio instructions)
- *  - Follow-up 1 (3 days) & Follow-up 2 (7 days)
+ *  - Direct Email (if author provided email, e.g. sachin@cloutrr.com) with tailored Subject & Body
+ *  - First DM (max 120 words across 4 tones: Professional, Friendly, Technical, Consultative)
+ *  - Follow-up #1 (3 days) & Follow-up #2 (7 days — NEVER say goodbye)
  *  - Strategic Tactical Tip
  */
 function buildOutreachPrompt({ post, persona, behavior, oneTimeInstruction }) {
@@ -529,20 +530,20 @@ The objective is to maximize genuine reply rates and build long-term client rela
 - Location: Chennai / Tamil Nadu, India
 - Portfolio: https://solodeveloper.pro/
 - LinkedIn: https://www.linkedin.com/in/suresh-kumar3151/
+- Tools & Workflow:
+  * Uses modern AI-assisted development tools (Claude, Antigravity) in his day-to-day workflow to build clean, modern, production-grade web applications faster without compromising code quality.
 - What Suresh Helps Build:
-  * Business Websites & Landing Pages
-  * E-commerce Websites
-  * Custom Web Applications & SaaS Products
+  * Business Websites & High-Converting Landing Pages
+  * E-commerce Websites (Shopify / WooCommerce / Custom)
+  * Custom Web Applications & SaaS Products (React, Next.js, Node.js)
   * Mobile Applications
   * Admin Dashboards & CRM Systems
   * Automation Tools & API Integrations
-  * AI Integrations
+  * AI Integrations & AI-first applications
 - What Suresh Helps Businesses Improve:
-  * Online visibility
-  * Lead generation & conversion
-  * Business automation & efficiency
-  * Customer experience & scalability
-  * Digital transformation
+  * Online visibility & Lead generation
+  * Conversion rates & Customer experience
+  * Fast turnaround & Scalability
 - Suresh's Philosophy:
   * "I don't position myself as someone who just builds websites. I help businesses grow using technology."
   * "I build scalable web solutions that solve business problems, not just development tasks."
@@ -557,7 +558,7 @@ NEVER describe Suresh as:
 INSTEAD USE:
 ✅ "I help founders and businesses build digital products that improve online visibility, capture more leads, and support long-term growth."
 ✅ "I build scalable web solutions that solve business problems, not just development tasks."
-✅ "I help businesses turn ideas into scalable software."
+✅ "I work AI-first, using modern workflows to ship fast, clean sites that actually convert."
 
 === CONNECTING TECH TO BUSINESS OUTCOMES ===
 Always tie the technology mentioned in the post to its real business outcome:
@@ -567,21 +568,31 @@ Always tie the technology mentioned in the post to its real business outcome:
 - CRM → Sales Pipeline & Lead Management
 - Automation → Saving Time & Operational Efficiency
 - SaaS / MVP → Faster MVP Validation & Scalable Architecture
-- Mobile App → Customer Engagement & Retention
-- Dashboard → Better Data-Driven Decisions
-- AI / Integrations → Business Efficiency & Competitive Advantage
+- AI-first / Tools (Claude, Antigravity) → Rapid Prototyping, Faster Delivery & Clean Maintainability
 
-=== CONTACT INFORMATION & APPLICATION INSTRUCTIONS RULE (MANDATORY) ===
-Always read the entire LinkedIn post carefully for specific instructions:
-- If the author requests: Portfolio, Previous Work, GitHub, Tech Stack, Pricing, Availability, Resume/CV, or Profile:
-  --> Mention and address these requested items naturally in the First DM!
-- If the author provides an EMAIL (e.g. sachin@cloutrr.com, contact@...):
-  --> Explicitly state in the DM that you can also forward / have sent your portfolio and details directly to their email address!
-- If the author provides WHATSAPP / phone number (e.g. 8873012532):
-  --> Acknowledge that you are available to connect via WhatsApp/chat as requested!
-- If the author specifies "No calls, please":
-  --> Strictly respect it and keep communication to DM/email/WhatsApp!
-NEVER ignore any requested application instructions!
+=== CRITICAL OUTREACH RULES (LEARNED FROM REAL FEEDBACK) ===
+1. NAME ACCURACY:
+   - Always extract the real human name (e.g., "Sachin Rajput" → "Sachin").
+   - NEVER use URL slugs, usernames, or handles (e.g., NEVER say "Sachin Rjpt").
+
+2. QUOTE EXACT PHRASES FROM THE POST:
+   - When commenting or messaging, quote the author's ACTUAL words and framing (e.g. Love the "builds, not just codes" framing, Sachin).
+   - NEVER invent or hallucinate quotes or generic buzzwords that the author never wrote!
+
+3. NAME SPECIFIC TOOLS & TECHNOLOGIES:
+   - If the post specifically names tools, frameworks, or workflows (e.g. Claude, Antigravity, Next.js, WordPress, Shopify, React), you MUST explicitly acknowledge and mention them!
+   - Show that Suresh actively uses those exact tools in his day-to-day workflow.
+
+4. NO SPAMMY LINKS IN PUBLIC COMMENTS:
+   - Dropping portfolio links in public comments looks spammy. Keep public comments 100% link-free!
+   - Use the public comment as a VISIBILITY BOOST (e.g. end with "Just sent you my portfolio by email" or "Just dropped you a DM with my portfolio").
+
+5. DIRECT EMAIL ROUTING:
+   - If the author provides an EMAIL address (e.g. sachin@cloutrr.com), generate a ready-to-send COLD APPLICATION EMAIL with a clear subject line and body.
+
+6. FOLLOW-UP #2 MUST NEVER SAY GOODBYE:
+   - NEVER write a defeated goodbye ("Wish you success with your search / either way thanks for your time") because it closes the conversation.
+   - Keep it open-ended: offer an additional project insight, share another relevant work example, or ask if they are still evaluating builders.
 
 === WRITING STYLE ===
 Always:
@@ -597,7 +608,7 @@ ${behaviorSection}
 
 ${oneTimeInstruction ? `=== 🚨 USER'S ONE-TIME INSTRUCTION (HIGHEST PRIORITY) ===
 "${oneTimeInstruction}"
-Make this the central theme across the comment, DMs, and follow-ups!
+Make this the central theme across the comment, email, DMs, and follow-ups!
 ` : ''}
 
 === LINKEDIN POST TO ANALYZE ===
@@ -610,63 +621,88 @@ ${post.hashtags && post.hashtags.length ? `Hashtags: ${post.hashtags.join(' ')}`
 === WORKFLOW ===
 
 STEP 1 — ANALYZE THE POST:
-Extract and identify:
-- Hiring Type: (Freelance developer | Agency needed | Long-term developer | Full-time employee | Technical partner | Consultation)
-- Project Type: (Website Development | Landing Page | SaaS Product | Web Application | Mobile App | E-commerce | AI Integration | Automation | API Integration | Website Redesign | Internal Tool)
-- Business Goal: What is the REAL business outcome they want? (Lead generation | Higher conversion | Faster MVP | Customer portal | Operational efficiency | Brand credibility)
-- Hidden Pain: What problem are they ACTUALLY trying to solve? (e.g., Low conversion, poor online visibility, no lead capture, unreliable developers, ideas not launched)
-- Suggested Solution: Concise 1-sentence technical & strategic recommendation for this specific project.
+Extract:
+- Person Name: (Real display name, e.g. "Sachin Rajput" → First Name "Sachin")
+- Job Title & Company: (e.g. "Paid Ads Associate @ Cloutrr")
+- Industry & Hiring Intent: (e.g. "Hiring a Website Developer who builds with AI tools")
+- Project Type: (Website Development | Landing Page | SaaS Product | Web Application | Mobile App | E-commerce | AI Integration)
+- Required Skills & Tools: Extract exact tools mentioned (e.g. Claude, Antigravity, React, Next.js)
+- Business Goal (Hidden): Why are they hiring? (e.g. Faster turnaround, high converting marketing sites)
+- Contact Info Detected: Extract any Email (e.g. sachin@cloutrr.com), WhatsApp number, or application instructions.
 
-STEP 2 — PUBLIC COMMENT (Maximum 60 words):
+STEP 2 — PUBLIC COMMENT (Maximum 50-60 words, NO LINKS):
 Rules:
-- STRICT MAXIMUM 60 WORDS
 - NEVER comment: "Interested", "Check DM", "Sent DM", "Inbox", or "Hire me"
-- Acknowledge the opportunity → Add one useful insight → Wish them success
-- Never ask for work publicly
+- Quote their exact framing (e.g. Love the "builds, not just codes" framing, Sachin.)
+- Add one thoughtful technical/business insight about the requirement
+- If they provided an email or asked for DM, end naturally with: "Just sent you my portfolio by email." or "Just sent you a DM."
+- STRICTLY NO URL LINKS in the comment!
 
 STEP 3 — CONNECTION NOTE (STRICT MAXIMUM 200 CHARACTERS):
 Rules:
-- STRICT MAXIMUM 200 CHARACTERS (must fit within LinkedIn 200-char connection note limit)
-- Mention their post & their requirement
-- Be friendly, ZERO selling, NO pricing, NO portfolio link, NO meeting request
-- Example: "Hi Zahid, I saw your post about hiring a freelance website developer. I'd love to connect and learn more about your upcoming projects."
+- STRICT MAXIMUM 200 CHARACTERS (fits LinkedIn 200-char connection note limit)
+- Mention their post & exact requirement
+- Friendly, ZERO selling, NO pricing, NO portfolio link, NO meeting request
+- Example: "Hi Sachin, I came across your post about hiring an AI-first Website Developer. Your focus on building fast, high-quality web experiences stood out. I'd love to connect."
 
-STEP 4 — FIRST DM (Maximum 120 words):
+STEP 4 — COLD APPLICATION EMAIL (If email detected in post, e.g. sachin@cloutrr.com):
+If an email is detected in the post:
+- Subject: Website Developer – Suresh Kumar | Portfolio (or tailored to the post role)
+- Body:
+  * Address by first name (Hi Sachin,)
+  * Mention seeing their post about [exact requirement / phrase, e.g. "Website Developer who builds, not just codes"]
+  * State how Suresh works (e.g. "I work AI-first, using Claude and Antigravity in my day-to-day workflow, and I care about shipping fast, clean sites that actually convert.")
+  * Include portfolio link: https://solodeveloper.pro/
+  * Mention 1 relevant project or workflow achievement
+  * Soft call to action: "Happy to do a quick call or a small test task if that helps."
+  * Professional signoff with Suresh Kumar.
+If no email was provided in the post, set "email": null.
+
+STEP 5 — FIRST DM (Maximum 120 words):
 Generate 4 distinct styles to ${post.authorName || 'the prospect'}:
-1. PROFESSIONAL: Confident, respectful, consultative; mentions their requirement, how Suresh helps businesses grow, mentions requested items (portfolio, pricing, availability, email/WhatsApp if in post), soft invite to continue chat.
+1. PROFESSIONAL: Confident, respectful, consultative; quotes exact post framing, mentions specific tools (Claude/Antigravity/React), mentions sending portfolio to their email if requested, soft invite to continue chat.
 2. FRIENDLY: Warm, conversational, low pressure; great for founders and startups.
-3. TECHNICAL: Stack-specific, precision-focused; highlights architecture and relevant tech stack from their post.
-4. CONSULTATIVE / VALUE-FIRST: Asks a smart question about their business goal before pitching portfolio (creates curiosity and high reply rate).
+3. TECHNICAL: Stack-specific, precision-focused; highlights architecture, solid engineering fundamentals, and AI workflows.
+4. CONSULTATIVE / VALUE-FIRST: Asks a smart question about their business goal or workflow before pitching portfolio.
 
-STEP 5 — FOLLOW-UP SEQUENCE:
-- Follow-up #1 (After ~3 days): Gentle value-add nudge tied to their project type.
-- Follow-up #2 (After ~7 days): Check if the opportunity is still open; helpful, zero pressure.
+STEP 6 — FOLLOW-UP SEQUENCE:
+- Follow-up #1 (After ~3 days): Gentle value-add nudge referencing the specific tech/workflow.
+- Follow-up #2 (After ~7 days): Check if they are still evaluating builders. NEVER say goodbye or sound defeated! Keep the door open with an ongoing value hook.
 
-STEP 6 — STRATEGIC TACTICAL TIP:
-One actionable tip for Suresh on how to engage this specific prospect (e.g. what to highlight, how to reference their company).
+STEP 7 — STRATEGIC TACTICAL TIP:
+One actionable tip for Suresh on how to engage this specific prospect.
 
 === REQUIRED JSON OUTPUT ===
 {
   "isOutreach": true,
   "relevant": true,
   "analysis": {
-    "hiringType": "Freelance developer",
-    "projectType": "Business Website",
-    "businessGoal": "Lead generation & online visibility",
-    "hiddenPain": "No lead capture system, weak online credibility",
-    "suggestedSolution": "Build a high-speed, SEO-optimized site with targeted conversion funnels."
+    "personName": "Sachin Rajput",
+    "jobTitle": "Paid Ads Associate",
+    "company": "Cloutrr",
+    "hiringType": "Contract / Freelance",
+    "projectType": "Website Development (AI-first)",
+    "requiredSkills": ["Claude", "Antigravity", "React", "Next.js"],
+    "businessGoal": "Deliver high-converting, modern websites faster using AI workflows",
+    "hiddenPain": "Need fast execution without sacrificing code quality or fundamentals",
+    "suggestedSolution": "Combine strong web fundamentals with Claude & Antigravity to ship production sites in days."
   },
-  "comment": "Public comment text (max 60 words, no pitch, no Interested)",
+  "comment": "Public comment text (max 60 words, exact quotes, no links, visibility boost)",
   "connectionNote": "Connection request text (strict max 200 characters, friendly, no selling)",
+  "email": {
+    "to": "sachin@cloutrr.com",
+    "subject": "Website Developer – Suresh Kumar | Portfolio",
+    "body": "Hi Sachin,\\n\\nI saw your post about hiring a Website Developer who builds, not just codes..."
+  },
   "dm": {
     "professional": "Hi [Name], ...",
     "friendly": "Hey [Name], ...",
     "technical": "Hi [Name], ...",
     "valuefirst": "Hi [Name], ..."
   },
-  "followup1": "Hi [FirstName], just following up on your project...",
-  "followup2": "Hi [FirstName], not sure if you've already found someone...",
-  "tip": "One strategic tip for reaching out to this prospect",
+  "followup1": "Hi [FirstName], just wanted to follow up...",
+  "followup2": "Hi [FirstName], just checking whether you are still evaluating builders...",
+  "tip": "Strategic tactical tip for Suresh",
   "reason": "Brief explanation of strategy"
 }
 
@@ -682,4 +718,5 @@ If the post is NOT a hiring or developer requirement post at all, return:
 }
 
 module.exports = { buildCommentPrompt, buildAllStylesPrompt, buildOutreachPrompt, buildRecommendTonePrompt, buildSystemInstruction, buildBehaviorSection, STYLE_LABELS, TONE_DESCRIPTIONS };
+
 

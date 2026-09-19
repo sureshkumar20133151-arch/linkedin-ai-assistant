@@ -98,6 +98,7 @@ router.post('/generate-outreach', async (req, res) => {
       analysis: result.analysis || {},
       comment: result.comment || '',
       connectionNote: result.connectionNote || '',
+      email: result.email || null,
       dm: result.dm || {},
       followup1: result.followup1 || '',
       followup2: result.followup2 || '',

@@ -374,6 +374,26 @@ function renderOutreachCard(container, outreachData, postContext = null, compose
       </div>
     ` : ''}
 
+    <!-- Direct Cold Email Section (if email detected in post) -->
+    ${outreachData.email && outreachData.email.to ? `
+      <div class="linkedin-ai-outreach-section email-section">
+        <div class="linkedin-ai-outreach-section-title">
+          <span>📧 Direct Application Email (to ${escapeHtml(outreachData.email.to)})</span>
+          <span class="linkedin-ai-outreach-status">Recommended Route</span>
+        </div>
+        <div class="linkedin-ai-outreach-email-subject">
+          <strong>Subject:</strong> <span>${escapeHtml(outreachData.email.subject || 'Website Developer – Suresh Kumar | Portfolio')}</span>
+        </div>
+        <div class="linkedin-ai-outreach-email-box">${escapeHtml(outreachData.email.body || '')}</div>
+        <div class="linkedin-ai-outreach-actions">
+          <button type="button" class="linkedin-ai-outreach-copy-email-btn">📋 Copy Email</button>
+          <a href="mailto:${encodeURIComponent(outreachData.email.to)}?subject=${encodeURIComponent(outreachData.email.subject || '')}&body=${encodeURIComponent(outreachData.email.body || '')}" class="linkedin-ai-outreach-mailto-btn" target="_blank" style="text-decoration:none;">
+            ✉️ Open in Mail Client
+          </a>
+        </div>
+      </div>
+    ` : ''}
+
     <!-- 4 DM Styles Section -->
     <div class="linkedin-ai-outreach-section dm-section">
       <div class="linkedin-ai-outreach-section-title">
@@ -451,6 +471,17 @@ function renderOutreachCard(container, outreachData, postContext = null, compose
       const copied = await copyCommentToClipboard(outreachData.connectionNote);
       connectionCopyBtn.textContent = copied ? 'Note Copied! ✓' : 'Copy Failed';
       setTimeout(() => { connectionCopyBtn.textContent = '📋 Copy Connection Note'; }, 2000);
+    });
+  }
+
+  const emailCopyBtn = card.querySelector('.linkedin-ai-outreach-copy-email-btn');
+  if (emailCopyBtn && outreachData.email) {
+    emailCopyBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const emailFull = `Subject: ${outreachData.email.subject || ''}\n\n${outreachData.email.body || ''}`;
+      const copied = await copyCommentToClipboard(emailFull);
+      emailCopyBtn.textContent = copied ? 'Email Copied! ✓' : 'Copy Failed';
+      setTimeout(() => { emailCopyBtn.textContent = '📋 Copy Email'; }, 2000);
     });
   }
 
