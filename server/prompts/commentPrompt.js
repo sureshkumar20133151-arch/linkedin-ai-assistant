@@ -125,6 +125,29 @@ ${detailedProfileBlock}`;
     - If you include an @-mention tag or greeting, it MUST ONLY tag/greet THE POST AUTHOR (e.g. "Hi @[Author's Name]," or "@[Author's Name],").
     - STRICTLY BANNED: NEVER tag, greet, or respond to any commenter from the existing comments list (e.g. NEVER tag Kaushal Khokhar or any other commenter). Existing comments are provided ONLY to find missing topic gaps — NOT to reply to commenters!
 
+=== 2026 LINKEDIN SKILLS ENGINE (CRITICAL ALGORITHMIC & VOCABULARY RULES) ===
+Adapted from the proven 2026 LinkedIn Skills standard:
+
+1. ALGORITHMIC DEPTH & NLP SCORING:
+   - Length Sweet Spot: 200–350 characters (25–50 words), 1–2 short paragraphs max.
+   - NEW CONCEPT INJECTION: Always introduce at least ONE noun or technical/business concept NOT already in the parent post! (This triggers LinkedIn's ranker "in-depth comment" boost).
+   - SOFT PAUSE ('..'): Use '..' as a natural soft pause instead of artificial punctuation or em-dash stacking.
+   - NO DEAD PROMPTS: NEVER end with "What do you think?" — it kills engagement. End with a sharp, specific observation or a concrete question that invites a sub-thread.
+
+2. COMPREHENSIVE AI-TELL VOCABULARY BLACKLIST:
+   NEVER use these AI words or robotic transition phrases in any comment or message:
+   - Verbs: leverage, utilize, facilitate, streamline, robust, seamless, delve, navigate, unlock, harness, foster, cultivate
+   - Adverbs: fundamentally, essentially, ultimately, crucially, notably
+   - Nouns: landscape, ecosystem, paradigm, realm, tapestry, journey
+   - Clichés: "In today's fast-paced world", "It's not just X, it's Y", "Game-changer", "deep dive", "at the end of the day"
+   - No mechanical rule-of-three stacks ("faster, cheaper, better")
+   - Em dashes capped at max 1 per 100 words.
+
+3. ANTI-PATTERNS (DEAD ON ARRIVAL):
+   - Never say: "Great post, [Name]!", "This.", "100%", "Couldn't agree more"
+   - Never restate the author's thesis back to them ("so true, AI is changing everything")
+   - Never drop portfolio links in public comments unless explicitly asked.
+
 === CRITICAL: MATCH THE POST'S REQUIREMENTS ===
 - If the post mentions WordPress, talk about WordPress — NOT React or APIs alone.
 - If the post mentions Tamil/region, lead with being from Madurai, Tamil Nadu.
@@ -158,23 +181,27 @@ FOR GENERAL DISCUSSION / EDUCATIONAL POSTS:
 - Share a clear, practical developer observation directly addressing the post's core topic in simple English.
 `,
   insightful: `
-=== STYLE: INSIGHTFUL / CONFIDENT ===
-GOAL: High-confidence pitch demonstrating technical alignment.
+=== STYLE: INSIGHTFUL (PROVEN 2026 T1 MISSING-PIECE & T4 PRACTITIONER PATTERNS) ===
+GOAL: High-authority observation that gets author replies and introduces new concept depth.
 
-FOR HIRING / CLIENT REQUIREMENT POSTS: Follow the hiring-post rules already established above. Style-specific addition: state clearly and confidently how the project aligns with your expertise in building clean, scalable applications — direct, solution-oriented, no hedging.
+FOR HIRING / CLIENT REQUIREMENT POSTS:
+- State technical alignment, quote their exact words, and highlight the exact balance between speed and solid fundamentals.
 
 FOR GENERAL DISCUSSION POSTS:
-- Read the post carefully and share a practical, expert observation or technical consideration.
-- Do NOT turn discussion posts into spam pitches.
+- Use Pattern T1 (Missing-Piece) or T4 (Practitioner Observation):
+  * T1 Skeleton: "[Author], the [their-premise] argument misses one piece.. [what actually moved]. When [condition], the real differentiator is [specific skill], not [their focus]."
+  * T4 Skeleton: "When [condition A] the system does X, when [condition B] it does Y.. that's when [outcome] kicks in."
+  * Introduce at least ONE new concept or operational reality the author did not mention.
 `,
   short: `
-=== STYLE: SHORT / SIMPLE ===
-GOAL: Concise, 1 to 2 sentences maximum.
+=== STYLE: SHORT / SIMPLE (HIGH-WEIGHT PUNCHY COMMENT) ===
+GOAL: Concise, 1 to 2 sentences maximum, high quotability.
 
-FOR HIRING / CLIENT REQUIREMENT POSTS: Follow the hiring-post rules already established above, compressed into 1-2 short sentences — the portfolio link is still mandatory even at this length.
+FOR HIRING / CLIENT REQUIREMENT POSTS:
+- Direct match in 1-2 short sentences: state role, matching skills, and how to connect.
 
 FOR GENERAL DISCUSSION POSTS:
-- Keep it extremely concise (1-2 sentences) addressing the topic directly.
+- Pattern T6 (Quotable-Reframe): One punchy observation under 12 words + one sentence explaining the concrete cause.
 `,
   friendly: `
 === STYLE: FRIENDLY / CASUAL ===
@@ -199,13 +226,16 @@ INSTRUCTIONS:
 - Where relevant, briefly connect it to the user's own expertise/interest, without turning it into a pitch.
 `,
   question: `
-=== STYLE: QUESTION / ATTENTION-GRABBING ===
-GOAL: Ask a smart, specific clarifying question to grab the client's attention and start a direct conversation!
+=== STYLE: QUESTION (T7 ASK-A-SHARPER-QUESTION & T2 ANSWER-THE-CLOSING-QUESTION) ===
+GOAL: High reply probability through sharper, consultative inquiry.
 
-FOR HIRING / CLIENT REQUIREMENT POSTS: Follow the hiring-post rules already established above. Style-specific addition: after briefly stating interest and matching skills, ask ONE smart, highly relevant technical/project clarifying question (e.g. payment gateway preference, API scope, wireframes, or timeline) that demonstrates expert understanding and invites a reply.
+FOR HIRING / CLIENT REQUIREMENT POSTS:
+- Briefly state technical alignment, then ask ONE smart, consultative project question (e.g., API scope, timeline, wireframes) that proves engineering depth.
 
 FOR GENERAL DISCUSSION POSTS:
-- Ask ONE specific, thoughtful question directly tied to a detail in the post to spark discussion.
+- If the post ends with a question (?), use Pattern T2: Directly answer the question with a concrete observation/metric without hedging.
+- If the post is a broad thesis, use Pattern T7 (Sharper Question):
+  * Skeleton: "The harder version of this question is.. [reframed deeper question]. Curious if you've seen [specific case]?"
 `,
   storytelling: `
 === STYLE: STORYTELLING / PERSONAL EXPERIENCE ===
@@ -218,14 +248,13 @@ INSTRUCTIONS:
 - If the user has no detailed background to draw from, keep the personal angle general (e.g. "I've run into this exact issue building X kind of sites") rather than fabricating specifics.
 `,
   contrarian: `
-=== STYLE: CONTRARIAN / THOUGHT-PROVOKING ===
-GOAL: Respectfully offer a different angle or gentle pushback on the post's main point, to spark discussion.
+=== STYLE: CONTRARIAN (T5 COUNTER-WITH-CONCESSION) ===
+GOAL: Respectfully offer a differing perspective that sparks serious discussion.
 
 INSTRUCTIONS:
-- Stay respectful and professional — this is a differing perspective, NOT an argument or an attack.
-- Clearly acknowledge the post's point first, then offer the alternative angle.
-- The disagreement must be genuine and specific to the post's content, not contrarian for its own sake.
-- Never be dismissive, sarcastic, or condescending.
+- Use Pattern T5 (Concession earns the disagreement):
+  * Skeleton: "Agree on [point 1 from their post]. The part I'd push on is [point 2].. [one reason rooted in specific case or operational tradeoff]."
+- Never be combative or dismissive. Acknowledge what they got right first, then offer the alternative angle.
 `,
   humorous: `
 === STYLE: HUMOROUS / WITTY ===
